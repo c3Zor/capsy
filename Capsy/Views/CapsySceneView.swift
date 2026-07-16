@@ -126,9 +126,10 @@ final class CapsyScene {
         let camera = SCNCamera()
         camera.fieldOfView = 30
         cameraNode.camera = camera
-        cameraNode.position = SCNVector3(0, 1.6, 5.4)
+        // Slightly above the rim so the liquid's voxel surface is visible.
+        cameraNode.position = SCNVector3(0, 2.1, 5.2)
         let target = SCNNode()
-        target.position = SCNVector3(0, 0.82, 0)
+        target.position = SCNVector3(0, 0.72, 0)
         scene.rootNode.addChildNode(target)
         let look = SCNLookAtConstraint(target: target)
         look.isGimbalLockEnabled = true
@@ -152,15 +153,16 @@ final class CapsyScene {
     }
 
     private func buildBody() {
-        // Truly see-through glass: the liquid inside must always be visible.
+        // Truly see-through glass: ONE thin front layer between the camera
+        // and the liquid (back faces culled), so the voxel liquid always
+        // shows through tinted, never buried under stacked glass layers.
         let glass = SCNMaterial()
         glass.lightingModel = .physicallyBased
         glass.diffuse.contents = UIColor(red: 0.97, green: 0.94, blue: 0.90, alpha: 1)
         glass.metalness.contents = 0.0
-        glass.roughness.contents = 0.05
-        glass.transparency = 0.14
-        glass.transparencyMode = .dualLayer
-        glass.isDoubleSided = true
+        glass.roughness.contents = 0.06
+        glass.transparency = 0.32
+        glass.isDoubleSided = false
         glass.writesToDepthBuffer = false  // never hide what's inside
         glassNode.renderingOrder = 10      // draw after the liquid
         glassMaterialHolder = glass
@@ -280,11 +282,26 @@ final class CapsyScene {
         rebuild(for: style)
     }
 
+    private let rimNode = SCNNode()
+
     private func rebuild(for style: VesselStyle) {
         let geometry = lathe(profile(for: style))
         geometry.materials = [glassMaterialHolder]
         glassNode.geometry = geometry
         faceNode.position = faceAnchor(for: style)
+
+        // An ink ring at the opening defines the vessel even where the
+        // glass is nearly invisible — the 3D echo of the 2D outline.
+        let top = profile(for: style).last ?? SIMD2(0.7, 1.6)
+        let torus = SCNTorus(ringRadius: CGFloat(top.x), pipeRadius: 0.022)
+        let ink = SCNMaterial()
+        ink.lightingModel = .constant
+        ink.diffuse.contents = UIColor(red: 0.17, green: 0.15, blue: 0.13, alpha: 0.45)
+        torus.materials = [ink]
+        rimNode.geometry = torus
+        rimNode.position = SCNVector3(0, top.y, 0)
+        if rimNode.parent == nil { bodyRoot.addChildNode(rimNode) }
+
         builtFill = -1 // force liquid rebuild
     }
 
