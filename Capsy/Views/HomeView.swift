@@ -60,6 +60,11 @@ struct HomeView: View {
             ReleaseView()
         }
         .onAppear {
+            // CI screenshot mode: seed a half-full vessel so the shot is honest.
+            if ProcessInfo.processInfo.arguments.contains("--demo"), drops.isEmpty {
+                for intensity in [1, 2, 3] { context.insert(StressDrop(intensity: intensity, note: "")) }
+                try? context.save()
+            }
             absorbQuickDrops()
             Bucket.syncWidget(fraction: Bucket.fraction(of: drops))
         }

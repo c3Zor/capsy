@@ -70,7 +70,9 @@ final class CapsyScene {
     private let bodyRoot = SCNNode()      // breathes (uniform scale)
     private let glassNode = SCNNode()
     private let liquidPivot = SCNNode()   // sloshes (z rotation)
-    private let liquidNode = SCNNode()
+    private let liquidRoot = SCNNode()    // the voxel cubes live here
+    private var topCubes: [(node: SCNNode, baseY: Float, phase: Float)] = []
+    private let cubeSize: Float = 0.16
     private let faceNode = SCNNode()
     private let leftEye = SCNNode()
     private let rightEye = SCNNode()
@@ -150,15 +152,17 @@ final class CapsyScene {
     }
 
     private func buildBody() {
+        // Truly see-through glass: the liquid inside must always be visible.
         let glass = SCNMaterial()
         glass.lightingModel = .physicallyBased
         glass.diffuse.contents = UIColor(red: 0.97, green: 0.94, blue: 0.90, alpha: 1)
         glass.metalness.contents = 0.0
-        glass.roughness.contents = 0.1
-        glass.transparency = 0.30
+        glass.roughness.contents = 0.05
+        glass.transparency = 0.14
         glass.transparencyMode = .dualLayer
         glass.isDoubleSided = true
-        glassNode.geometry?.materials = [glass]
+        glass.writesToDepthBuffer = false  // never hide what's inside
+        glassNode.renderingOrder = 10      // draw after the liquid
         glassMaterialHolder = glass
 
         liquidMaterial.lightingModel = .physicallyBased
@@ -166,7 +170,7 @@ final class CapsyScene {
         liquidMaterial.roughness.contents = 0.8   // matte clay
         liquidMaterial.metalness.contents = 0.0
 
-        liquidPivot.addChildNode(liquidNode)
+        liquidPivot.addChildNode(liquidRoot)
         bodyRoot.addChildNode(liquidPivot)
         bodyRoot.addChildNode(glassNode)
     }
@@ -284,28 +288,48 @@ final class CapsyScene {
         builtFill = -1 // force liquid rebuild
     }
 
+    /// The liquid is a stack of little clay cubes — the voxel soul of the
+    /// design book, in real 3D. The top layer bobs so the water never freezes.
     private func rebuildLiquid() {
         builtFill = fill
-        guard fill > 0.02 else { liquidNode.isHidden = true; return }
-        liquidNode.isHidden = false
+        liquidRoot.childNodes.forEach { $0.removeFromParentNode() }
+        topCubes.removeAll()
+        guard fill > 0.02 else { return }
 
         let body = profile(for: style)
         let surfaceY = Float(fill) * maxLiquidHeight(for: style)
-        var inner: [SIMD2<Float>] = []
-        for p in body where p.y < surfaceY {
-            inner.append(SIMD2(p.x * 0.93, p.y))
-        }
-        let surfaceRadius = radius(atHeight: surfaceY, of: body) * 0.93
-        inner.append(SIMD2(surfaceRadius, surfaceY))
-        inner.append(SIMD2(0.001, surfaceY)) // flat cap
+        let box = SCNBox(width: CGFloat(cubeSize) * 0.94,
+                         height: CGFloat(cubeSize) * 0.94,
+                         length: CGFloat(cubeSize) * 0.94,
+                         chamferRadius: CGFloat(cubeSize) * 0.16)
+        box.materials = [liquidMaterial]
 
-        let geometry = lathe(inner)
-        geometry.materials = [liquidMaterial]
-        liquidNode.geometry = geometry
+        var y = cubeSize / 2
+        while y < surfaceY {
+            let isTopLayer = y + cubeSize >= surfaceY
+            let r = radius(atHeight: y, of: body) * 0.86
+            var x = -r
+            while x <= r {
+                var z = -r
+                while z <= r {
+                    if (x * x + z * z).squareRoot() + cubeSize * 0.35 <= r {
+                        let cube = SCNNode(geometry: box)
+                        cube.position = SCNVector3(x, y, z)
+                        liquidRoot.addChildNode(cube)
+                        if isTopLayer {
+                            topCubes.append((cube, y, Float.random(in: 0...(2 * .pi))))
+                        }
+                    }
+                    z += cubeSize
+                }
+                x += cubeSize
+            }
+            y += cubeSize
+        }
 
         // Slosh around the middle of the liquid mass.
         liquidPivot.position = SCNVector3(0, surfaceY * 0.5, 0)
-        liquidNode.position = SCNVector3(0, -surfaceY * 0.5, 0)
+        liquidRoot.position = SCNVector3(0, -surfaceY * 0.5, 0)
     }
 
     // MARK: Mood & face
@@ -389,12 +413,21 @@ final class CapsyScene {
         if abs(fill - builtFill) > 0.004 { rebuildLiquid() }
 
         // Damped-spring slosh: the surface chases the device tilt with inertia.
-        let goal = max(-0.45, min(0.45, tilt)) * 0.45
+        // With no tilt (simulator, phone on a table) a slow ambient sway keeps
+        // the water alive — it must never freeze.
+        let ambient = abs(tilt) < 0.02 ? 0.05 * sin(time * 0.85) : 0
+        let goal = max(-0.45, min(0.45, tilt)) * 0.45 + ambient
         angleVel += (26 * (goal - angle) - 3.4 * angleVel) * dt
         angleVel += pendingImpulse
         pendingImpulse = 0
         angle += angleVel * dt
         liquidPivot.eulerAngles.z = Float(angle)
+
+        // Surface cubes bob gently — waves on top of the voxel water.
+        let waveAmp = Float(0.018 + min(0.03, abs(angleVel) * 0.06))
+        for cube in topCubes {
+            cube.node.position.y = cube.baseY + waveAmp * sin(Float(time) * 2.4 + cube.phase)
+        }
 
         // Breathing: 12/min idle + ritual drive (design book #041).
         let idle = 0.045 * sin(time * 1.257)

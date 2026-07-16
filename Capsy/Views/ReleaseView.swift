@@ -37,6 +37,14 @@ struct ReleaseView: View {
                 .contentTransition(.opacity)
                 .animation(.easeInOut(duration: 0.4), value: phase)
 
+            // Live level — you watch the number fall as you breathe out.
+            Text("\(Int(fraction * 100)) %")
+                .font(.mono(26, weight: .medium))
+                .monospacedDigit()
+                .foregroundStyle(Color.sub)
+                .contentTransition(.numericText())
+                .animation(.earth, value: Int(fraction * 100))
+
             // Capsy breathes with you: the whole 3D character expands on the
             // inhale, settles on the exhale, and the liquid drains inside it.
             CapsySceneView(fraction: fraction,
@@ -51,8 +59,9 @@ struct ReleaseView: View {
             if phase == .done {
                 doneFooter
             } else {
-                Text("\(min(cycle + 1, totalCycles)) / \(totalCycles)")
+                Text("BREATH \(min(cycle + 1, totalCycles)) OF \(totalCycles)")
                     .font(.mono(13, weight: .medium))
+                    .kerning(1.5)
                     .foregroundStyle(Color.sub)
             }
             Spacer(minLength: 8)

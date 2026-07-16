@@ -73,6 +73,9 @@ struct CapsyWidgetView: View {
 
     var body: some View {
         switch family {
+        case .accessoryInline:
+            Text("Capsy \(percent) %")
+
         case .accessoryCircular:
             Gauge(value: entry.fraction) {
                 Image(systemName: "drop.fill")
@@ -156,6 +159,6 @@ struct CapsyWidget: Widget {
         }
         .configurationDisplayName("Capsy")
         .description("Your stress level at a glance — plus a one-tap drop.")
-        .supportedFamilies([.accessoryCircular, .accessoryRectangular, .systemSmall])
+        .supportedFamilies([.accessoryInline, .accessoryCircular, .accessoryRectangular, .systemSmall])
     }
 }

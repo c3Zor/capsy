@@ -20,25 +20,51 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
+      - name: Pick a simulator
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          devices = [d for devs in data['devices'].values() for d in devs
+                     if d.get('isAvailable') and 'iPhone' in d['name']]
+          print(devices[-1]['udid'])")
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
+
       - name: Build (iOS Simulator, be pasirašymo)
         run: |
           xcodebuild build \
             -project Capsy.xcodeproj \
             -scheme Capsy \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination "id=$UDID" \
+            -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
-            | tail -100
+            | tail -60
           exit ${PIPESTATUS[0]}
 
-      # Sėkmingai subuildintas .xcodeproj IR visi XcodeGen sugeneruoti failai
-      # (Info.plist, entitlements) įkomitinami atgal — vartotojui nereikia
-      # xcodegen: tiesiog clone → open Capsy.xcodeproj → Run.
-      - name: Commit generated project
+      # Vizualinis self-check: paleidžiam appsą simuliatoriuje ir darom
+      # ekrano nuotraukas, kurias galima peržiūrėti repo /screenshots.
+      - name: Screenshot self-check
+        if: github.event_name == 'push'
+        run: |
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          APP=$(find build/Build/Products -name 'Capsy.app' -type d | head -1)
+          xcrun simctl install "$UDID" "$APP"
+          xcrun simctl launch "$UDID" com.capsy.app --demo
+          sleep 12
+          mkdir -p screenshots
+          xcrun simctl io "$UDID" screenshot screenshots/home.png
+
+      - name: Commit generated project + screenshots
         if: github.event_name == 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f Capsy.xcodeproj \
             Capsy/Info.plist Capsy/Capsy.entitlements \
-            CapsyWidget/Info.plist CapsyWidget/CapsyWidget.entitlements
-          git diff --cached --quiet || { git commit -m "CI: sugeneruotas Xcode projektas [skip ci]"; git push; }
+            CapsyWidget/Info.plist CapsyWidget/CapsyWidget.entitlements \
+            screenshots
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "CI: projektas + ekrano nuotrauka [skip ci]"
+          git pull --rebase origin "$GITHUB_REF_NAME" || true
+          git push

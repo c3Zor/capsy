@@ -6,6 +6,14 @@ struct CapsyApp: App {
     @AppStorage("hasOnboarded") private var hasOnboarded = false
     @AppStorage("themeMode") private var themeMode = "auto"
 
+    init() {
+        // CI screenshot mode: skip onboarding, force day theme.
+        if ProcessInfo.processInfo.arguments.contains("--demo") {
+            UserDefaults.standard.set(true, forKey: "hasOnboarded")
+            UserDefaults.standard.set("day", forKey: "themeMode")
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             Group {

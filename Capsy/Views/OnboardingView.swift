@@ -192,6 +192,7 @@ private struct ReadyPage: View {
             Button {
                 Haptics.success()
                 hasOnboarded = true
+                Reminders.requestAndScheduleEvening()
             } label: {
                 Text("BEGIN")
                     .font(.display(20))

@@ -56,11 +56,13 @@ enum Bucket {
         SharedState.line(for: fraction)
     }
 
-    /// Mirrors the current state to the App Group so widgets stay live.
+    /// Mirrors the current state to the App Group so widgets stay live,
+    /// and arms/cancels the "full vessel" nudge.
     static func syncWidget(fraction: Double) {
         SharedState.fillFraction = fraction
         SharedState.stateLine = stateLine(for: fraction)
         WidgetCenter.shared.reloadAllTimelines()
+        Reminders.nudgeWhenFull(fraction: fraction)
     }
 }
 
