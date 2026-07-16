@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0ACC405AC9CF350E5106A4A0 /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC14AB5B93F748EA42152E96 /* ShareCardView.swift */; };
 		0D4C63C096F3ABE142F1197F /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456A898061B474575E38C9F8 /* SharedState.swift */; };
+		0DF384379324F19EC96AA26B /* CapsySceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD8C65D0E015C1E51936D9C /* CapsySceneView.swift */; };
 		23DBA51290061DD85682860B /* CapsyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */; };
 		24309FB86AE560EB54B6A892 /* CapsyWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6DA167556655E6BE7D8FA0 /* CapsyWidget.swift */; };
 		4C2C4A127E8F0C1F2394FC8E /* CapsyWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E695890FEC783450590CF462 /* CapsyWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -62,6 +63,7 @@
 		5B9B379F927D1A782A511911 /* BucketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BucketView.swift; sourceTree = "<group>"; };
 		6A6DA167556655E6BE7D8FA0 /* CapsyWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsyWidget.swift; sourceTree = "<group>"; };
 		7481B716993B8BC1B5A41DAF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9AD8C65D0E015C1E51936D9C /* CapsySceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsySceneView.swift; sourceTree = "<group>"; };
 		9BFC324A68802CD2690088F1 /* Capsy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Capsy.entitlements; sourceTree = "<group>"; };
 		9E0749C55E0A11EC064459BB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A5E920843F3FA5F7811A976B /* JourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyView.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				5B9B379F927D1A782A511911 /* BucketView.swift */,
+				9AD8C65D0E015C1E51936D9C /* CapsySceneView.swift */,
 				9E0749C55E0A11EC064459BB /* HomeView.swift */,
 				A5E920843F3FA5F7811A976B /* JourneyView.swift */,
 				B97FE304F8AB70078253B829 /* MascotView.swift */,
@@ -240,6 +243,7 @@
 			files = (
 				9A927518B0BBE18E3EB4CB61 /* BucketView.swift in Sources */,
 				23DBA51290061DD85682860B /* CapsyApp.swift in Sources */,
+				0DF384379324F19EC96AA26B /* CapsySceneView.swift in Sources */,
 				A4532DB8A5D8FD94CB2EFFFE /* HomeView.swift in Sources */,
 				8A2E6AD8C3E624BC662CC471 /* JourneyView.swift in Sources */,
 				6507612F003BD881C21521DD /* MascotView.swift in Sources */,
