@@ -12,10 +12,10 @@ struct ReleaseView: View {
     private let totalCycles = 4
 
     private enum Phase: String {
-        case ready = "PASIRUOŠK…"
-        case inhale = "ĮKVĖPK…"
-        case exhale = "IŠKVĖPK…"
-        case done = "BANGA NUĖJO."
+        case ready = "GET READY…"
+        case inhale = "BREATHE IN…"
+        case exhale = "BREATHE OUT…"
+        case done = "THE WAVE HAS PASSED."
     }
 
     @State private var phase: Phase = .ready
@@ -37,13 +37,15 @@ struct ReleaseView: View {
                 .contentTransition(.opacity)
                 .animation(.easeInOut(duration: 0.4), value: phase)
 
-            breathingCircle
-
-            BucketView(fraction: fraction,
-                       style: VesselStyle(rawValue: vesselRaw) ?? .kibiras)
-                .frame(height: 210)
+            // Capsy breathes with you: the whole 3D character expands on the
+            // inhale, settles on the exhale, and the liquid drains inside it.
+            CapsySceneView(fraction: fraction,
+                           style: VesselStyle(rawValue: vesselRaw) ?? .kibiras,
+                           breath: Double((breath - 0.55) / 0.45),
+                           mood: phase == .done ? .palengvejas : nil)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .overlay(alignment: .bottom) {
-                    if showRipples { RippleView() } // banga, ne sprogimas
+                    if showRipples { RippleView() } // a wave, not an explosion
                 }
 
             if phase == .done {
@@ -86,29 +88,14 @@ struct ReleaseView: View {
         }
     }
 
-    private var breathingCircle: some View {
-        ZStack {
-            Circle()
-                .stroke(Color.acc.opacity(0.25), lineWidth: 1.5)
-            Circle()
-                .fill(Color.acc.opacity(0.22))
-                .scaleEffect(breath)
-            Circle()
-                .stroke(Color.acc, lineWidth: 2)
-                .scaleEffect(breath)
-        }
-        .frame(width: 190, height: 190)
-    }
-
     private var doneFooter: some View {
         VStack(spacing: 12) {
-            MascotView(mood: .palengvejas)
-            Text("SODE — NAUJAS AKMUO.")
+            Text("A NEW STONE IN YOUR GARDEN.")
                 .font(.mono(12, weight: .medium))
                 .kerning(1.8)
                 .foregroundStyle(Color.ink)
             if let next = Journey.next(after: sessions.count) {
-                Text("Iki „\(next.title)“ liko \(next.releases - sessions.count)")
+                Text("\(next.releases - sessions.count) to go until “\(next.title)”")
                     .font(.subheadline)
                     .foregroundStyle(Color.sub)
             }
@@ -120,7 +107,7 @@ struct ReleaseView: View {
             Button {
                 dismiss()
             } label: {
-                Text("GRĮŽTI")
+                Text("DONE")
                     .font(.display(20))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 15)

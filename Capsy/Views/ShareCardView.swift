@@ -68,7 +68,7 @@ struct ShareCardView: View {
 
     private var header: some View {
         VStack(spacing: 8) {
-            Text("Paleista.")
+            Text("RELEASED.")
                 .font(.system(size: 40, weight: .light, design: .rounded))
                 .foregroundStyle(Color.ink)
             Text(dateLine)
@@ -208,7 +208,7 @@ struct ShareCardButton: View {
         Group {
             if let cardImage {
                 ShareLink(item: cardImage,
-                          preview: SharePreview("Capsy — Paleista.", image: cardImage)) {
+                          preview: SharePreview("Capsy — Released.", image: cardImage)) {
                     label
                 }
             } else {
@@ -219,7 +219,7 @@ struct ShareCardButton: View {
     }
 
     private var label: some View {
-        Label("Pasidalinti", systemImage: "square.and.arrow.up")
+        Label("SHARE", systemImage: "square.and.arrow.up")
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(Color.bg)
             .padding(.horizontal, 22)

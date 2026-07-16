@@ -1,6 +1,26 @@
 import WidgetKit
 import SwiftUI
 import UIKit
+import AppIntents
+
+// MARK: - One-tap drop from the widget (works on Home Screen and StandBy)
+
+/// Logs one light stress drop without opening the app: bumps the shared
+/// fill immediately so the widget reacts, and queues the drop for the app
+/// to absorb into SwiftData on next launch/foreground.
+struct QuickDropIntent: AppIntent {
+    static var title: LocalizedStringResource = "Add a drop"
+    static var description = IntentDescription("Drops one light stress drop into Capsy.")
+
+    func perform() async throws -> some IntentResult {
+        SharedState.pendingQuickDrops += 1
+        let fraction = min(1.0, SharedState.fillFraction + 2.0 / 24.0)
+        SharedState.fillFraction = fraction
+        SharedState.stateLine = SharedState.line(for: fraction)
+        WidgetCenter.shared.reloadAllTimelines()
+        return .result()
+    }
+}
 
 // MARK: - Timeline
 
@@ -12,7 +32,7 @@ struct BucketEntry: TimelineEntry {
 
 struct BucketProvider: TimelineProvider {
     func placeholder(in context: Context) -> BucketEntry {
-        BucketEntry(date: .now, fraction: 0.4, line: "Kaupiasi…")
+        BucketEntry(date: .now, fraction: 0.4, line: "FILLING UP…")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (BucketEntry) -> Void) {
@@ -71,11 +91,23 @@ struct CapsyWidgetView: View {
                     .gaugeStyle(.accessoryLinear)
             }
 
-        default: // .systemSmall — a mini transparent bucket
-            VStack(spacing: 8) {
-                Text("\(percent) %")
-                    .font(.system(.title2, design: .monospaced, weight: .semibold))
-                    .foregroundStyle(inkColor)
+        default: // .systemSmall — a mini transparent vessel with a one-tap drop
+            VStack(spacing: 6) {
+                HStack {
+                    Text("\(percent) %")
+                        .font(.system(.title2, design: .monospaced, weight: .semibold))
+                        .foregroundStyle(inkColor)
+                    Spacer()
+                    // One tap = one light drop, right from the Home Screen.
+                    Button(intent: QuickDropIntent()) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(bgColor)
+                            .frame(width: 26, height: 26)
+                            .background(accColor, in: Circle())
+                    }
+                    .buttonStyle(.plain)
+                }
                 ZStack(alignment: .bottom) {
                     WaveShape(fraction: entry.fraction)
                         .fill(accColor.gradient)
@@ -122,8 +154,8 @@ struct CapsyWidget: Widget {
             CapsyWidgetView(entry: entry)
                 .containerBackground(for: .widget) { bgColor }
         }
-        .configurationDisplayName("Capsy kibirėlis")
-        .description("Tavo streso lygis vienu žvilgsniu.")
+        .configurationDisplayName("Capsy")
+        .description("Your stress level at a glance — plus a one-tap drop.")
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .systemSmall])
     }
 }

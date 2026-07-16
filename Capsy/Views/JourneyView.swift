@@ -17,21 +17,21 @@ struct JourneyView: View {
             .padding(24)
         }
         .background(Color.bg.ignoresSafeArea())
-        .navigationTitle("Ramybės kelias")
+        .navigationTitle("Path of Stillness")
     }
 
     // MARK: - Journey milestones
 
     private var journeySection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            // Mono, tabuliuoti skaičiai — kaip design book „SODAS 000".
-            Text("SODAS \(String(format: "%03d", sessions.count))")
+            // Mono tabular numerals — the design book's "SODAS 000" counter.
+            Text("GARDEN \(String(format: "%03d", sessions.count))")
                 .font(.mono(20, weight: .medium))
                 .kerning(2)
                 .foregroundStyle(Color.ink)
 
             if sessions.isEmpty {
-                Text("PIRMAS AKMUO LAUKIA.")
+                Text("THE FIRST STONE AWAITS.")
                     .font(.mono(11, weight: .regular))
                     .kerning(1.5)
                     .foregroundStyle(Color.sub)
@@ -118,13 +118,13 @@ struct JourneyView: View {
 
     private var chartSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("Savaitė")
+            Text("The Week")
                 .font(.title2.weight(.semibold))
                 .foregroundStyle(Color.ink)
 
             Chart(week) { load in
-                BarMark(x: .value("Diena", load.day, unit: .day),
-                        y: .value("Krūvis", load.units))
+                BarMark(x: .value("Day", load.day, unit: .day),
+                        y: .value("Load", load.units))
                 .foregroundStyle(Color.acc.gradient)
                 .cornerRadius(4)
             }
@@ -148,12 +148,12 @@ struct JourneyView: View {
 
     private var recentSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("Paskutiniai lašai")
+            Text("Recent Drops")
                 .font(.title2.weight(.semibold))
                 .foregroundStyle(Color.ink)
 
             if drops.isEmpty {
-                Text("Kol kas tuščia. Ir tegul taip lieka.")
+                Text("Nothing yet. May it stay that way.")
                     .foregroundStyle(Color.sub)
             }
 
@@ -164,7 +164,7 @@ struct JourneyView: View {
                         .frame(width: 10, height: 10)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(drop.note.isEmpty
-                             ? (Intensity(rawValue: drop.intensity)?.title ?? "Lašas")
+                             ? (Intensity(rawValue: drop.intensity)?.title ?? "Drop")
                              : drop.note)
                             .foregroundStyle(Color.ink)
                             .lineLimit(1)

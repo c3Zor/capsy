@@ -50,15 +50,10 @@ enum Bucket {
         Double(level(of: drops)) / Double(capacity)
     }
 
-    /// Haiku ritmu, ALL CAPS — pagal design book kalbos toną.
+    /// Haiku rhythm, ALL CAPS — the design book's tone of voice.
+    /// Lives in SharedState so the widget's quick-drop intent can reuse it.
     static func stateLine(for fraction: Double) -> String {
-        switch fraction {
-        case 0:        "RAMU."
-        case ..<0.4:   "ŠIEK TIEK KAUPIASI."
-        case ..<0.8:   "KAUPIASI…"
-        case ..<1.0:   "JAU SUNKU. GAL IŠPILTI?"
-        default:       "PILNAS. LAIKAS IŠPILTI."
-        }
+        SharedState.line(for: fraction)
     }
 
     /// Mirrors the current state to the App Group so widgets stay live.
@@ -77,9 +72,9 @@ enum Intensity: Int, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .lengvas: "Lengvas"
-        case .vidutinis: "Vidutinis"
-        case .sunkus: "Sunkus"
+        case .lengvas: "Light"
+        case .vidutinis: "Medium"
+        case .sunkus: "Heavy"
         }
     }
 }
@@ -95,11 +90,11 @@ struct Milestone: Identifiable {
 
 enum Journey {
     static let milestones: [Milestone] = [
-        Milestone(releases: 1,  title: "Pirmas atodūsis", symbol: "drop.fill"),
-        Milestone(releases: 3,  title: "Tylos takelis",   symbol: "leaf.fill"),
-        Milestone(releases: 7,  title: "Rami savaitė",    symbol: "moon.stars.fill"),
-        Milestone(releases: 15, title: "Gilus vanduo",    symbol: "water.waves"),
-        Milestone(releases: 30, title: "Gyva tyla",       symbol: "sparkles"),
+        Milestone(releases: 1,  title: "First Exhale",    symbol: "drop.fill"),
+        Milestone(releases: 3,  title: "Path of Silence", symbol: "leaf.fill"),
+        Milestone(releases: 7,  title: "A Quiet Week",    symbol: "moon.stars.fill"),
+        Milestone(releases: 15, title: "Deep Water",      symbol: "water.waves"),
+        Milestone(releases: 30, title: "Living Silence",  symbol: "sparkles"),
     ]
 
     static func next(after count: Int) -> Milestone? {

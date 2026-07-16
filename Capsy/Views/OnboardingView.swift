@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// First-run welcome flow: what Capsy is, how to look, how it works.
-/// Three swipeable pages. Sets `hasOnboarded` when the user taps "Pradėti".
+/// Three swipeable pages. Sets `hasOnboarded` when the user taps "Begin".
 struct OnboardingView: View {
     @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
     @AppStorage("hasOnboarded") private var hasOnboarded = false
@@ -45,10 +45,10 @@ private struct ConceptPage: View {
             WavingDroplet()
                 .frame(height: 140)
             VStack(spacing: 10) {
-                Text("Capsy")
-                    .font(.system(size: 40, weight: .semibold, design: .rounded))
+                Text("CAPSY")
+                    .font(.display(46))
                     .foregroundStyle(Color.ink)
-                Text("Stresas — tai skystis. Jis kaupiasi lašas po lašo.")
+                Text("Stress is liquid. It gathers drop by drop.")
                     .font(.title3)
                     .foregroundStyle(Color.sub)
                     .multilineTextAlignment(.center)
@@ -123,10 +123,10 @@ private struct VesselChoicePage: View {
         VStack(spacing: 24) {
             Spacer()
             VStack(spacing: 8) {
-                Text("Pasirink indą")
-                    .font(.title.weight(.semibold))
+                Text("PICK YOUR BODY")
+                    .font(.display(28))
                     .foregroundStyle(Color.ink)
-                Text("Kur kaupsis tavo lašai?")
+                Text("Where will your drops gather?")
                     .font(.subheadline)
                     .foregroundStyle(Color.sub)
             }
@@ -180,12 +180,12 @@ private struct ReadyPage: View {
         VStack(spacing: 28) {
             Spacer()
             VStack(spacing: 18) {
-                Text("Kaip tai veikia")
-                    .font(.title.weight(.semibold))
+                Text("HOW IT WORKS")
+                    .font(.display(28))
                     .foregroundStyle(Color.ink)
-                loopStep(symbol: "drop.fill", text: "Lašas — pažymi, kas slegia")
-                loopStep(symbol: "cube.fill", text: "Indas pilnėja")
-                loopStep(symbol: "wind", text: "Kvėpavimo ritualas jį ištuština")
+                loopStep(symbol: "drop.fill", text: "A drop marks what weighs on you")
+                loopStep(symbol: "cube.fill", text: "Capsy fills up")
+                loopStep(symbol: "wind", text: "A breathing ritual empties it")
             }
             .padding(.horizontal, 32)
             Spacer()
@@ -193,8 +193,8 @@ private struct ReadyPage: View {
                 Haptics.success()
                 hasOnboarded = true
             } label: {
-                Text("Pradėti")
-                    .font(.title3.weight(.semibold))
+                Text("BEGIN")
+                    .font(.display(20))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 18)
                     .background(Color.acc, in: Capsule())

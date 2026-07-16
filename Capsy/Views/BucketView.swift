@@ -14,9 +14,9 @@ enum VesselStyle: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .kibiras: "Kibirėlis"
-        case .eliksyras: "Eliksyras"
-        case .taure: "Taurė"
+        case .kibiras: "Bucket"
+        case .eliksyras: "Potion"
+        case .taure: "Glass"
         }
     }
 

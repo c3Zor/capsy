@@ -4,6 +4,7 @@ import SwiftData
 /// Main screen: the transparent bucket, current level and two actions.
 struct HomeView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var drops: [StressDrop]
 
     @State private var showAdd = false
@@ -21,7 +22,7 @@ struct HomeView: View {
         NavigationStack {
             VStack(spacing: 20) {
                 header
-                BucketView(fraction: fraction, dropSignal: dropSignal, style: vessel)
+                CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 vesselPicker
                 buttons
@@ -58,12 +59,29 @@ struct HomeView: View {
         .fullScreenCover(isPresented: $showRelease) {
             ReleaseView()
         }
-        .onAppear { Bucket.syncWidget(fraction: fraction) }
+        .onAppear {
+            absorbQuickDrops()
+            Bucket.syncWidget(fraction: Bucket.fraction(of: drops))
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { absorbQuickDrops() }
+        }
+    }
+
+    /// Drops logged from the interactive widget land here as real StressDrops.
+    private func absorbQuickDrops() {
+        let count = SharedState.pendingQuickDrops
+        guard count > 0 else { return }
+        SharedState.pendingQuickDrops = 0
+        for _ in 0..<count { context.insert(StressDrop(intensity: 1, note: "")) }
+        try? context.save()
+        dropSignal += 1
+        let newLevel = min(Bucket.capacity, level + count * 2)
+        Bucket.syncWidget(fraction: Double(newLevel) / Double(Bucket.capacity))
     }
 
     private var header: some View {
         VStack(spacing: 6) {
-            MascotView(mood: MascotMood.forFraction(fraction))
             Text(Bucket.stateLine(for: fraction))
                 .font(.mono(11.5, weight: .medium))
                 .kerning(1.8)
@@ -104,7 +122,7 @@ struct HomeView: View {
                 Haptics.tap()
                 showAdd = true
             } label: {
-                Label("LAŠAS", systemImage: "plus")
+                Label("DROP", systemImage: "plus")
                     .font(.display(20))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
@@ -117,7 +135,7 @@ struct HomeView: View {
                     Haptics.tap()
                     showRelease = true
                 } label: {
-                    Label("IŠLEISTI", systemImage: "wind")
+                    Label("RELEASE", systemImage: "wind")
                         .font(.display(20))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
@@ -150,7 +168,7 @@ struct AddDropSheet: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            Text("KAS UŽGRIUVO?")
+            Text("WHAT HIT YOU?")
                 .font(.display(26))
                 .foregroundStyle(Color.ink)
                 .padding(.top, 28)
@@ -161,7 +179,7 @@ struct AddDropSheet: View {
                 }
             }
 
-            TextField("Trumpa pastaba (nebūtina)", text: $note)
+            TextField("A short note (optional)", text: $note)
                 .textFieldStyle(.plain)
                 .padding(14)
                 .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
@@ -171,7 +189,7 @@ struct AddDropSheet: View {
                 onSave(selected, note.trimmingCharacters(in: .whitespaces))
                 dismiss()
             } label: {
-                Text("ĮLAŠINTI")
+                Text("LET IT DROP")
                     .font(.display(20))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
