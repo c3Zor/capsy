@@ -9,7 +9,7 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            Color.moss.ignoresSafeArea()
+            Color.bg.ignoresSafeArea()
             VStack(spacing: 0) {
                 TabView(selection: $page) {
                     ConceptPage().tag(0)
@@ -20,7 +20,6 @@ struct OnboardingView: View {
                 pageDots
             }
         }
-        .fontDesign(.rounded)
         .onChange(of: page) { _, _ in Haptics.tap() }
     }
 
@@ -28,7 +27,7 @@ struct OnboardingView: View {
         HStack(spacing: 8) {
             ForEach(0..<3, id: \.self) { i in
                 Capsule()
-                    .fill(i == page ? Color.liquid : Color.stone.opacity(0.4))
+                    .fill(i == page ? Color.acc : Color.sub.opacity(0.4))
                     .frame(width: i == page ? 22 : 8, height: 8)
             }
         }
@@ -48,10 +47,10 @@ private struct ConceptPage: View {
             VStack(spacing: 10) {
                 Text("Capsy")
                     .font(.system(size: 40, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color.sand)
+                    .foregroundStyle(Color.ink)
                 Text("Stresas — tai skystis. Jis kaupiasi lašas po lašo.")
                     .font(.title3)
-                    .foregroundStyle(Color.stone)
+                    .foregroundStyle(Color.sub)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 36)
             }
@@ -70,7 +69,7 @@ private struct WavingDroplet: View {
         ZStack {
             ForEach(0..<2, id: \.self) { i in
                 Circle()
-                    .stroke(Color.liquid.opacity(0.25), lineWidth: 1.5)
+                    .stroke(Color.acc.opacity(0.25), lineWidth: 1.5)
                     .frame(width: 92 + CGFloat(i) * 36, height: 92 + CGFloat(i) * 36)
                     .scaleEffect(bob ? 1.08 : 0.92)
                     .opacity(bob ? 0.12 : 0.5)
@@ -81,12 +80,12 @@ private struct WavingDroplet: View {
                         value: bob)
             }
             DropletShape()
-                .fill(LinearGradient(colors: [.liquid, .liquidDeep],
+                .fill(LinearGradient(colors: [.acc, .accDeep],
                                      startPoint: .top, endPoint: .bottom))
                 .frame(width: 60, height: 78)
                 .rotationEffect(.degrees(bob ? 4 : -4))
                 .offset(y: bob ? -6 : 6)
-                .shadow(color: .liquid.opacity(0.3), radius: 20)
+                .shadow(color: .acc.opacity(0.3), radius: 20)
                 .animation(.easeInOut(duration: 2.4).repeatForever(autoreverses: true), value: bob)
         }
         .onAppear { bob = true }
@@ -126,10 +125,10 @@ private struct VesselChoicePage: View {
             VStack(spacing: 8) {
                 Text("Pasirink indą")
                     .font(.title.weight(.semibold))
-                    .foregroundStyle(Color.sand)
+                    .foregroundStyle(Color.ink)
                 Text("Kur kaupsis tavo lašai?")
                     .font(.subheadline)
-                    .foregroundStyle(Color.stone)
+                    .foregroundStyle(Color.sub)
             }
             VStack(spacing: 14) {
                 ForEach(VesselStyle.allCases) { style in
@@ -151,23 +150,23 @@ private struct VesselChoicePage: View {
             HStack(spacing: 16) {
                 Image(systemName: style.symbol)
                     .font(.system(size: 28))
-                    .foregroundStyle(isOn ? Color.moss : Color.liquid)
+                    .foregroundStyle(isOn ? Color.bg : Color.acc)
                     .frame(width: 52, height: 52)
-                    .background(isOn ? Color.liquid : Color.white.opacity(0.05), in: Circle())
+                    .background(isOn ? Color.acc : Color.white.opacity(0.05), in: Circle())
                 Text(style.title)
                     .font(.title3.weight(isOn ? .semibold : .regular))
-                    .foregroundStyle(Color.sand)
+                    .foregroundStyle(Color.ink)
                 Spacer()
                 if isOn {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Color.liquid)
+                        .foregroundStyle(Color.acc)
                 }
             }
             .padding(18)
             .background(Color.white.opacity(isOn ? 0.08 : 0.03),
                         in: RoundedRectangle(cornerRadius: 20))
             .overlay(RoundedRectangle(cornerRadius: 20)
-                .stroke(isOn ? Color.liquid.opacity(0.6) : .clear, lineWidth: 1.5))
+                .stroke(isOn ? Color.acc.opacity(0.6) : .clear, lineWidth: 1.5))
         }
     }
 }
@@ -183,7 +182,7 @@ private struct ReadyPage: View {
             VStack(spacing: 18) {
                 Text("Kaip tai veikia")
                     .font(.title.weight(.semibold))
-                    .foregroundStyle(Color.sand)
+                    .foregroundStyle(Color.ink)
                 loopStep(symbol: "drop.fill", text: "Lašas — pažymi, kas slegia")
                 loopStep(symbol: "cube.fill", text: "Indas pilnėja")
                 loopStep(symbol: "wind", text: "Kvėpavimo ritualas jį ištuština")
@@ -198,8 +197,8 @@ private struct ReadyPage: View {
                     .font(.title3.weight(.semibold))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 18)
-                    .background(Color.liquid, in: Capsule())
-                    .foregroundStyle(Color.moss)
+                    .background(Color.acc, in: Capsule())
+                    .foregroundStyle(Color.bg)
             }
             .padding(.horizontal, 28)
             .padding(.bottom, 12)
@@ -210,12 +209,12 @@ private struct ReadyPage: View {
         HStack(spacing: 14) {
             Image(systemName: symbol)
                 .font(.system(size: 20, weight: .medium))
-                .foregroundStyle(Color.liquid)
+                .foregroundStyle(Color.acc)
                 .frame(width: 40, height: 40)
                 .background(Color.white.opacity(0.05), in: Circle())
             Text(text)
                 .font(.body)
-                .foregroundStyle(Color.sand)
+                .foregroundStyle(Color.ink)
             Spacer()
         }
     }

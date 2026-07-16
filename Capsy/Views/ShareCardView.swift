@@ -33,7 +33,7 @@ struct ShareCardView: View {
         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(Color.sand.opacity(0.08), lineWidth: 1)
+                .stroke(Color.ink.opacity(0.08), lineWidth: 1)
         )
     }
 
@@ -41,8 +41,8 @@ struct ShareCardView: View {
 
     private var background: some View {
         ZStack {
-            Color.moss
-            RadialGradient(colors: [Color.liquidDeep.opacity(0.35), .clear],
+            Color.bg
+            RadialGradient(colors: [Color.accDeep.opacity(0.35), .clear],
                            center: UnitPoint(x: 0.5, y: 0.6),
                            startRadius: 8, endRadius: 260)
             voxelAccents
@@ -56,7 +56,7 @@ struct ShareCardView: View {
             ForEach(0..<4, id: \.self) { i in
                 let s: CGFloat = 9
                 RoundedRectangle(cornerRadius: 2.5)
-                    .fill(Color.sand.opacity(0.05))
+                    .fill(Color.ink.opacity(0.05))
                     .frame(width: s, height: s)
                     .position(x: 20 + CGFloat(i % 2) * (s + 6),
                               y: geo.size.height - 20 - CGFloat(i / 2) * (s + 6))
@@ -70,10 +70,10 @@ struct ShareCardView: View {
         VStack(spacing: 8) {
             Text("Paleista.")
                 .font(.system(size: 40, weight: .light, design: .rounded))
-                .foregroundStyle(Color.sand)
+                .foregroundStyle(Color.ink)
             Text(dateLine)
                 .font(.subheadline)
-                .foregroundStyle(Color.stone)
+                .foregroundStyle(Color.sub)
         }
         .padding(.top, 4)
     }
@@ -129,7 +129,7 @@ struct ShareCardView: View {
         var inner = context
         inner.clip(to: glass)
         inner.fill(liquid, with: .linearGradient(
-            Gradient(colors: [.liquid, .liquidDeep]),
+            Gradient(colors: [.acc, .accDeep]),
             startPoint: CGPoint(x: rect.midX, y: surfaceY - 12),
             endPoint: CGPoint(x: rect.midX, y: rect.maxY)))
 
@@ -139,7 +139,7 @@ struct ShareCardView: View {
         inner.fill(Path(roundedRect: highlight, cornerRadius: highlight.width / 2),
                   with: .color(.white.opacity(0.05)))
 
-        context.stroke(glass, with: .color(.sand.opacity(0.4)),
+        context.stroke(glass, with: .color(.ink.opacity(0.4)),
                        style: StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
     }
 
@@ -157,7 +157,7 @@ struct ShareCardView: View {
 
     private var divider: some View {
         Rectangle()
-            .fill(Color.sand.opacity(0.12))
+            .fill(Color.ink.opacity(0.12))
             .frame(width: 1, height: 34)
     }
 
@@ -165,14 +165,14 @@ struct ShareCardView: View {
         VStack(spacing: 4) {
             Text(value)
                 .font(isName ? .subheadline.weight(.semibold) : .title2.weight(.semibold))
-                .foregroundStyle(Color.sand)
+                .foregroundStyle(Color.ink)
                 .lineLimit(isName ? 2 : 1)
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.7)
                 .frame(height: isName ? 34 : 26)
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(Color.stone)
+                .foregroundStyle(Color.sub)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -184,10 +184,10 @@ struct ShareCardView: View {
         HStack(spacing: 6) {
             Image(systemName: "drop.fill")
                 .font(.caption2)
-                .foregroundStyle(Color.liquid.opacity(0.7))
+                .foregroundStyle(Color.acc.opacity(0.7))
             Text("Capsy")
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(Color.stone)
+                .foregroundStyle(Color.sub)
         }
     }
 }
@@ -221,10 +221,10 @@ struct ShareCardButton: View {
     private var label: some View {
         Label("Pasidalinti", systemImage: "square.and.arrow.up")
             .font(.subheadline.weight(.semibold))
-            .foregroundStyle(Color.moss)
+            .foregroundStyle(Color.bg)
             .padding(.horizontal, 22)
             .padding(.vertical, 13)
-            .background(Color.sand, in: Capsule())
+            .background(Color.ink, in: Capsule())
     }
 
     @MainActor

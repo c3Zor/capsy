@@ -77,7 +77,7 @@ private struct DropletFace: View {
     var body: some View {
         ZStack {
             DropletShape()
-                .fill(LinearGradient(colors: [.liquid, .liquidDeep],
+                .fill(LinearGradient(colors: [.acc, .accDeep],
                                       startPoint: .top, endPoint: .bottom))
             DropletShape()
                 .stroke(Color.white.opacity(0.16), lineWidth: 1)
@@ -97,7 +97,7 @@ private struct DropletFace: View {
     /// Eyes go flat for a happy squint (relief) or a brief blink.
     private var eye: some View {
         Capsule()
-            .fill(Color.moss)
+            .fill(Color.bg)
             .frame(width: 5, height: mood == .palengvejas || blink ? 1.5 : 7)
     }
 
@@ -106,17 +106,17 @@ private struct DropletFace: View {
         switch mood {
         case .ramus:
             SmileArc(curveUp: true)
-                .stroke(Color.moss, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                .stroke(Color.bg, style: StrokeStyle(lineWidth: 2, lineCap: .round))
                 .frame(width: 16, height: 6)
         case .susimastes:
-            Capsule().fill(Color.moss).frame(width: 13, height: 2)
+            Capsule().fill(Color.bg).frame(width: 13, height: 2)
         case .sunkus:
             SmileArc(curveUp: false)
-                .stroke(Color.moss, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                .stroke(Color.bg, style: StrokeStyle(lineWidth: 2, lineCap: .round))
                 .frame(width: 16, height: 6)
         case .palengvejas:
             SmileArc(curveUp: true)
-                .stroke(Color.moss, style: StrokeStyle(lineWidth: 2.4, lineCap: .round))
+                .stroke(Color.bg, style: StrokeStyle(lineWidth: 2.4, lineCap: .round))
                 .frame(width: 19, height: 8)
         }
     }

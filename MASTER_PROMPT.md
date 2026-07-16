@@ -18,12 +18,16 @@ Your mind is a vessel. Stress is liquid. It accumulates drop by drop, it *sloshe
 
 ## Visual & design direction (make it gorgeous)
 
-Reference: the **gyva tyla** design book — Baltic calm minimalism + voxel accents. The app should feel like a held breath.
+Reference: the **gyva tyla V4.5** design book (in repo as the source of truth) — matte clay, warm studio light, Baltic calm minimalism + soft-voxel accents ("soft-voxel, not retro"). The app should feel like a held breath.
 
-- **Palette:** deep moss-black `#0E1512` background; liquid teal `#5FD4C4` with depth gradient to `#2E8C80`; warm sand `#E8DCC8` for text; muted stone `#7A8B85` secondary. One accent, never more.
-- **Voxel language:** the liquid is a field of small rounded cubes under a live wave surface; the classic bucket is a blocky silhouette; the mascot is built of glossy teal cubes. Everything else is quiet, flat, generous whitespace.
-- **Typography:** SF Rounded, few words, large calm numerals.
-- A cohesive system: defined color tokens, soft spring motion curves, consistent corner radii. Every screen intentional and finished — a real shipping product, not a prototype.
+- **Palette (day):** cream sand `#EDE4D6` background; earth ink `#2B2620` text; smoke `#8A7E6E` secondary; **warm coral `#E8865C`** as the single accent (the liquid is clay-coral, depth to `#C4633C`); linen `#D9CBB6` surfaces.
+- **Palette (night):** same earth, dimmed — bg `#191511`, ink `#EDE4D6`, sub `#9C8F7D`, accent `#F0A06E`. **Auto day/night by hour (night 21:00–7:00) + a manual ☾/☀ toggle.** All colors are dynamic tokens.
+- **Material:** matte clay + one **single hard cartoon shadow** under the vessel — the only playful graphic detail in the material world.
+- **Voxel language:** the liquid is a field of small rounded cubes under a live wave surface; the classic bucket is a blocky silhouette; the mascot is built of matte coral clay cubes.
+- **Typography:** compressed poster ALL CAPS display for headings (`.fontWidth(.compressed)`, weight black); **mono tabular numerals** for every number; microcopy in haiku rhythm, minimal to the point of mysticism ("RAMU.", "KAUPIASI…", "BANGA NUĖJO.").
+- **Motion:** spring 90/16 (response ≈ 0.66, damping ≈ 0.84) — soft earthy gravity, deliberately slow, no excess movement.
+- **Reward is a wave, not an explosion:** ripples travel across the floor, a Tibetan bowl tone, a new stone appears in the garden. No confetti, no "RARE". After the wave the screen **dims like a candle** (~1.9 s) and relights.
+- **Language:** "tu", warmly. An error says "Ne dabar." and quietly returns.
 
 ## Motion & interactivity bar (this is weighted heavily)
 
@@ -35,10 +39,10 @@ Reference: the **gyva tyla** design book — Baltic calm minimalism + voxel acce
 
 ## The Capsy Mascot Pipeline (Higgsfield MCP — generate live)
 
-You have the **Higgsfield MCP available**. Generate **Capsy** — a cute-but-calm voxel water-droplet character (glossy teal cubes, teardrop silhouette, large dark square eyes) — as a **locked character reference** reused verbatim in every prompt so all poses are one character:
+You have the **Higgsfield MCP available**. Generate **Capsy** — a cute-but-calm soft-voxel water-droplet character (matte coral clay cubes `#E8865C`, teardrop silhouette, large dark square eyes, single hard cartoon shadow, cream background) — as a **locked character reference** reused verbatim in every prompt so all poses are one character:
 
-1. **Pose set** (nano_banana_pro, 1:1, dark moss background): `MascotCalm` (gentle smile), `MascotBusy` (slightly worried, sweat cube), `MascotHeavy` (drooping, darker teal), `MascotRelief` (eyes closed blissfully, sparkle cubes).
-2. The **app icon** derived from the same visual language (voxel vessel with teal liquid).
+1. **Pose set** (nano_banana_pro, 1:1, cream background): `MascotCalm` (gentle smile), `MascotBusy` (slightly worried, sweat cube), `MascotHeavy` (drooping, muted clay), `MascotRelief` (eyes closed blissfully, clay sparkle cubes).
+2. The **app icon** derived from the same visual language (glass vessel with coral clay liquid on cream).
 3. Wire poses into the asset catalog at the exact names the code references; the home screen shows the mood matching the current fill level, and the ritual finale shows relief. If a generation call fails, fall back to a tasteful **vector droplet** drawn in code — never emoji as shipped art.
 
 Keep a running log in **`ASSETS.md`**: for each asset — path, dimensions/format, model, and the full Higgsfield prompt used — so the pipeline is reproducible.

@@ -11,6 +11,7 @@ struct HomeView: View {
     @State private var dropSignal = 0
     @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
     @AppStorage("soundOn") private var soundOn = true
+    @AppStorage("themeMode") private var themeMode = "auto"
 
     private var vessel: VesselStyle { VesselStyle(rawValue: vesselRaw) ?? .kibiras }
     private var fraction: Double { Bucket.fraction(of: drops) }
@@ -26,25 +27,31 @@ struct HomeView: View {
                 buttons
             }
             .padding(24)
-            .background(Color.moss.ignoresSafeArea())
+            .background(Color.bg.ignoresSafeArea())
             .toolbar {
+                Button {
+                    Haptics.tap()
+                    themeMode = DayNight.isNight(themeMode) ? "day" : "night"
+                } label: {
+                    Image(systemName: DayNight.isNight(themeMode) ? "sun.max" : "moon")
+                        .foregroundStyle(Color.sub)
+                }
                 Button {
                     Haptics.tap()
                     soundOn.toggle()
                 } label: {
                     Image(systemName: soundOn ? "speaker.wave.2.fill" : "speaker.slash.fill")
-                        .foregroundStyle(Color.stone)
+                        .foregroundStyle(Color.sub)
                 }
                 NavigationLink {
                     JourneyView()
                 } label: {
                     Image(systemName: "chart.bar.fill")
-                        .foregroundStyle(Color.stone)
+                        .foregroundStyle(Color.sub)
                 }
             }
         }
-        .tint(.liquid)
-        .fontDesign(.rounded)
+        .tint(.acc)
         .sheet(isPresented: $showAdd) {
             AddDropSheet { intensity, note in addDrop(intensity, note: note) }
         }
@@ -58,13 +65,15 @@ struct HomeView: View {
         VStack(spacing: 6) {
             MascotView(mood: MascotMood.forFraction(fraction))
             Text(Bucket.stateLine(for: fraction))
-                .font(.title3)
-                .foregroundStyle(Color.stone)
+                .font(.mono(11.5, weight: .medium))
+                .kerning(1.8)
+                .foregroundStyle(Color.sub)
             Text("\(Int(fraction * 100)) %")
-                .font(.system(size: 56, weight: .light, design: .rounded))
-                .foregroundStyle(Color.sand)
+                .font(.mono(54, weight: .medium))
+                .monospacedDigit()
+                .foregroundStyle(Color.ink)
                 .contentTransition(.numericText())
-                .animation(.spring(duration: 0.6), value: level)
+                .animation(.earth, value: level)
         }
         .padding(.top, 8)
     }
@@ -80,9 +89,9 @@ struct HomeView: View {
                 } label: {
                     Image(systemName: style.symbol)
                         .font(.subheadline.weight(.medium))
-                        .foregroundStyle(isOn ? Color.moss : Color.stone)
+                        .foregroundStyle(isOn ? Color.bg : Color.sub)
                         .frame(width: 38, height: 38)
-                        .background(isOn ? Color.liquid : Color.white.opacity(0.05), in: Circle())
+                        .background(isOn ? Color.acc : Color.white.opacity(0.05), in: Circle())
                 }
                 .accessibilityLabel(style.title)
             }
@@ -95,12 +104,12 @@ struct HomeView: View {
                 Haptics.tap()
                 showAdd = true
             } label: {
-                Label("Lašas", systemImage: "plus")
-                    .font(.title3.weight(.semibold))
+                Label("LAŠAS", systemImage: "plus")
+                    .font(.display(20))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
-                    .background(Color.liquid, in: Capsule())
-                    .foregroundStyle(Color.moss)
+                    .background(Color.acc, in: Capsule())
+                    .foregroundStyle(Color.bg)
             }
 
             if level > 0 {
@@ -108,12 +117,12 @@ struct HomeView: View {
                     Haptics.tap()
                     showRelease = true
                 } label: {
-                    Label("Išleisti", systemImage: "wind")
-                        .font(.title3.weight(.semibold))
+                    Label("IŠLEISTI", systemImage: "wind")
+                        .font(.display(20))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .background(Color.sand.opacity(0.12), in: Capsule())
-                        .foregroundStyle(Color.sand)
+                        .background(Capsule().stroke(Color.sub, lineWidth: 1.5))
+                        .foregroundStyle(Color.ink)
                 }
                 .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
@@ -141,9 +150,9 @@ struct AddDropSheet: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            Text("Kas užgriuvo?")
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(Color.sand)
+            Text("KAS UŽGRIUVO?")
+                .font(.display(26))
+                .foregroundStyle(Color.ink)
                 .padding(.top, 28)
 
             HStack(spacing: 12) {
@@ -156,26 +165,25 @@ struct AddDropSheet: View {
                 .textFieldStyle(.plain)
                 .padding(14)
                 .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
-                .foregroundStyle(Color.sand)
+                .foregroundStyle(Color.ink)
 
             Button {
                 onSave(selected, note.trimmingCharacters(in: .whitespaces))
                 dismiss()
             } label: {
-                Text("Įlašinti")
-                    .font(.title3.weight(.semibold))
+                Text("ĮLAŠINTI")
+                    .font(.display(20))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
-                    .background(Color.liquid, in: Capsule())
-                    .foregroundStyle(Color.moss)
+                    .background(Color.acc, in: Capsule())
+                    .foregroundStyle(Color.bg)
             }
 
             Spacer()
         }
         .padding(24)
-        .fontDesign(.rounded)
         .presentationDetents([.height(340)])
-        .presentationBackground(Color.moss)
+        .presentationBackground(Color.bg)
     }
 
     private func intensityButton(_ intensity: Intensity) -> some View {
@@ -188,18 +196,18 @@ struct AddDropSheet: View {
                 // Drop size mirrors the weight of the moment.
                 Image(systemName: "drop.fill")
                     .font(.system(size: 18 + CGFloat(intensity.rawValue) * 7))
-                    .foregroundStyle(isOn ? Color.liquid : Color.stone)
+                    .foregroundStyle(isOn ? Color.acc : Color.sub)
                     .frame(height: 46)
                 Text(intensity.title)
                     .font(.subheadline.weight(isOn ? .semibold : .regular))
-                    .foregroundStyle(isOn ? Color.sand : Color.stone)
+                    .foregroundStyle(isOn ? Color.ink : Color.sub)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
             .background(Color.white.opacity(isOn ? 0.09 : 0.03),
                         in: RoundedRectangle(cornerRadius: 16))
             .overlay(RoundedRectangle(cornerRadius: 16)
-                .stroke(isOn ? Color.liquid.opacity(0.6) : .clear, lineWidth: 1))
+                .stroke(isOn ? Color.acc.opacity(0.6) : .clear, lineWidth: 1))
         }
     }
 }

@@ -113,10 +113,17 @@ struct BucketView: View {
                             height: size.height - cell * 2.4)
         let interior = style.interiorPath(in: vessel)
 
+        // Vienas kietas cartoon šešėlis po indu — vienintelė žaisminga
+        // grafinė detalė medžiagų pasaulyje (design book #014).
+        let shadow = CGRect(x: vessel.minX + vessel.width * 0.06,
+                            y: vessel.maxY + cell * 0.62,
+                            width: vessel.width * 0.88, height: cell * 0.5)
+        ctx.fill(Path(ellipseIn: shadow), with: .color(.ink.opacity(0.16)))
+
         if style == .kibiras {
             drawVoxelWalls(ctx, bucket: vessel, cell: cell)
         } else {
-            ctx.stroke(interior, with: .color(.sand.opacity(0.35)),
+            ctx.stroke(interior, with: .color(.ink.opacity(0.35)),
                        style: StrokeStyle(lineWidth: cell * 0.24,
                                           lineCap: .round, lineJoin: .round))
         }
@@ -134,7 +141,7 @@ struct BucketView: View {
 
     /// Blocky voxel silhouette for the classic bucket: walls, bottom, rim.
     private func drawVoxelWalls(_ ctx: GraphicsContext, bucket: CGRect, cell: CGFloat) {
-        let wallColor = Color.sand.opacity(0.28)
+        let wallColor = Color.ink.opacity(0.28)
         func block(_ x: CGFloat, _ y: CGFloat, scale: CGFloat = 1) {
             let s = cell * 0.92 * scale
             ctx.fill(Path(roundedRect: CGRect(x: x, y: y, width: s, height: s),
@@ -182,8 +189,8 @@ struct BucketView: View {
                 let yy = min(y, bucket.maxY - cell)
                 if yy + cell * 0.5 > surfaceY {
                     let depth = min(1, (yy - surfaceY) / bucket.height + 0.1)
-                    var color = mix(.liquid, .liquidDeep, t: depth)
-                    if isTopCell { color = mix(.liquid, .white, t: 0.22); isTopCell = false }
+                    var color = mix(.acc, .accDeep, t: depth)
+                    if isTopCell { color = mix(.acc, .white, t: 0.22); isTopCell = false }
                     ctx.fill(Path(roundedRect: CGRect(x: x + cell * 0.04, y: yy,
                                                       width: cell * 0.92, height: cell * 0.92),
                                   cornerRadius: cell * 0.2),
@@ -210,7 +217,7 @@ struct BucketView: View {
         let rect = CGRect(x: bucket.minX + d.x * bucket.width - cell * 0.35,
                           y: bucket.minY + d.y * bucket.height - cell * 0.35,
                           width: cell * 0.7, height: cell * 0.7)
-        ctx.fill(Path(roundedRect: rect, cornerRadius: cell * 0.18), with: .color(.liquid))
+        ctx.fill(Path(roundedRect: rect, cornerRadius: cell * 0.18), with: .color(.acc))
     }
 
     private func drawSplash(_ ctx: GraphicsContext, bucket: CGRect, cell: CGFloat) {
@@ -220,7 +227,7 @@ struct BucketView: View {
                               y: bucket.minY + p.y * bucket.height - s / 2,
                               width: s, height: s)
             ctx.fill(Path(roundedRect: rect, cornerRadius: s * 0.3),
-                     with: .color(.liquid.opacity(max(0, p.life))))
+                     with: .color(.acc.opacity(max(0, p.life))))
         }
     }
 

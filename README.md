@@ -2,7 +2,10 @@
 
 Stresas — tai skystis. Jis kaupiasi lašas po lašo, teliuskuoja pakreipus telefoną
 ir niekur nedingsta pats — jį reikia sąmoningai išpilti kvėpavimo ritualu.
-Permatomas voxel indas su gyvu vandeniu, „gyva tyla“ stiliumi.
+Permatomas voxel indas su gyvu vandeniu, **gyva tyla V4.5** stiliumi: molis ir
+koralas `#E8865C` ant kreminio smėlio `#EDE4D6`, diena/naktis (auto 21–7 val. +
+☾/☀ mygtukas), suspausta plakatinė tipografija, mono skaičiai, spring 90/16,
+„banga, ne sprogimas“, Tibeto dubens tonas ir ramybės sodas.
 
 ## Paleidimas (2 komandos)
 

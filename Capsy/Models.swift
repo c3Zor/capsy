@@ -50,13 +50,14 @@ enum Bucket {
         Double(level(of: drops)) / Double(capacity)
     }
 
+    /// Haiku ritmu, ALL CAPS — pagal design book kalbos toną.
     static func stateLine(for fraction: Double) -> String {
         switch fraction {
-        case 0:        "Ramu."
-        case ..<0.4:   "Šiek tiek kaupiasi."
-        case ..<0.8:   "Kaupiasi…"
-        case ..<1.0:   "Jau sunku. Gal išpilti?"
-        default:       "Pilnas. Laikas išpilti."
+        case 0:        "RAMU."
+        case ..<0.4:   "ŠIEK TIEK KAUPIASI."
+        case ..<0.8:   "KAUPIASI…"
+        case ..<1.0:   "JAU SUNKU. GAL IŠPILTI?"
+        default:       "PILNAS. LAIKAS IŠPILTI."
         }
     }
 

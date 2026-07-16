@@ -55,21 +55,20 @@ final class SoundEngine {
         })
     }
 
-    /// Two calm notes — a release ritual completed.
+    /// Tibeto dubens tonas (C4·G4·C5) su ilgu uodegos gesimu ir natūralia
+    /// variacija — ritualas užbaigtas. „Banga, ne sprogimas."
     static func chime() {
-        let note1 = 0.4, gap = 0.12, note2 = 0.5
-        let total = note1 + gap + note2
-        shared.play(shared.tone(duration: total, frequency: { t in
-            t < note1 ? 523.25 : 659.25 // C5 then E5
-        }) { t in
-            if t < note1 {
-                return shared.pluckEnvelope(t, peak: 0.3, decayRate: 6)
-            } else if t < note1 + gap {
-                return 0
-            } else {
-                return shared.pluckEnvelope(t - note1 - gap, peak: 0.32, decayRate: 5)
-            }
-        })
+        shared.play(shared.bowlBuffer())
+    }
+
+    /// Erdvė tyliai „skamba" — labai tylus 55 Hz drone ritualo metu.
+    static func droneOn() {
+        guard isOn else { return }
+        shared.startDrone()
+    }
+
+    static func droneOff() {
+        shared.stopDrone()
     }
 
     // MARK: - Tone generation
@@ -109,6 +108,65 @@ final class SoundEngine {
         let fadeIn = min(t / fade, 1.0)
         let fadeOut = min((duration - t) / fade, 1.0)
         return peak * max(0, min(fadeIn, fadeOut))
+    }
+
+    /// Trys deriniai (C4·G4·C5), kiekvienas su vos praskleista pora (f ir f·1.003),
+    /// lėtas attack ir ~4.5 s eksponentinis gesimas. Kaskart ±0.5 % variacija.
+    private func bowlBuffer() -> AVAudioPCMBuffer? {
+        let duration = 4.5
+        let variation = 1 + Double.random(in: -0.005...0.005)
+        let partials: [(freq: Double, amp: Double)] = [(261.6, 0.11), (392.0, 0.09), (523.2, 0.07)]
+        guard let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1),
+              let buffer = AVAudioPCMBuffer(pcmFormat: format,
+                                             frameCapacity: AVAudioFrameCount(duration * sampleRate)),
+              let data = buffer.floatChannelData?[0] else { return nil }
+
+        buffer.frameLength = buffer.frameCapacity
+        for frame in 0..<Int(buffer.frameLength) {
+            let t = Double(frame) / sampleRate
+            let envelope = min(t / 0.15, 1.0) * exp(-1.24 * max(0, t - 0.15))
+            var sample = 0.0
+            for p in partials {
+                let f = p.freq * variation
+                sample += p.amp * (sin(2 * .pi * f * t) + sin(2 * .pi * f * 1.003 * t)) / 2
+            }
+            data[frame] = Float(sample * envelope)
+        }
+        return buffer
+    }
+
+    // MARK: - Drone
+
+    private let dronePlayer = AVAudioPlayerNode()
+    private var droneConfigured = false
+
+    /// Besiūlis 2 s ciklas: 55 Hz + 82.5 Hz (sveiki ciklų skaičiai — jokio trūkčiojimo).
+    private func startDrone() {
+        startIfNeeded()
+        guard isReady else { return }
+        if !droneConfigured {
+            guard let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1) else { return }
+            engine.attach(dronePlayer)
+            engine.connect(dronePlayer, to: engine.mainMixerNode, format: format)
+            droneConfigured = true
+        }
+        guard !dronePlayer.isPlaying,
+              let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1),
+              let buffer = AVAudioPCMBuffer(pcmFormat: format,
+                                             frameCapacity: AVAudioFrameCount(2.0 * sampleRate)),
+              let data = buffer.floatChannelData?[0] else { return }
+        buffer.frameLength = buffer.frameCapacity
+        for frame in 0..<Int(buffer.frameLength) {
+            let t = Double(frame) / sampleRate
+            data[frame] = Float(0.035 * (sin(2 * .pi * 55 * t) + 0.7 * sin(2 * .pi * 82.5 * t)))
+        }
+        dronePlayer.scheduleBuffer(buffer, at: nil, options: .loops)
+        dronePlayer.play()
+    }
+
+    private func stopDrone() {
+        guard droneConfigured, dronePlayer.isPlaying else { return }
+        dronePlayer.stop() // garsas ir taip vos girdimas — staigus stop nepastebimas
     }
 
     // MARK: - Playback
