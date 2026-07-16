@@ -1,86 +1,90 @@
-# Capsy — The Stress Bucket · Master Build Prompt
+# Capsy — The Stress Bucket · Master Build Prompt (Voxel Art / Gyva Tyla)
 
-> **High-level idea (one paragraph):** Capsy turns invisible stress into a visible, physical thing — a small voxel bucket of liquid that lives on your phone and your Lock Screen. Every stressful moment you log is a drop that falls into the bucket; the liquid rises and *sloshes* like real water when you tilt the phone. When the bucket gets heavy, you empty it — not with a tap, but with a guided breathing ritual where the liquid visibly drains as you exhale. Every release advances you along a calm "journey of stillness" (Ramybės kelias) with unlockable milestones. The Lock Screen widget shows the current fill level at a glance, so your stress state is always one glance away — and so is the invitation to let it go.
+You are building **Capsy**, a premium, native iOS wellness game that turns invisible stress into a visible, physical thing — liquid in a transparent vessel that lives on your phone and your Lock Screen — rendered in a calm **voxel art** style guided by the **gyva tyla** ("living silence") design book. Your output must be a **complete, production-quality, App Store–ready app that compiles and runs on the first try** — no stubs, no TODOs, no placeholder logic, no "left as an exercise." Every feature described below must actually function. Treat this as a flagship app someone would pay to download. **This is a home run on the first run or it is nothing.**
 
-You are building a premium, native iOS game-like wellness app that turns stress into a visual representation — a bucket with liquid that sloshes (skystis kuris teliuskuoja) — visible on the Lock Screen, wrapped into a gentle adventure, rendered in the **gyva tyla** ("living silence") style. Your output must be a complete, production-quality, App Store–ready app that compiles and runs on the first try — no stubs, no TODOs, no placeholder logic. Every feature below must actually function. This is a home run on the first run or it is nothing.
+## The concept
 
----
+Your mind is a vessel. Stress is liquid. It accumulates drop by drop, it *sloshes* like real water when you tilt the phone, and it never disappears by itself — you must consciously pour it out. Capsy's loop: feel stress → log a drop (3-second interaction) → watch the vessel physically react → when heavy, run the **Release ritual** (guided breathing where the liquid visibly drains as you exhale) → advance the calm **journey of stillness** (Ramybės kelias) → glance at the Lock Screen widget to stay aware. **Design principle: reward release, not accumulation.** No guilt, no streak-shaming — the app is a quiet companion, not a coach. Target audience: adults **29–55** — every visual must read calm and premium, never childish. UI language: **Lithuanian** (short, warm microcopy).
 
-## 1. The concept
+## Tech stack & hard constraints
 
-- **Metaphor:** your mind is a bucket. Stress is liquid. It accumulates drop by drop; it never disappears by itself — you must consciously pour it out.
-- **Core loop:** feel stress → log a drop (3-second interaction) → watch the bucket physically react → when heavy, run the **Release ritual** (guided breathing that drains the bucket) → advance the journey → glance at the Lock Screen widget to stay aware.
-- **Tone:** calm, warm, wordless where possible. No guilt, no streak-shaming. The app is a quiet companion, not a coach.
-- **Name:** Capsy. UI language: Lithuanian (short, warm microcopy).
+- **Swift 5.9 + SwiftUI + SwiftData only. Zero third-party dependencies.** No CocoaPods, no SPM packages.
+- Only Apple system frameworks: SwiftUI, SwiftData, **WidgetKit** (Lock Screen accessoryCircular/accessoryRectangular + Home Screen systemSmall), **CoreMotion** (real device-tilt liquid physics), **Swift Charts**, AVFoundation, Foundation.
+- **App Group** (`group.com.capsy.shared`) shares vessel state with the widget; fall back to standard UserDefaults when the group is unavailable so an unsigned build never crashes.
+- Target **iOS 17+**, iPhone-first. Project defined with **XcodeGen (`project.yml`)**: `xcodegen generate && open Capsy.xcodeproj`, pick a signing team, **Cmd+R** — nothing else. Works in the Simulator (no accelerometer → liquid gracefully degrades to ambient waves).
+- **All sound is synthesized in code** (AVAudioEngine sine tones with soft envelopes; `.ambient` session) — zero audio asset files. Haptics via UIFeedbackGenerator on every meaningful event.
+- All liquid motion is **procedural** (SwiftUI Canvas + TimelineView) — it must react to live sensor data at up to 120 fps, which pre-rendered assets cannot do.
+- **All progress persists in SwiftData and survives restarts.**
 
-## 2. Tech stack & hard constraints
+## Visual & design direction (make it gorgeous)
 
-- **Swift 5.9+, SwiftUI only.** iOS 17.0 minimum. No third-party dependencies whatsoever.
-- **SwiftData** for all persistence. **WidgetKit** for Lock Screen (accessoryCircular, accessoryRectangular) + Home Screen (systemSmall) widgets. **App Group** (`group.com.capsy.shared`) to share bucket state with the widget; fall back to standard UserDefaults if the group is unavailable so the app never crashes unsigned.
-- **CoreMotion** for real device-tilt liquid physics. **Core Haptics / UIFeedbackGenerator** for tactile feedback on every meaningful interaction.
-- Liquid rendering via **SwiftUI Canvas + TimelineView(.animation)** — procedural, 60–120 fps, zero image assets required for motion.
-- Project defined with **XcodeGen (`project.yml`)** — one command (`xcodegen generate`) produces the .xcodeproj with app + widget targets, generated Info.plists and entitlements. It must build with zero manual Xcode surgery beyond selecting a signing team.
+Reference: the **gyva tyla** design book — Baltic calm minimalism + voxel accents. The app should feel like a held breath.
 
-## 3. Visual & design direction (make it gorgeous)
-
-Reference: the **gyva tyla** design book (calm Baltic minimalism + voxel accents).
-
-- **Palette:** deep moss-black background `#0E1512`; liquid teal `#5FD4C4` with darker depth gradient `#2E8C80`; warm sand text/accents `#E8DCC8`; muted stone secondary `#7A8B85`. One accent, never more.
-- **Voxel style:** the liquid is drawn as a field of small rounded squares (voxels) under a live wave surface; the bucket is a blocky, chunky silhouette. Everything else is quiet, flat, generous whitespace.
+- **Palette:** deep moss-black `#0E1512` background; liquid teal `#5FD4C4` with depth gradient to `#2E8C80`; warm sand `#E8DCC8` for text; muted stone `#7A8B85` secondary. One accent, never more.
+- **Voxel language:** the liquid is a field of small rounded cubes under a live wave surface; the classic bucket is a blocky silhouette; the mascot is built of glossy teal cubes. Everything else is quiet, flat, generous whitespace.
 - **Typography:** SF Rounded, few words, large calm numerals.
-- **Dark, silent atmosphere by default** — the app should feel like a held breath.
+- A cohesive system: defined color tokens, soft spring motion curves, consistent corner radii. Every screen intentional and finished — a real shipping product, not a prototype.
 
-## 4. Motion & interactivity bar (weighted heavily)
+## Motion & interactivity bar (this is weighted heavily)
 
-This is the soul of the app. All of it must ship:
-
-- **Sloshing liquid:** two superimposed sine waves with animated phase; surface tilts with real device roll (CoreMotion); a damped-spring slosh oscillator gives the liquid inertia — tilt the phone and the water keeps swinging after you stop.
-- **Drop event:** a voxel droplet falls from the top, splash particles burst on impact, the surface receives a slosh impulse, the level rises with a spring animation, and a soft haptic thud lands exactly on impact.
-- **Release ritual:** breathing circle expands/contracts (4 s in / 6 s out × 4 cycles); the bucket drains only during exhale, synced to the animation; gentle rising haptic pattern; finale of floating voxel particles.
-- **Ambient life:** occasional bubble rises through the liquid; the surface never freezes — even "idle" water breathes.
+- **Sloshing liquid:** two superimposed sine waves with animated phase; the surface tilts with real device roll; a **damped-spring slosh oscillator** gives the water inertia — tilt the phone and it keeps swinging after you stop.
+- **Drop event:** a voxel droplet falls, splash particles burst, the surface takes a slosh impulse, the level rises on a spring, a soft haptic + synthesized "plop" land exactly on impact.
+- **Release ritual:** breathing circle expands/contracts (4 s in / 6 s out × 4), the vessel drains **only during exhale**, rising/falling breath tones, a two-note chime and floating voxel sparkles at the finale.
+- **Ambient life:** bubbles occasionally rise; the surface never freezes; the mascot idly bobs and blinks. At 100 % the vessel visibly **trembles**.
 - **Every state change is animated.** Nothing snaps. Springs everywhere, tuned soft.
 
-## 5. Generate every asset live via the Higgsfield MCP
+## The Capsy Mascot Pipeline (Higgsfield MCP — generate live)
 
-- The **app icon** (1024×1024, voxel bucket with teal liquid, gyva-tyla calm) is generated live via Higgsfield `generate_image` (nano_banana_pro, 1:1), downloaded and placed into `Assets.xcassets/AppIcon.appiconset`.
-- All **in-app motion visuals are procedural by design** (Canvas voxels) — this is deliberate: liquid must react to live sensor data at 120 fps, which pre-rendered assets cannot do. Higgsfield is used for static brand assets (icon, optional marketing shots), code is used for everything that moves.
+You have the **Higgsfield MCP available**. Generate **Capsy** — a cute-but-calm voxel water-droplet character (glossy teal cubes, teardrop silhouette, large dark square eyes) — as a **locked character reference** reused verbatim in every prompt so all poses are one character:
 
-## 6. Creative autonomy & ambition (spec is a floor, not a ceiling)
+1. **Pose set** (nano_banana_pro, 1:1, dark moss background): `MascotCalm` (gentle smile), `MascotBusy` (slightly worried, sweat cube), `MascotHeavy` (drooping, darker teal), `MascotRelief` (eyes closed blissfully, sparkle cubes).
+2. The **app icon** derived from the same visual language (voxel vessel with teal liquid).
+3. Wire poses into the asset catalog at the exact names the code references; the home screen shows the mood matching the current fill level, and the ritual finale shows relief. If a generation call fails, fall back to a tasteful **vector droplet** drawn in code — never emoji as shipped art.
 
-Where the spec is silent, choose the more delightful option. Add texture: idle bubbles, microcopy that changes with fill level ("Ramu." → "Kaupiasi…" → "Laikas išpilti."), milestone names with personality. Never add complexity that costs clarity — **ultra simple, extremely readable code and UI is itself a feature.**
+Keep a running log in **`ASSETS.md`**: for each asset — path, dimensions/format, model, and the full Higgsfield prompt used — so the pipeline is reproducible.
 
-## 7. Feature spec — build ALL of it (this is the floor)
+## Creative autonomy & ambition (spec is a floor, not a ceiling)
 
-1. **Bucket home screen** — live liquid, fill %, contextual state line, big `+ Lašas` button, `Išleisti` button that appears when the bucket isn't empty.
-2. **Log a drop** — 3 intensities (Lengvas 🟢 / Vidutinis 🟡 / Sunkus 🔴 → 2/4/6 units, capacity 24) + optional one-line note. One sheet, two taps total.
-3. **Release ritual** — full-screen guided breathing, bucket drains on exhale, all unreleased drops are marked released, a ReleaseSession is recorded, journey advances.
-4. **Journey (Ramybės kelias)** — milestone path driven by total releases (1, 3, 7, 15, 30…), each with a name and voxel medal; shows the next goal.
-5. **History & insight** — last-7-days bar chart (Swift Charts) of logged units + list of recent drops with notes; simple weekly summary line.
-6. **Widgets** — Lock Screen circular gauge (fill %), rectangular (fill % + state line), Home Screen small (mini static bucket). Refreshed by the app via WidgetCenter on every change.
-7. **Overflow state** — at 100% the bucket visibly trembles and the app gently insists on a release.
-8. **Vessel choice** — the container is always transparent glass (the water amount must be visible at a glance), and the user picks its shape: voxel bucket, round "mana potion" flask, or a simple glass tumbler. Persisted; used on the home screen and in the ritual. Target audience is adults 29–55 — the styles must read calm and premium, never childish.
+You have full creative and technical autonomy. Improve any decision where you see a better interaction, animation, or model. Add thoughtful empty states, micro-interactions, accessibility labels, edge-case handling. The one boundary: the **hard constraints** and the **listed core systems must all be present and working**. Never add complexity that costs clarity — **ultra simple, extremely readable code and UI is itself a feature.** Surprise me within the silence.
 
-## 8. Data model (persist all of it in SwiftData)
+## Feature spec — build ALL of it (this is the floor)
+
+1. **Onboarding** — warm 3-page first run: the concept in one sentence, vessel choice, how the loop works. Sets `hasOnboarded`; never shown again.
+2. **Vessel home screen** — live liquid, fill %, contextual state line ("Ramu." → "Kaupiasi…" → "Laikas išpilti."), the mascot reacting to the level, `+ Lašas`, and `Išleisti` appearing when not empty.
+3. **Vessel choice** — three transparent glass vessels: voxel bucket, round "mana potion" flask (drops fall through its narrow neck), simple tumbler. Persisted; used everywhere the liquid appears.
+4. **Log a drop** — 3 intensities (Lengvas/Vidutinis/Sunkus → 2/4/6 units, capacity 24) + optional one-line note. One sheet, two taps total.
+5. **Release ritual** — full-screen guided breathing; drains only on exhale; cancelling keeps every drop; completion marks drops released, records a ReleaseSession, celebrates quietly.
+6. **Journey (Ramybės kelias)** — milestones at 1/3/7/15/30 releases with names and voxel medals; shows the next goal.
+7. **History & insight** — last-7-days bar chart of logged units + recent drops with notes.
+8. **Widgets** — Lock Screen circular gauge + rectangular (fill % + state line), Home Screen mini vessel; refreshed via WidgetCenter on every mutation.
+9. **Share card** — a gorgeous post-ritual card (vessel, "Paleista.", stats, journey milestone) rendered with ImageRenderer, shared via the system share sheet. This is marketing — make it beautiful.
+10. **Synthesized sound** — plop on drop impact, breath tones during the ritual, completion chime; a mute toggle; `.ambient` so it never interrupts the user's audio.
+11. **Overflow state** — at 100 % the vessel trembles and the app gently insists on a release.
+
+## Data model (persist all of it in SwiftData)
 
 ```swift
 @Model StressDrop     { date, intensity(1–3), units, note, released }
 @Model ReleaseSession { date, cycles, drainedUnits }
 ```
 
-Derived (never stored): current level = Σ units of unreleased drops, capped at 24; journey progress = count of ReleaseSessions. Widget state (fill fraction + state line) mirrored to App Group UserDefaults on every mutation.
+Derived, never stored: current level = Σ units of unreleased drops capped at 24; journey progress = ReleaseSession count. Widget state (fill fraction + state line) mirrored to the App Group on every mutation. Small preferences (vessel style, sound on, onboarded) in AppStorage.
 
-## 9. Deliverables & output format
+## Deliverables & output format
 
-- Complete repo: `project.yml`, all Swift sources (app + widget), assets, `README.md` with exact build steps (`brew install xcodegen && xcodegen generate && open Capsy.xcodeproj`), and this master prompt.
-- Code organised for readability: one concern per file, short files, section comments only where the code can't speak for itself.
+1. The complete runnable project: `project.yml`, all Swift sources (app + widget), asset catalog with generated art.
+2. **`ASSETS.md`** — the Higgsfield asset log (path, spec, prompt), as described above.
+3. **`README.md`** — how to open, run, and where everything lives.
+4. This **`MASTER_PROMPT.md`** kept in the repo as the product's source of truth.
 
-## 10. Non-negotiables (self-check before you finish)
+## Non-negotiables (self-check before you finish)
 
-- [ ] Compiles with zero errors/warnings after `xcodegen generate` + signing team selection.
-- [ ] No TODO / stub / placeholder anywhere.
-- [ ] Liquid sloshes with device tilt AND keeps momentum (damped spring), not just a looping animation.
-- [ ] Haptics fire on drop impact and breathing transitions.
-- [ ] Widget shows live fill level after every app mutation.
-- [ ] Works on simulator (tilt gracefully degrades to ambient waves).
-- [ ] All data survives relaunch (SwiftData).
-- [ ] UI reads like a whisper: minimal words, calm motion, one accent color.
+- [ ] Compiles after `xcodegen generate` + signing team, first Cmd+R, simulator included.
+- [ ] No TODO / stub / placeholder anywhere; every listed feature works and persists.
+- [ ] The liquid sloshes with device tilt AND keeps momentum (damped spring) — not a looping GIF-style animation.
+- [ ] Haptics + synthesized sound on drop impact, breathing transitions, and completion.
+- [ ] Widgets show the live fill level after every mutation.
+- [ ] Mascot poses are real Higgsfield art (vector fallback only on generation failure), logged in ASSETS.md.
+- [ ] UI reads like a whisper: minimal Lithuanian microcopy, calm motion, one accent color, premium for a 29–55 audience.
+
+Build the entire thing now. Do not ask clarifying questions — use your full creative and technical judgment, make excellent opinionated choices, and ship the best complete app you're capable of.
