@@ -10,6 +10,7 @@ struct HomeView: View {
     @State private var showRelease = false
     @State private var dropSignal = 0
     @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
+    @AppStorage("soundOn") private var soundOn = true
 
     private var vessel: VesselStyle { VesselStyle(rawValue: vesselRaw) ?? .kibiras }
     private var fraction: Double { Bucket.fraction(of: drops) }
@@ -27,6 +28,13 @@ struct HomeView: View {
             .padding(24)
             .background(Color.moss.ignoresSafeArea())
             .toolbar {
+                Button {
+                    Haptics.tap()
+                    soundOn.toggle()
+                } label: {
+                    Image(systemName: soundOn ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                        .foregroundStyle(Color.stone)
+                }
                 NavigationLink {
                     JourneyView()
                 } label: {
@@ -48,6 +56,7 @@ struct HomeView: View {
 
     private var header: some View {
         VStack(spacing: 6) {
+            MascotView(mood: MascotMood.forFraction(fraction))
             Text(Bucket.stateLine(for: fraction))
                 .font(.title3)
                 .foregroundStyle(Color.stone)
@@ -116,6 +125,7 @@ struct HomeView: View {
         context.insert(StressDrop(intensity: intensity.rawValue, note: note))
         try? context.save()
         dropSignal += 1
+        SoundEngine.plop()
         let newLevel = min(Bucket.capacity, level + intensity.rawValue * 2)
         Bucket.syncWidget(fraction: Double(newLevel) / Double(Bucket.capacity))
     }

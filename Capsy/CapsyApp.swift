@@ -3,10 +3,18 @@ import SwiftData
 
 @main
 struct CapsyApp: App {
+    @AppStorage("hasOnboarded") private var hasOnboarded = false
+
     var body: some Scene {
         WindowGroup {
-            HomeView()
-                .preferredColorScheme(.dark)
+            Group {
+                if hasOnboarded {
+                    HomeView()
+                } else {
+                    OnboardingView()
+                }
+            }
+            .preferredColorScheme(.dark)
         }
         .modelContainer(for: [StressDrop.self, ReleaseSession.self])
     }

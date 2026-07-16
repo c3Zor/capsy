@@ -22,6 +22,7 @@ struct ReleaseView: View {
     @State private var breath: CGFloat = 0.55
     @State private var fraction = 0.0
     @State private var cycle = 0
+    @State private var lastDrained = 0
     @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
 
     var body: some View {
@@ -89,10 +90,7 @@ struct ReleaseView: View {
 
     private var doneFooter: some View {
         VStack(spacing: 12) {
-            Image(systemName: "sparkles")
-                .font(.largeTitle)
-                .foregroundStyle(Color.liquid)
-                .symbolEffect(.bounce, value: phase)
+            MascotView(mood: .palengvejas)
             Text("Ramybės kelias +1")
                 .font(.headline)
                 .foregroundStyle(Color.sand)
@@ -101,6 +99,11 @@ struct ReleaseView: View {
                     .font(.subheadline)
                     .foregroundStyle(Color.stone)
             }
+            ShareCardButton(
+                drainedUnits: lastDrained,
+                totalReleases: sessions.count,
+                milestoneTitle: Journey.milestones.first { $0.releases == sessions.count }?.title
+            )
             Button {
                 dismiss()
             } label: {
@@ -129,12 +132,14 @@ struct ReleaseView: View {
 
             phase = .inhale
             Haptics.tap()
+            SoundEngine.breatheIn()
             withAnimation(.easeInOut(duration: 4)) { breath = 1.0 }
             try? await Task.sleep(for: .seconds(4))
             if Task.isCancelled { return }
 
             phase = .exhale
             Haptics.tap()
+            SoundEngine.breatheOut()
             withAnimation(.easeInOut(duration: 6)) { breath = 0.55 }
             // The bucket only drains while breathing out.
             fraction = startFraction * Double(totalCycles - c) / Double(totalCycles)
@@ -145,12 +150,13 @@ struct ReleaseView: View {
     }
 
     private func finish() {
-        let drained = Bucket.level(of: pending)
+        lastDrained = Bucket.level(of: pending)
         for drop in pending { drop.released = true }
-        context.insert(ReleaseSession(cycles: totalCycles, drainedUnits: drained))
+        context.insert(ReleaseSession(cycles: totalCycles, drainedUnits: lastDrained))
         try? context.save()
         Bucket.syncWidget(fraction: 0)
         Haptics.success()
+        SoundEngine.chime()
         withAnimation(.spring(duration: 0.6)) { phase = .done }
     }
 }
