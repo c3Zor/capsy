@@ -1,0 +1,60 @@
+name: Capsy
+options:
+  bundleIdPrefix: com.capsy
+  deploymentTarget:
+    iOS: "17.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    TARGETED_DEVICE_FAMILY: "1"
+
+targets:
+  Capsy:
+    type: application
+    platform: iOS
+    sources:
+      - Capsy
+      - Shared
+    dependencies:
+      - target: CapsyWidget
+    entitlements:
+      path: Capsy/Capsy.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.capsy.shared
+    info:
+      path: Capsy/Info.plist
+      properties:
+        CFBundleDisplayName: Capsy
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIUserInterfaceStyle: Dark
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.capsy.app
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  CapsyWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - CapsyWidget
+      - Shared
+    entitlements:
+      path: CapsyWidget/CapsyWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.capsy.shared
+    info:
+      path: CapsyWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Capsy
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.capsy.app.widget
