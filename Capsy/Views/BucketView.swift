@@ -1,6 +1,74 @@
 import SwiftUI
 
-/// The heart of Capsy: a live voxel bucket of liquid.
+// MARK: - Vessel styles
+
+/// The user picks how their stress vessel looks. Every style is transparent
+/// glass — the amount of liquid is always visible through it.
+enum VesselStyle: String, CaseIterable, Identifiable {
+    case kibiras    // blocky voxel bucket
+    case eliksyras  // round "mana potion" flask
+    case taure      // simple glass tumbler
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .kibiras: "Kibirėlis"
+        case .eliksyras: "Eliksyras"
+        case .taure: "Taurė"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .kibiras: "cube"
+        case .eliksyras: "flask"
+        case .taure: "wineglass"
+        }
+    }
+
+    /// Where droplets may fall in — the flask has a narrow neck.
+    var dropXRange: ClosedRange<Double> {
+        self == .eliksyras ? 0.44...0.56 : 0.3...0.7
+    }
+
+    /// Interior shape of the vessel, used to clip the liquid and to draw
+    /// the glass outline. Coordinates are normalized to the vessel rect.
+    func interiorPath(in rect: CGRect) -> Path {
+        func pt(_ x: Double, _ y: Double) -> CGPoint {
+            CGPoint(x: rect.minX + rect.width * x, y: rect.minY + rect.height * y)
+        }
+        var p = Path()
+        switch self {
+        case .kibiras:
+            p.addRoundedRect(in: rect, cornerSize: CGSize(width: rect.width * 0.04,
+                                                          height: rect.width * 0.04))
+        case .eliksyras:
+            // Narrow neck flowing into a round body (ellipse traced by points).
+            let cx = 0.5, cy = 0.64, rx = 0.38, ry = 0.30
+            p.move(to: pt(0.41, 0.05))
+            p.addLine(to: pt(0.41, 0.349))
+            for deg in stride(from: 256.3, through: -76.3, by: -4.0) {
+                let t = deg * .pi / 180
+                p.addLine(to: pt(cx + rx * cos(t), cy + ry * sin(t)))
+            }
+            p.addLine(to: pt(0.59, 0.05))
+            p.closeSubpath()
+        case .taure:
+            // Gently tapered tumbler with a soft bottom.
+            p.move(to: pt(0.24, 0.03))
+            p.addLine(to: pt(0.76, 0.03))
+            p.addLine(to: pt(0.68, 0.90))
+            p.addQuadCurve(to: pt(0.32, 0.90), control: pt(0.5, 1.0))
+            p.closeSubpath()
+        }
+        return p
+    }
+}
+
+// MARK: - Bucket view
+
+/// The heart of Capsy: a live voxel liquid inside a transparent vessel.
 ///
 /// All motion is procedural — two sine waves give the surface life, a
 /// damped-spring oscillator gives the liquid inertia (tilt the phone and
@@ -8,8 +76,10 @@ import SwiftUI
 struct BucketView: View {
     /// Target fill level, 0…1. The liquid eases toward it smoothly.
     var fraction: Double
-    /// Increment this to make a droplet fall into the bucket.
+    /// Increment this to make a droplet fall into the vessel.
     var dropSignal: Int = 0
+    /// The chosen vessel look.
+    var style: VesselStyle = .kibiras
 
     @State private var sim = LiquidSim()
 
@@ -22,7 +92,7 @@ struct BucketView: View {
                 draw(context, size: size)
             }
         }
-        .onChange(of: dropSignal) { _, _ in sim.spawnDrop() }
+        .onChange(of: dropSignal) { _, _ in sim.spawnDrop(in: style.dropXRange) }
         .onAppear { sim.onImpact = { Haptics.splash() } }
     }
 
@@ -31,38 +101,38 @@ struct BucketView: View {
     private func draw(_ context: GraphicsContext, size: CGSize) {
         var ctx = context
 
-        // A full bucket trembles gently, asking to be poured out.
+        // A full vessel trembles gently, asking to be poured out.
         if sim.level > 0.98 {
             ctx.translateBy(x: sin(sim.time * 30) * 1.6, y: 0)
         }
 
         let cell = min(size.width, size.height) / 15
-        let bucket = CGRect(x: cell * 1.6, y: cell * 1.2,
+        let vessel = CGRect(x: cell * 1.6, y: cell * 1.2,
                             width: size.width - cell * 3.2,
                             height: size.height - cell * 2.4)
+        let interior = style.interiorPath(in: vessel)
 
-        drawWalls(ctx, bucket: bucket, cell: cell)
-        drawLiquid(ctx, bucket: bucket, cell: cell)
-        drawBubbles(ctx, bucket: bucket, cell: cell)
-        drawDroplet(ctx, bucket: bucket, cell: cell)
-        drawSplash(ctx, bucket: bucket, cell: cell)
-        drawGlass(ctx, bucket: bucket, cell: cell)
+        if style == .kibiras {
+            drawVoxelWalls(ctx, bucket: vessel, cell: cell)
+        } else {
+            ctx.stroke(interior, with: .color(.sand.opacity(0.35)),
+                       style: StrokeStyle(lineWidth: cell * 0.24,
+                                          lineCap: .round, lineJoin: .round))
+        }
+
+        // Everything liquid lives inside the glass.
+        var inner = ctx
+        inner.clip(to: interior)
+        drawLiquid(inner, bucket: vessel, cell: cell)
+        drawBubbles(inner, bucket: vessel, cell: cell)
+        drawSplash(inner, bucket: vessel, cell: cell)
+        drawGlass(inner, interior: interior, bucket: vessel, cell: cell)
+
+        drawDroplet(ctx, bucket: vessel, cell: cell)
     }
 
-    /// The vessel is transparent glass: a faint tint over the interior and a
-    /// soft vertical highlight, so the water amount is always visible through it.
-    private func drawGlass(_ ctx: GraphicsContext, bucket: CGRect, cell: CGFloat) {
-        let interior = bucket.insetBy(dx: -cell * 0.1, dy: -cell * 0.1)
-        ctx.fill(Path(roundedRect: interior, cornerRadius: cell * 0.4),
-                 with: .color(.white.opacity(0.035)))
-        let highlight = CGRect(x: bucket.minX + bucket.width * 0.12, y: bucket.minY + cell * 0.4,
-                               width: cell * 0.55, height: bucket.height - cell * 1.2)
-        ctx.fill(Path(roundedRect: highlight, cornerRadius: cell * 0.3),
-                 with: .color(.white.opacity(0.06)))
-    }
-
-    /// Blocky bucket silhouette: voxel walls, bottom and a wider rim.
-    private func drawWalls(_ ctx: GraphicsContext, bucket: CGRect, cell: CGFloat) {
+    /// Blocky voxel silhouette for the classic bucket: walls, bottom, rim.
+    private func drawVoxelWalls(_ ctx: GraphicsContext, bucket: CGRect, cell: CGFloat) {
         let wallColor = Color.sand.opacity(0.28)
         func block(_ x: CGFloat, _ y: CGFloat, scale: CGFloat = 1) {
             let s = cell * 0.92 * scale
@@ -83,6 +153,16 @@ struct BucketView: View {
         // Rim: one wider block on each side of the opening.
         block(bucket.minX - cell * 1.45, bucket.minY - cell * 0.5, scale: 1.35)
         block(bucket.maxX - cell * 0.05, bucket.minY - cell * 0.5, scale: 1.35)
+    }
+
+    /// The vessel is transparent glass: a faint tint and a soft vertical
+    /// highlight, so the water amount is always visible through it.
+    private func drawGlass(_ ctx: GraphicsContext, interior: Path, bucket: CGRect, cell: CGFloat) {
+        ctx.fill(interior, with: .color(.white.opacity(0.035)))
+        let highlight = CGRect(x: bucket.minX + bucket.width * 0.16, y: bucket.minY + cell * 0.4,
+                               width: cell * 0.55, height: bucket.height - cell * 1.2)
+        ctx.fill(Path(roundedRect: highlight, cornerRadius: cell * 0.3),
+                 with: .color(.white.opacity(0.06)))
     }
 
     /// The liquid: a field of voxels under a live wave surface.
@@ -159,7 +239,7 @@ struct BucketView: View {
 
 // MARK: - Physics
 
-/// All liquid state, simulated in coordinates normalized to the bucket
+/// All liquid state, simulated in coordinates normalized to the vessel
 /// interior (x: 0…1 across the width, y: 0…1 from rim to bottom).
 final class LiquidSim {
     struct Particle { var x, y, vx, vy, life: Double }
@@ -177,8 +257,8 @@ final class LiquidSim {
     private var pendingImpulse = 0.0
     private var lastTime: Double?
 
-    func spawnDrop() {
-        drop = (x: Double.random(in: 0.3...0.7), y: -0.12, vy: 0)
+    func spawnDrop(in xRange: ClosedRange<Double> = 0.3...0.7) {
+        drop = (x: Double.random(in: xRange), y: -0.12, vy: 0)
     }
 
     /// Surface height at horizontal position x (0…1), in normalized y units.

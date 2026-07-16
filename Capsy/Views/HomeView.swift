@@ -9,7 +9,9 @@ struct HomeView: View {
     @State private var showAdd = false
     @State private var showRelease = false
     @State private var dropSignal = 0
+    @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
 
+    private var vessel: VesselStyle { VesselStyle(rawValue: vesselRaw) ?? .kibiras }
     private var fraction: Double { Bucket.fraction(of: drops) }
     private var level: Int { Bucket.level(of: drops) }
 
@@ -17,8 +19,9 @@ struct HomeView: View {
         NavigationStack {
             VStack(spacing: 20) {
                 header
-                BucketView(fraction: fraction, dropSignal: dropSignal)
+                BucketView(fraction: fraction, dropSignal: dropSignal, style: vessel)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                vesselPicker
                 buttons
             }
             .padding(24)
@@ -55,6 +58,26 @@ struct HomeView: View {
                 .animation(.spring(duration: 0.6), value: level)
         }
         .padding(.top, 8)
+    }
+
+    /// Choose your vessel: bucket, potion flask or glass. Saved automatically.
+    private var vesselPicker: some View {
+        HStack(spacing: 12) {
+            ForEach(VesselStyle.allCases) { style in
+                let isOn = vessel == style
+                Button {
+                    Haptics.tap()
+                    withAnimation(.spring(duration: 0.4)) { vesselRaw = style.rawValue }
+                } label: {
+                    Image(systemName: style.symbol)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(isOn ? Color.moss : Color.stone)
+                        .frame(width: 38, height: 38)
+                        .background(isOn ? Color.liquid : Color.white.opacity(0.05), in: Circle())
+                }
+                .accessibilityLabel(style.title)
+            }
+        }
     }
 
     private var buttons: some View {

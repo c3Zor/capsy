@@ -19,6 +19,7 @@ Veikia ir simuliatoriuje (be tilt'o vanduo tiesiog ramiai banguoja).
 | Funkcija | Kur |
 |---|---|
 | Gyvas teliuskuojantis skystis (CoreMotion tilt + slopinama spyruoklė, lašai, purslai, burbulai) | `Capsy/Views/BucketView.swift` |
+| 3 permatomi indai pasirinkimui: kibirėlis / eliksyro kolba / taurė (išsisaugo) | `Capsy/Views/BucketView.swift` |
 | Pagrindinis ekranas: lygis %, `+ Lašas`, `Išleisti` | `Capsy/Views/HomeView.swift` |
 | Išleidimo ritualas — kvėpavimas 4 s įkvėpk / 6 s iškvėpk × 4, indas tuštėja iškvepiant | `Capsy/Views/ReleaseView.swift` |
 | Ramybės kelias (etapai), savaitės grafikas, lašų istorija | `Capsy/Views/JourneyView.swift` |

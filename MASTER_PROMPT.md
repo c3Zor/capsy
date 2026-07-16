@@ -58,6 +58,7 @@ Where the spec is silent, choose the more delightful option. Add texture: idle b
 5. **History & insight** — last-7-days bar chart (Swift Charts) of logged units + list of recent drops with notes; simple weekly summary line.
 6. **Widgets** — Lock Screen circular gauge (fill %), rectangular (fill % + state line), Home Screen small (mini static bucket). Refreshed by the app via WidgetCenter on every change.
 7. **Overflow state** — at 100% the bucket visibly trembles and the app gently insists on a release.
+8. **Vessel choice** — the container is always transparent glass (the water amount must be visible at a glance), and the user picks its shape: voxel bucket, round "mana potion" flask, or a simple glass tumbler. Persisted; used on the home screen and in the ritual. Target audience is adults 29–55 — the styles must read calm and premium, never childish.
 
 ## 8. Data model (persist all of it in SwiftData)
 

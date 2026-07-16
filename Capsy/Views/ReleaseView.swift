@@ -22,6 +22,7 @@ struct ReleaseView: View {
     @State private var breath: CGFloat = 0.55
     @State private var fraction = 0.0
     @State private var cycle = 0
+    @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
 
     var body: some View {
         VStack(spacing: 28) {
@@ -35,7 +36,8 @@ struct ReleaseView: View {
 
             breathingCircle
 
-            BucketView(fraction: fraction)
+            BucketView(fraction: fraction,
+                       style: VesselStyle(rawValue: vesselRaw) ?? .kibiras)
                 .frame(height: 210)
 
             if phase == .done {
