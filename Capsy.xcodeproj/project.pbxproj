@@ -10,6 +10,7 @@
 		0ACC405AC9CF350E5106A4A0 /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC14AB5B93F748EA42152E96 /* ShareCardView.swift */; };
 		0D4C63C096F3ABE142F1197F /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456A898061B474575E38C9F8 /* SharedState.swift */; };
 		0DF384379324F19EC96AA26B /* CapsySceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD8C65D0E015C1E51936D9C /* CapsySceneView.swift */; };
+		1E656557FA3A777404277EC5 /* Reminders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317305F7857FD98070A7082F /* Reminders.swift */; };
 		23DBA51290061DD85682860B /* CapsyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */; };
 		24309FB86AE560EB54B6A892 /* CapsyWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6DA167556655E6BE7D8FA0 /* CapsyWidget.swift */; };
 		4C2C4A127E8F0C1F2394FC8E /* CapsyWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E695890FEC783450590CF462 /* CapsyWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -56,6 +57,7 @@
 		19472D60913D17D5DA1A27A6 /* Capsy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Capsy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		235D9B2B3090EA5F5804256D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsyApp.swift; sourceTree = "<group>"; };
+		317305F7857FD98070A7082F /* Reminders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminders.swift; sourceTree = "<group>"; };
 		33815E66BB6BAD4DF7AB9603 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		456A898061B474575E38C9F8 /* SharedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedState.swift; sourceTree = "<group>"; };
 		4BC6D268F051BCCE3EAC37B8 /* ReleaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseView.swift; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 				50D0CE33AF9D9E71644B0123 /* Info.plist */,
 				33815E66BB6BAD4DF7AB9603 /* Models.swift */,
 				F8FB5B29969F6A37D1403593 /* MotionManager.swift */,
+				317305F7857FD98070A7082F /* Reminders.swift */,
 				C79586FC017231914147B713 /* SoundEngine.swift */,
 				A6EBA599560862EDCCEBEF58 /* Theme.swift */,
 				FB91045130CEA2407FA66489 /* Views */,
@@ -251,6 +254,7 @@
 				9D29A1A7EEEFCB8D94BD2B3A /* MotionManager.swift in Sources */,
 				BC6BF04A0031665BD6716A21 /* OnboardingView.swift in Sources */,
 				C16C86CA62617DDDC353A2D3 /* ReleaseView.swift in Sources */,
+				1E656557FA3A777404277EC5 /* Reminders.swift in Sources */,
 				0ACC405AC9CF350E5106A4A0 /* ShareCardView.swift in Sources */,
 				667FBD725FA7D38D5112E71C /* SharedState.swift in Sources */,
 				F187302A8245ADF2BA16372C /* SoundEngine.swift in Sources */,
