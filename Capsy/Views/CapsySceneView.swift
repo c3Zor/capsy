@@ -163,7 +163,7 @@ final class CapsyScene {
         glass.shininess = 40
         glass.isDoubleSided = true
         glass.writesToDepthBuffer = false  // never hide what's inside
-        glassNode.opacity = 0.26           // the reliable transparency switch
+        glassNode.opacity = 0.22           // the reliable transparency switch
         glassNode.renderingOrder = 10      // draw after the liquid
         glassMaterialHolder = glass
 
@@ -221,11 +221,13 @@ final class CapsyScene {
         style == .eliksyras ? 1.35 : 1.38
     }
 
+    /// High enough that the face stays dry at everyday levels — it only
+    /// goes under when the vessel is nearly full, which is the point.
     private func faceAnchor(for style: VesselStyle) -> SCNVector3 {
         switch style {
-        case .kibiras:  SCNVector3(0, 0.95, 0.76)
-        case .eliksyras: SCNVector3(0, 0.72, 0.72)
-        case .taure:    SCNVector3(0, 0.92, 0.66)
+        case .kibiras:  SCNVector3(0, 1.10, 0.80)
+        case .eliksyras: SCNVector3(0, 0.88, 0.70)
+        case .taure:    SCNVector3(0, 1.06, 0.68)
         }
     }
 
@@ -324,7 +326,7 @@ final class CapsyScene {
         var y = cubeSize / 2
         while y < surfaceY {
             let isTopLayer = y + cubeSize >= surfaceY
-            let r = radius(atHeight: y, of: body) * 0.86
+            let r = radius(atHeight: y, of: body) * 0.82
             var x = -r
             while x <= r {
                 var z = -r
@@ -432,7 +434,7 @@ final class CapsyScene {
         // Damped-spring slosh: the surface chases the device tilt with inertia.
         // With no tilt (simulator, phone on a table) a slow ambient sway keeps
         // the water alive — it must never freeze.
-        let ambient = abs(tilt) < 0.02 ? 0.05 * sin(time * 0.85) : 0
+        let ambient = abs(tilt) < 0.02 ? 0.03 * sin(time * 0.85) : 0
         let goal = max(-0.45, min(0.45, tilt)) * 0.45 + ambient
         angleVel += (26 * (goal - angle) - 3.4 * angleVel) * dt
         angleVel += pendingImpulse
