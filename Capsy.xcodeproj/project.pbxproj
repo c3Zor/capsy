@@ -1,0 +1,492 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0ACC405AC9CF350E5106A4A0 /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC14AB5B93F748EA42152E96 /* ShareCardView.swift */; };
+		0D4C63C096F3ABE142F1197F /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456A898061B474575E38C9F8 /* SharedState.swift */; };
+		23DBA51290061DD85682860B /* CapsyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */; };
+		24309FB86AE560EB54B6A892 /* CapsyWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6DA167556655E6BE7D8FA0 /* CapsyWidget.swift */; };
+		4C2C4A127E8F0C1F2394FC8E /* CapsyWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E695890FEC783450590CF462 /* CapsyWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6507612F003BD881C21521DD /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97FE304F8AB70078253B829 /* MascotView.swift */; };
+		667FBD725FA7D38D5112E71C /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456A898061B474575E38C9F8 /* SharedState.swift */; };
+		8A2E6AD8C3E624BC662CC471 /* JourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E920843F3FA5F7811A976B /* JourneyView.swift */; };
+		9A927518B0BBE18E3EB4CB61 /* BucketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9B379F927D1A782A511911 /* BucketView.swift */; };
+		9D29A1A7EEEFCB8D94BD2B3A /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FB5B29969F6A37D1403593 /* MotionManager.swift */; };
+		A4532DB8A5D8FD94CB2EFFFE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E0749C55E0A11EC064459BB /* HomeView.swift */; };
+		A4779D1815E8B226B2DB2E4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7481B716993B8BC1B5A41DAF /* Assets.xcassets */; };
+		B532EF4C777ECD120BAD5A57 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33815E66BB6BAD4DF7AB9603 /* Models.swift */; };
+		BC6BF04A0031665BD6716A21 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235D9B2B3090EA5F5804256D /* OnboardingView.swift */; };
+		C16C86CA62617DDDC353A2D3 /* ReleaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC6D268F051BCCE3EAC37B8 /* ReleaseView.swift */; };
+		F187302A8245ADF2BA16372C /* SoundEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79586FC017231914147B713 /* SoundEngine.swift */; };
+		F55A348885597CCFD0BD400A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6EBA599560862EDCCEBEF58 /* Theme.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		711EBB04BADEF264E86AA422 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 77B16E0299682DC07B73BF57 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8A7934F93281296DC9A2DB93;
+			remoteInfo = CapsyWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		65E82220D574AD314100E9F7 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				4C2C4A127E8F0C1F2394FC8E /* CapsyWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0495B8586EDA78FD727E3E2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		19472D60913D17D5DA1A27A6 /* Capsy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Capsy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		235D9B2B3090EA5F5804256D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsyApp.swift; sourceTree = "<group>"; };
+		33815E66BB6BAD4DF7AB9603 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		456A898061B474575E38C9F8 /* SharedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedState.swift; sourceTree = "<group>"; };
+		4BC6D268F051BCCE3EAC37B8 /* ReleaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseView.swift; sourceTree = "<group>"; };
+		50D0CE33AF9D9E71644B0123 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5B9B379F927D1A782A511911 /* BucketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BucketView.swift; sourceTree = "<group>"; };
+		6A6DA167556655E6BE7D8FA0 /* CapsyWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsyWidget.swift; sourceTree = "<group>"; };
+		7481B716993B8BC1B5A41DAF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9BFC324A68802CD2690088F1 /* Capsy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Capsy.entitlements; sourceTree = "<group>"; };
+		9E0749C55E0A11EC064459BB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A5E920843F3FA5F7811A976B /* JourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyView.swift; sourceTree = "<group>"; };
+		A6EBA599560862EDCCEBEF58 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		AC14AB5B93F748EA42152E96 /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
+		B97FE304F8AB70078253B829 /* MascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotView.swift; sourceTree = "<group>"; };
+		C6B66C1BCB0AC637DF745333 /* CapsyWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CapsyWidget.entitlements; sourceTree = "<group>"; };
+		C79586FC017231914147B713 /* SoundEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundEngine.swift; sourceTree = "<group>"; };
+		E695890FEC783450590CF462 /* CapsyWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = CapsyWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8FB5B29969F6A37D1403593 /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		9BE63BB2F87065BB164EAB61 /* Capsy */ = {
+			isa = PBXGroup;
+			children = (
+				7481B716993B8BC1B5A41DAF /* Assets.xcassets */,
+				9BFC324A68802CD2690088F1 /* Capsy.entitlements */,
+				2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */,
+				50D0CE33AF9D9E71644B0123 /* Info.plist */,
+				33815E66BB6BAD4DF7AB9603 /* Models.swift */,
+				F8FB5B29969F6A37D1403593 /* MotionManager.swift */,
+				C79586FC017231914147B713 /* SoundEngine.swift */,
+				A6EBA599560862EDCCEBEF58 /* Theme.swift */,
+				FB91045130CEA2407FA66489 /* Views */,
+			);
+			path = Capsy;
+			sourceTree = "<group>";
+		};
+		A43FB9DC891992D498F7E5E1 /* CapsyWidget */ = {
+			isa = PBXGroup;
+			children = (
+				C6B66C1BCB0AC637DF745333 /* CapsyWidget.entitlements */,
+				6A6DA167556655E6BE7D8FA0 /* CapsyWidget.swift */,
+				0495B8586EDA78FD727E3E2F /* Info.plist */,
+			);
+			path = CapsyWidget;
+			sourceTree = "<group>";
+		};
+		B97DE6E3E867F1F37F38F412 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				456A898061B474575E38C9F8 /* SharedState.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		DA3F6945320B10A1ABF50A33 = {
+			isa = PBXGroup;
+			children = (
+				9BE63BB2F87065BB164EAB61 /* Capsy */,
+				A43FB9DC891992D498F7E5E1 /* CapsyWidget */,
+				B97DE6E3E867F1F37F38F412 /* Shared */,
+				F38FC128E02DFDB18EF38CD1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F38FC128E02DFDB18EF38CD1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				19472D60913D17D5DA1A27A6 /* Capsy.app */,
+				E695890FEC783450590CF462 /* CapsyWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FB91045130CEA2407FA66489 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5B9B379F927D1A782A511911 /* BucketView.swift */,
+				9E0749C55E0A11EC064459BB /* HomeView.swift */,
+				A5E920843F3FA5F7811A976B /* JourneyView.swift */,
+				B97FE304F8AB70078253B829 /* MascotView.swift */,
+				235D9B2B3090EA5F5804256D /* OnboardingView.swift */,
+				4BC6D268F051BCCE3EAC37B8 /* ReleaseView.swift */,
+				AC14AB5B93F748EA42152E96 /* ShareCardView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		62EF7F1D5570351F4F310A83 /* Capsy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0F61C153A52E54F385D8653 /* Build configuration list for PBXNativeTarget "Capsy" */;
+			buildPhases = (
+				C308250A8522BA33CC7AF2EF /* Sources */,
+				D1915334238F664752C0B35F /* Resources */,
+				65E82220D574AD314100E9F7 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				32F52A274001D129CC48ACB9 /* PBXTargetDependency */,
+			);
+			name = Capsy;
+			packageProductDependencies = (
+			);
+			productName = Capsy;
+			productReference = 19472D60913D17D5DA1A27A6 /* Capsy.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8A7934F93281296DC9A2DB93 /* CapsyWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 301DD5C48BE94499A6363FE7 /* Build configuration list for PBXNativeTarget "CapsyWidget" */;
+			buildPhases = (
+				230566DFF912BF7D8891306F /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CapsyWidget;
+			packageProductDependencies = (
+			);
+			productName = CapsyWidget;
+			productReference = E695890FEC783450590CF462 /* CapsyWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		77B16E0299682DC07B73BF57 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 9D6341481CF98F49A6D3A46B /* Build configuration list for PBXProject "Capsy" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = DA3F6945320B10A1ABF50A33;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F38FC128E02DFDB18EF38CD1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				62EF7F1D5570351F4F310A83 /* Capsy */,
+				8A7934F93281296DC9A2DB93 /* CapsyWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D1915334238F664752C0B35F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A4779D1815E8B226B2DB2E4D /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		230566DFF912BF7D8891306F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24309FB86AE560EB54B6A892 /* CapsyWidget.swift in Sources */,
+				0D4C63C096F3ABE142F1197F /* SharedState.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C308250A8522BA33CC7AF2EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9A927518B0BBE18E3EB4CB61 /* BucketView.swift in Sources */,
+				23DBA51290061DD85682860B /* CapsyApp.swift in Sources */,
+				A4532DB8A5D8FD94CB2EFFFE /* HomeView.swift in Sources */,
+				8A2E6AD8C3E624BC662CC471 /* JourneyView.swift in Sources */,
+				6507612F003BD881C21521DD /* MascotView.swift in Sources */,
+				B532EF4C777ECD120BAD5A57 /* Models.swift in Sources */,
+				9D29A1A7EEEFCB8D94BD2B3A /* MotionManager.swift in Sources */,
+				BC6BF04A0031665BD6716A21 /* OnboardingView.swift in Sources */,
+				C16C86CA62617DDDC353A2D3 /* ReleaseView.swift in Sources */,
+				0ACC405AC9CF350E5106A4A0 /* ShareCardView.swift in Sources */,
+				667FBD725FA7D38D5112E71C /* SharedState.swift in Sources */,
+				F187302A8245ADF2BA16372C /* SoundEngine.swift in Sources */,
+				F55A348885597CCFD0BD400A /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		32F52A274001D129CC48ACB9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8A7934F93281296DC9A2DB93 /* CapsyWidget */;
+			targetProxy = 711EBB04BADEF264E86AA422 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		06E87DB714404A6176D497D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		492A879E5D95C3E5D8164648 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CapsyWidget/CapsyWidget.entitlements;
+				INFOPLIST_FILE = CapsyWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.capsy.app.widget;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		685B8009127FD4FC298B766B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		72512F636B0F1F702E4FDCEF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CapsyWidget/CapsyWidget.entitlements;
+				INFOPLIST_FILE = CapsyWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.capsy.app.widget;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AFFE2AE5BB66266884C5DE2B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Capsy/Capsy.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Capsy/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.capsy.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BE8F8CE84756014CA9D03ADE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Capsy/Capsy.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Capsy/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.capsy.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		301DD5C48BE94499A6363FE7 /* Build configuration list for PBXNativeTarget "CapsyWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				72512F636B0F1F702E4FDCEF /* Debug */,
+				492A879E5D95C3E5D8164648 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9D6341481CF98F49A6D3A46B /* Build configuration list for PBXProject "Capsy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06E87DB714404A6176D497D3 /* Debug */,
+				685B8009127FD4FC298B766B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E0F61C153A52E54F385D8653 /* Build configuration list for PBXNativeTarget "Capsy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE8F8CE84756014CA9D03ADE /* Debug */,
+				AFFE2AE5BB66266884C5DE2B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 77B16E0299682DC07B73BF57 /* Project object */;
+}
