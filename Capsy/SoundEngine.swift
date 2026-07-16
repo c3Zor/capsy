@@ -14,11 +14,12 @@ final class SoundEngine {
     private let engine = AVAudioEngine()
     private let player = AVAudioPlayerNode()
     private var isReady = false
+    private var isConfigured = false
 
     private init() {
         do {
             let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.ambient, mixWithOthers: true)
+            try session.setCategory(.ambient, options: .mixWithOthers)
             try session.setActive(true)
         } catch {
             // Sound is a nice-to-have. Never let it crash the app.
@@ -122,9 +123,14 @@ final class SoundEngine {
 
     private func startIfNeeded() {
         guard !isReady else { return }
-        guard let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1) else { return }
-        engine.attach(player)
-        engine.connect(player, to: engine.mainMixerNode, format: format)
+        // Attach/connect exactly once — re-attaching an already-attached node
+        // throws an NSException, and engine.start() may fail and be retried.
+        if !isConfigured {
+            guard let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1) else { return }
+            engine.attach(player)
+            engine.connect(player, to: engine.mainMixerNode, format: format)
+            isConfigured = true
+        }
         do {
             try engine.start()
             isReady = true
