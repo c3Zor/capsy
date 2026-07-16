@@ -153,17 +153,17 @@ final class CapsyScene {
     }
 
     private func buildBody() {
-        // Truly see-through glass: ONE thin front layer between the camera
-        // and the liquid (back faces culled), so the voxel liquid always
-        // shows through tinted, never buried under stacked glass layers.
+        // Truly see-through glass. Material-level transparency proved
+        // unreliable here, so opacity lives on the NODE — SceneKit composites
+        // node opacity dependably, and the voxel liquid always shows through.
         let glass = SCNMaterial()
-        glass.lightingModel = .physicallyBased
+        glass.lightingModel = .blinn
         glass.diffuse.contents = UIColor(red: 0.97, green: 0.94, blue: 0.90, alpha: 1)
-        glass.metalness.contents = 0.0
-        glass.roughness.contents = 0.06
-        glass.transparency = 0.32
-        glass.isDoubleSided = false
+        glass.specular.contents = UIColor(white: 1, alpha: 1)
+        glass.shininess = 40
+        glass.isDoubleSided = true
         glass.writesToDepthBuffer = false  // never hide what's inside
+        glassNode.opacity = 0.26           // the reliable transparency switch
         glassNode.renderingOrder = 10      // draw after the liquid
         glassMaterialHolder = glass
 
