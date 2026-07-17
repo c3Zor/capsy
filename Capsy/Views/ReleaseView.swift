@@ -45,12 +45,19 @@ struct ReleaseView: View {
                 .contentTransition(.numericText())
                 .animation(.earth, value: Int(fraction * 100))
 
+            // The face is the guide — this line just confirms it.
+            Text(instruction)
+                .font(.mono(11, weight: .regular))
+                .kerning(1.5)
+                .foregroundStyle(Color.sub.opacity(0.8))
+
             // Capsy breathes with you: the whole 3D character expands on the
             // inhale, settles on the exhale, and the liquid drains inside it.
             CapsySceneView(fraction: fraction,
                            style: VesselStyle(rawValue: vesselRaw) ?? .kibiras,
                            breath: Double((breath - 0.55) / 0.45),
-                           mood: phase == .done ? .palengvejas : nil)
+                           mood: phase == .done ? .palengvejas : nil,
+                           breathPhase: phase == .inhale ? 1 : (phase == .exhale ? 2 : 0))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .overlay(alignment: .bottom) {
                     if showRipples { RippleView() } // a wave, not an explosion
@@ -78,6 +85,15 @@ struct ReleaseView: View {
         .task { await run() }
         .onAppear { SoundEngine.droneOn() }   // erdvė tyliai „skamba"
         .onDisappear { SoundEngine.droneOff() }
+    }
+
+    private var instruction: String {
+        switch phase {
+        case .ready:  "BREATHE WITH CAPSY — HE LEADS"
+        case .inhale: "IN THROUGH THE NOSE, SLOWLY"
+        case .exhale: "OUT THROUGH THE MOUTH — LET IT GO"
+        case .done:   ""
+        }
     }
 
     private var topBar: some View {
@@ -150,9 +166,15 @@ struct ReleaseView: View {
             Haptics.tap()
             SoundEngine.breatheOut()
             withAnimation(.easeInOut(duration: 6)) { breath = 0.55 }
-            // The bucket only drains while breathing out.
-            fraction = startFraction * Double(totalCycles - c) / Double(totalCycles)
-            try? await Task.sleep(for: .seconds(6))
+            // The bucket only drains while breathing out — continuously,
+            // over the whole 6-second exhale, so the fall is smooth.
+            let from = fraction
+            let to = startFraction * Double(totalCycles - c) / Double(totalCycles)
+            for tick in 1...30 {
+                if Task.isCancelled { return }
+                fraction = from + (to - from) * Double(tick) / 30.0
+                try? await Task.sleep(for: .seconds(0.2))
+            }
         }
         if Task.isCancelled { return }
         finish()

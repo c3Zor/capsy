@@ -20,6 +20,9 @@ struct CapsySceneView: UIViewRepresentable {
     var breath: Double = 0
     /// Force a mood (e.g. relief at ritual end); nil = derived from fraction.
     var mood: MascotMood? = nil
+    /// Ritual phase: 0 idle · 1 inhale (O mouth, eyes closed) · 2 exhale
+    /// (relaxed smile, voxel steam evaporates upward).
+    var breathPhase: Int = 0
 
     func makeUIView(context: Context) -> SCNView {
         let view = SCNView()
@@ -39,6 +42,7 @@ struct CapsySceneView: UIViewRepresentable {
         capsy.breathDrive = breath
         capsy.set(style: style)
         capsy.set(mood: mood ?? MascotMood.forFraction(fraction))
+        capsy.set(breathPhase: breathPhase)
         if dropSignal != context.coordinator.lastDropSignal {
             context.coordinator.lastDropSignal = dropSignal
             capsy.dropPebble()
@@ -83,10 +87,12 @@ final class CapsyScene {
     private var mood: MascotMood = .ramus
 
     private var fill = 0.0                // eased fill
-    private var builtFill = -1.0          // fill the liquid mesh was built for
+    private var builtLayers = -1          // cube layers the liquid was built with
     private var angle = 0.0, angleVel = 0.0, pendingImpulse = 0.0
     private var lastTime: TimeInterval?
     private var nextBlink: TimeInterval = 2.5
+    private var breathPhase = 0
+    private var lastVapor: TimeInterval = 0
 
     private let liquidMaterial = SCNMaterial()
 
@@ -304,13 +310,13 @@ final class CapsyScene {
         rimNode.position = SCNVector3(0, top.y, 0)
         if rimNode.parent == nil { bodyRoot.addChildNode(rimNode) }
 
-        builtFill = -1 // force liquid rebuild
+        builtLayers = -1 // force liquid rebuild
     }
 
     /// The liquid is a stack of little clay cubes — the voxel soul of the
     /// design book, in real 3D. The top layer bobs so the water never freezes.
     private func rebuildLiquid() {
-        builtFill = fill
+        builtLayers = Int(Float(fill) * maxLiquidHeight(for: style) / cubeSize)
         liquidRoot.childNodes.forEach { $0.removeFromParentNode() }
         topCubes.removeAll()
         guard fill > 0.02 else { return }
@@ -356,11 +362,48 @@ final class CapsyScene {
     func set(mood newMood: MascotMood) {
         guard newMood != mood else { return }
         mood = newMood
-        mouthNode.geometry = mouthGeometry(for: mood)
-        let droop: Float = mood == .sunkus ? 0.72 : (mood == .palengvejas ? 0.32 : 1.0)
-        for eye in [leftEye, rightEye] {
-            eye.scale = SCNVector3(1, droop, 1)
+        applyFace()
+    }
+
+    func set(breathPhase newPhase: Int) {
+        guard newPhase != breathPhase else { return }
+        breathPhase = newPhase
+        applyFace()
+    }
+
+    /// The face is the instruction: during the ritual Capsy closes his eyes,
+    /// makes an "O" on the inhale and a relaxed smile on the exhale —
+    /// you breathe with him.
+    private func applyFace() {
+        switch breathPhase {
+        case 1:
+            mouthNode.geometry = mouthOGeometry()
+            setEyes(scaleY: 0.22)
+        case 2:
+            mouthNode.geometry = mouthGeometry(for: .palengvejas)
+            setEyes(scaleY: 0.22)
+        default:
+            mouthNode.geometry = mouthGeometry(for: mood)
+            setEyes(scaleY: mood == .sunkus ? 0.72 : (mood == .palengvejas ? 0.32 : 1.0))
         }
+    }
+
+    private func setEyes(scaleY: Float) {
+        for eye in [leftEye, rightEye] {
+            eye.scale = SCNVector3(1, scaleY, 1)
+        }
+    }
+
+    /// Small open "O" mouth — breathing in.
+    private func mouthOGeometry() -> SCNGeometry {
+        let path = UIBezierPath(ovalIn: CGRect(x: -0.045, y: -0.05, width: 0.09, height: 0.10))
+        let shape = SCNShape(path: path, extrusionDepth: 0.03)
+        let dark = SCNMaterial()
+        dark.lightingModel = .physicallyBased
+        dark.diffuse.contents = UIColor(red: 0.17, green: 0.15, blue: 0.13, alpha: 1)
+        dark.roughness.contents = 0.6
+        shape.materials = [dark]
+        return shape
     }
 
     private func mouthGeometry(for mood: MascotMood) -> SCNGeometry {
@@ -427,9 +470,11 @@ final class CapsyScene {
         let dt = min(time - last, 1.0 / 20.0)
         guard dt > 0 else { return }
 
-        // Liquid level eases toward its target; mesh rebuilds only on change.
+        // Liquid level eases toward its target. Cubes are rebuilt only when
+        // a whole layer changes — rebuilding every frame caused visible jank.
         fill += (targetFill - fill) * min(1, dt * 3.0)
-        if abs(fill - builtFill) > 0.004 { rebuildLiquid() }
+        let targetLayers = Int(Float(fill) * maxLiquidHeight(for: style) / cubeSize)
+        if targetLayers != builtLayers { rebuildLiquid() }
 
         // Damped-spring slosh: the surface chases the device tilt with inertia.
         // With no tilt (simulator, phone on a table) a slow ambient sway keeps
@@ -448,9 +493,10 @@ final class CapsyScene {
             cube.node.position.y = cube.baseY + waveAmp * sin(Float(time) * 2.4 + cube.phase)
         }
 
-        // Breathing: 12/min idle + ritual drive (design book #041).
+        // Breathing: 12/min idle + ritual drive (design book #041) — big and
+        // readable during the ritual, so Capsy visibly leads the breath.
         let idle = 0.045 * sin(time * 1.257)
-        let scale = Float(1 + idle + breathDrive * 0.10)
+        let scale = Float(1 + idle + breathDrive * 0.16)
         bodyRoot.scale = SCNVector3(scale, scale, scale)
         shadowNode.scale = SCNVector3(scale, scale, 1)
 
@@ -461,11 +507,53 @@ final class CapsyScene {
             bodyRoot.position.x = 0
         }
 
-        // Occasional blink.
-        if time > nextBlink, mood != .palengvejas {
+        // Occasional blink (not while eyes are closed for the ritual).
+        if time > nextBlink, mood != .palengvejas, breathPhase == 0 {
             nextBlink = time + Double.random(in: 2.4...5.0)
             blink()
         }
+
+        // Exhale: the stress evaporates — little voxel steam cubes rise,
+        // wobble and dissolve, like in a good cozy game.
+        if breathPhase == 2, time - lastVapor > 0.12, fill > 0.03 {
+            lastVapor = time
+            spawnVapor()
+        }
+    }
+
+    /// One voxel of steam: spawns at the liquid surface, floats up,
+    /// spins gently, shrinks and fades away.
+    private func spawnVapor() {
+        let size = CGFloat(Double.random(in: 0.05...0.09))
+        let box = SCNBox(width: size, height: size, length: size,
+                         chamferRadius: size * 0.2)
+        let steam = SCNMaterial()
+        steam.lightingModel = .physicallyBased
+        steam.diffuse.contents = UIColor(red: 0.95, green: 0.66, blue: 0.50, alpha: 1)
+        steam.roughness.contents = 0.9
+        box.materials = [steam]
+
+        let node = SCNNode(geometry: box)
+        let surfaceY = Float(fill) * maxLiquidHeight(for: style)
+        let r = radius(atHeight: surfaceY, of: profile(for: style)) * 0.55
+        node.position = SCNVector3(Float.random(in: -r...r),
+                                   surfaceY + 0.06,
+                                   Float.random(in: -r...r))
+        node.opacity = 0.9
+        bodyRoot.addChildNode(node)
+
+        let duration = Double.random(in: 1.5...2.3)
+        let rise = SCNAction.moveBy(x: CGFloat(Double.random(in: -0.3...0.3)),
+                                    y: CGFloat(Double.random(in: 1.5...2.1)),
+                                    z: 0, duration: duration)
+        rise.timingMode = .easeOut
+        let spin = SCNAction.rotateBy(x: 0, y: CGFloat(Double.random(in: -1.6...1.6)),
+                                      z: CGFloat(Double.random(in: -0.5...0.5)),
+                                      duration: duration)
+        let fade = SCNAction.fadeOpacity(to: 0, duration: duration)
+        let shrink = SCNAction.scale(to: 0.25, duration: duration)
+        node.runAction(.sequence([.group([rise, spin, fade, shrink]),
+                                  .removeFromParentNode()]))
     }
 }
 
