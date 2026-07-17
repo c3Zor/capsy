@@ -16,8 +16,6 @@ struct CapsySceneView: UIViewRepresentable {
     var dropSignal: Int = 0
     /// Body shape, shared with the rest of the app.
     var style: VesselStyle = .kibiras
-    /// 0…1 ritual breathing drive (0 = idle breathing only).
-    var breath: Double = 0
     /// Force a mood (e.g. relief at ritual end); nil = derived from fraction.
     var mood: MascotMood? = nil
     /// Ritual phase: 0 idle · 1 inhale (O mouth, eyes closed) · 2 exhale
@@ -39,7 +37,6 @@ struct CapsySceneView: UIViewRepresentable {
     func updateUIView(_ view: SCNView, context: Context) {
         let capsy = context.coordinator.capsy
         capsy.targetFill = fraction
-        capsy.breathDrive = breath
         capsy.set(style: style)
         capsy.set(mood: mood ?? MascotMood.forFraction(fraction))
         capsy.set(breathPhase: breathPhase)
@@ -69,7 +66,7 @@ final class CapsyScene {
 
     // Set from SwiftUI; consumed on the render loop.
     var targetFill: Double = 0
-    var breathDrive: Double = 0
+    private var breathValue = 0.0   // 0 exhaled … 1 inhaled, eased on the scene clock
 
     private let bodyRoot = SCNNode()      // breathes (uniform scale)
     private let glassNode = SCNNode()
@@ -369,6 +366,8 @@ final class CapsyScene {
         guard newPhase != breathPhase else { return }
         breathPhase = newPhase
         applyFace()
+        // The water feels every turn of the breath — a soft push each way.
+        pendingImpulse += newPhase == 1 ? 0.10 : (newPhase == 2 ? -0.10 : 0)
     }
 
     /// The face is the instruction: during the ritual Capsy closes his eyes,
@@ -493,12 +492,23 @@ final class CapsyScene {
             cube.node.position.y = cube.baseY + waveAmp * sin(Float(time) * 2.4 + cube.phase)
         }
 
-        // Breathing: 12/min idle + ritual drive (design book #041) — big and
-        // readable during the ritual, so Capsy visibly leads the breath.
+        // Ritual breathing lives on the SCENE clock. Values handed in from
+        // SwiftUI jump between phases (representables get the final value
+        // instantly), so the scene itself eases — a continuous curve with
+        // no pop at the inhale/exhale turn. Inhale fills in ~4 s, exhale
+        // empties in ~6 s.
+        let breathTarget: Double = breathPhase == 1 ? 1 : 0
+        let breathRate: Double = breathPhase == 1 ? 1.0 : 0.55
+        breathValue += (breathTarget - breathValue) * min(1, dt * breathRate)
+
+        // 12/min idle breath + the ritual breath on top (design book #041).
         let idle = 0.045 * sin(time * 1.257)
-        let scale = Float(1 + idle + breathDrive * 0.16)
+        let scale = Float(1 + idle + breathValue * 0.16)
         bodyRoot.scale = SCNVector3(scale, scale, scale)
         shadowNode.scale = SCNVector3(scale, scale, 1)
+        // Chest lifts back a touch on the inhale — the body breathes, not
+        // just inflates.
+        bodyRoot.eulerAngles.x = Float(-0.05 * breathValue)
 
         // A full vessel trembles, asking to be poured out.
         if fill > 0.97 {

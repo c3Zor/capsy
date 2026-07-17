@@ -19,7 +19,6 @@ struct ReleaseView: View {
     }
 
     @State private var phase: Phase = .ready
-    @State private var breath: CGFloat = 0.55
     @State private var fraction = 0.0
     @State private var cycle = 0
     @State private var lastDrained = 0
@@ -55,7 +54,6 @@ struct ReleaseView: View {
             // inhale, settles on the exhale, and the liquid drains inside it.
             CapsySceneView(fraction: fraction,
                            style: VesselStyle(rawValue: vesselRaw) ?? .kibiras,
-                           breath: Double((breath - 0.55) / 0.45),
                            mood: phase == .done ? .palengvejas : nil,
                            breathPhase: phase == .inhale ? 1 : (phase == .exhale ? 2 : 0))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -158,14 +156,12 @@ struct ReleaseView: View {
             phase = .inhale
             Haptics.tap()
             SoundEngine.breatheIn()
-            withAnimation(.easeInOut(duration: 4)) { breath = 1.0 }
             try? await Task.sleep(for: .seconds(4))
             if Task.isCancelled { return }
 
             phase = .exhale
             Haptics.tap()
             SoundEngine.breatheOut()
-            withAnimation(.easeInOut(duration: 6)) { breath = 0.55 }
             // The bucket only drains while breathing out — continuously,
             // over the whole 6-second exhale, so the fall is smooth.
             let from = fraction
