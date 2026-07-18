@@ -126,7 +126,7 @@ final class CapsyScene {
             scene.rootNode.addChildNode(n)
             return n
         }
-        _ = light(.directional, UIColor(red: 1.0, green: 0.95, blue: 0.88, alpha: 1), 1000,
+        _ = light(.directional, UIColor(red: 1.0, green: 0.95, blue: 0.88, alpha: 1), 1250,
                   euler: SCNVector3(-0.9, 0.55, 0))
         _ = light(.directional, UIColor(red: 1.0, green: 0.85, blue: 0.72, alpha: 1), 300,
                   euler: SCNVector3(-0.4, -2.4, 0))
@@ -138,7 +138,7 @@ final class CapsyScene {
         camera.fieldOfView = 38 // vertical — wide enough that the vessel never crops
         cameraNode.camera = camera
         // Slightly above the rim so the liquid's voxel surface is visible.
-        cameraNode.position = SCNVector3(0, 2.1, 5.6)
+        cameraNode.position = SCNVector3(0, 2.1, 5.15)
         let target = SCNNode()
         target.position = SCNVector3(0, 0.72, 0)
         scene.rootNode.addChildNode(target)
@@ -154,7 +154,7 @@ final class CapsyScene {
         plane.cornerRadius = 0.42
         let m = SCNMaterial()
         m.lightingModel = .constant
-        m.diffuse.contents = UIColor(red: 0.17, green: 0.15, blue: 0.13, alpha: 0.16)
+        m.diffuse.contents = UIColor(red: 0.17, green: 0.15, blue: 0.13, alpha: 0.20)
         m.isDoubleSided = true
         plane.materials = [m]
         shadowNode.geometry = plane
@@ -231,10 +231,11 @@ final class CapsyScene {
     }
 
     private func maxLiquidHeight(for style: VesselStyle) -> Float {
+        // Close to the rim, so "50 %" visibly means half a vessel.
         switch style {
-        case .kibiras: 1.38
-        case .eliksyras: 1.35
-        case .taure: 1.42
+        case .kibiras: 1.50
+        case .eliksyras: 1.42
+        case .taure: 1.44
         }
     }
 

@@ -22,26 +22,31 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // Everything above the action buttons scrolls if it must;
-                // Capsy keeps a fixed, generous stage and is never squeezed.
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 12) {
-                        header
-                        // The hero comes first — always fully visible above the fold.
-                        CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel, hat: hat)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 300)
-                        ProgressHUD()
-                        DailyQuestCard()
-                        vesselPicker
-                    }
-                    .padding(.bottom, 12) // last row clears the pinned buttons
+            // Content scrolls; the action buttons live in a bottom safe-area
+            // inset with a solid background, so scrolling content is never
+            // half-clipped behind them — it simply ends above the footer.
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 10) {
+                    header
+                    // The hero comes first — always fully visible above the fold.
+                    CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel, hat: hat)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 300)
+                    ProgressHUD()
+                    DailyQuestCard()
+                    vesselPicker
                 }
-                buttons
-                    .padding(.top, 10)
+                .padding(.horizontal, 24)
+                .padding(.top, 8)
+                .padding(.bottom, 12)
             }
-            .padding(24)
+            .safeAreaInset(edge: .bottom) {
+                buttons
+                    .padding(.horizontal, 24)
+                    .padding(.top, 10)
+                    .padding(.bottom, 6)
+                    .background(Color.bg)
+            }
             .background(Color.bg.ignoresSafeArea())
             .toolbar {
                 Button {
@@ -49,32 +54,32 @@ struct HomeView: View {
                     themeMode = DayNight.isNight(themeMode) ? "day" : "night"
                 } label: {
                     Image(systemName: DayNight.isNight(themeMode) ? "sun.max" : "moon")
-                        .foregroundStyle(Color.sub)
+                        .foregroundStyle(Color.ink.opacity(0.75))
                 }
                 Button {
                     Haptics.tap()
                     soundOn.toggle()
                 } label: {
                     Image(systemName: soundOn ? "speaker.wave.2.fill" : "speaker.slash.fill")
-                        .foregroundStyle(Color.sub)
+                        .foregroundStyle(Color.ink.opacity(0.75))
                 }
                 NavigationLink {
                     HabitsView()
                 } label: {
                     Image(systemName: "checkmark.seal.fill")
-                        .foregroundStyle(Color.sub)
+                        .foregroundStyle(Color.ink.opacity(0.75))
                 }
                 NavigationLink {
                     ShopView()
                 } label: {
                     Image(systemName: "bag.fill")
-                        .foregroundStyle(Color.sub)
+                        .foregroundStyle(Color.ink.opacity(0.75))
                 }
                 NavigationLink {
                     JourneyView()
                 } label: {
                     Image(systemName: "chart.bar.fill")
-                        .foregroundStyle(Color.sub)
+                        .foregroundStyle(Color.ink.opacity(0.75))
                 }
             }
         }
@@ -177,7 +182,7 @@ struct HomeView: View {
                         .font(.display(20))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .background(Capsule().stroke(Color.sub, lineWidth: 1.5))
+                        .background(Capsule().stroke(Color.ink.opacity(0.45), lineWidth: 1.5))
                         .foregroundStyle(Color.ink)
                 }
                 .transition(.opacity.combined(with: .move(edge: .bottom)))

@@ -90,7 +90,7 @@ struct ShopView: View {
     }
 
     private var hatItems: [ShopItem] {
-        var items = [ShopItem(id: "hat.none", name: "No Hat", symbol: "circle.slash",
+        var items = [ShopItem(id: "hat.none", name: "No Hat", symbol: "circle.dashed",
                                price: 0, kind: .hat, alwaysOwned: true)]
         items += Reward.catalog
             .filter { $0.kind == .hat }
@@ -183,7 +183,7 @@ private struct RewardCard: View {
 
             Text(item.name)
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(isOwned ? Color.ink : Color.ink.opacity(canAfford ? 1 : 0.55))
+                .foregroundStyle(isOwned ? Color.ink : Color.ink.opacity(canAfford ? 1 : 0.72))
                 .lineLimit(1)
 
             footer
@@ -194,7 +194,7 @@ private struct RewardCard: View {
         .background(cardBackground, in: RoundedRectangle(cornerRadius: 18))
         .overlay(RoundedRectangle(cornerRadius: 18)
             .stroke(isEquipped ? Color.acc.opacity(0.6) : .clear, lineWidth: 1.5))
-        .opacity(isOwned || canAfford ? 1 : 0.55)
+        .opacity(isOwned || canAfford ? 1 : 0.72)
         .scaleEffect(isPulsing ? 1.06 : 1.0)
     }
 
@@ -234,7 +234,7 @@ private struct RewardCard: View {
             Text("NEED \(missing) MORE")
                 .font(.mono(10, weight: .medium))
                 .kerning(1)
-                .foregroundStyle(Color.sub)
+                .foregroundStyle(Color.ink.opacity(0.65))
         }
     }
 

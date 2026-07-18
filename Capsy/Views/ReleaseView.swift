@@ -28,7 +28,7 @@ struct ReleaseView: View {
     @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
 
     var body: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: 16) {
             topBar
 
             Text(phase.rawValue)

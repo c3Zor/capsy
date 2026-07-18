@@ -54,7 +54,7 @@ struct JourneyView: View {
                         .foregroundStyle(reached ? Color.ink : Color.sub)
                     Spacer()
                     Text("\(min(sessions.count, milestone.releases))/\(milestone.releases)")
-                        .font(.subheadline.monospacedDigit())
+                        .font(.mono(13, weight: .medium))
                         .foregroundStyle(Color.sub)
                 }
             }

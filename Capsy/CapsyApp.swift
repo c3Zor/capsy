@@ -13,14 +13,16 @@ struct CapsyApp: App {
             UserDefaults.standard.set(true, forKey: "hasOnboarded")
             UserDefaults.standard.set(args.contains("--night") ? "night" : "day",
                                       forKey: "themeMode")
+            // Deterministic screenshots: the matrix reuses one simulator, so
+            // always reset to the exact seed instead of keeping prior data.
             let context = AppDatabase.container.mainContext
-            let existing = (try? context.fetch(FetchDescriptor<StressDrop>())) ?? []
-            if existing.isEmpty {
-                // --fill-full seeds to capacity; plain --demo seeds ~50 %.
-                let intensities = args.contains("--fill-full") ? [3, 3, 3, 3] : [1, 2, 3]
-                for i in intensities { context.insert(StressDrop(intensity: i, note: "")) }
-                try? context.save()
+            for drop in (try? context.fetch(FetchDescriptor<StressDrop>())) ?? [] {
+                context.delete(drop)
             }
+            // --fill-full seeds to capacity (4×6 = 24); plain --demo ~50 %.
+            let intensities = args.contains("--fill-full") ? [3, 3, 3, 3] : [1, 2, 3]
+            for i in intensities { context.insert(StressDrop(intensity: i, note: "")) }
+            try? context.save()
         }
     }
 
