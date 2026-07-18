@@ -12,7 +12,6 @@
 		0DF384379324F19EC96AA26B /* CapsySceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD8C65D0E015C1E51936D9C /* CapsySceneView.swift */; };
 		1E656557FA3A777404277EC5 /* Reminders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317305F7857FD98070A7082F /* Reminders.swift */; };
 		23DBA51290061DD85682860B /* CapsyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */; };
-		AB01CD23EF4501234567890A /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB01CD23EF4501234567890B /* AppDatabase.swift */; };
 		24309FB86AE560EB54B6A892 /* CapsyWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6DA167556655E6BE7D8FA0 /* CapsyWidget.swift */; };
 		4C2C4A127E8F0C1F2394FC8E /* CapsyWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E695890FEC783450590CF462 /* CapsyWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6507612F003BD881C21521DD /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97FE304F8AB70078253B829 /* MascotView.swift */; };
@@ -30,6 +29,7 @@
 		C93BE65CD3506DA9B43CFC85 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB484B9BBA490FB4B19707F /* ShopView.swift */; };
 		CBC1ACBAFF7C0CD1B2AB36F3 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780F57845FE61F0121813E5B /* ProgressHUD.swift */; };
 		E8E45751C332620A85CF0DDA /* Health.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FEE345FE8EED6E25029898 /* Health.swift */; };
+		F09AA0D0BE06AB98DE9D6B30 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09BC593380ED83F3A9F65EDA /* AppDatabase.swift */; };
 		F187302A8245ADF2BA16372C /* SoundEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79586FC017231914147B713 /* SoundEngine.swift */; };
 		F55A348885597CCFD0BD400A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6EBA599560862EDCCEBEF58 /* Theme.swift */; };
 /* End PBXBuildFile section */
@@ -60,11 +60,11 @@
 
 /* Begin PBXFileReference section */
 		0495B8586EDA78FD727E3E2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		09BC593380ED83F3A9F65EDA /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabase.swift; sourceTree = "<group>"; };
 		11FEE345FE8EED6E25029898 /* Health.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Health.swift; sourceTree = "<group>"; };
 		19472D60913D17D5DA1A27A6 /* Capsy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Capsy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		235D9B2B3090EA5F5804256D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsyApp.swift; sourceTree = "<group>"; };
-		AB01CD23EF4501234567890B /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabase.swift; sourceTree = "<group>"; };
 		317305F7857FD98070A7082F /* Reminders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminders.swift; sourceTree = "<group>"; };
 		33815E66BB6BAD4DF7AB9603 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		456A898061B474575E38C9F8 /* SharedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedState.swift; sourceTree = "<group>"; };
@@ -94,9 +94,9 @@
 		9BE63BB2F87065BB164EAB61 /* Capsy */ = {
 			isa = PBXGroup;
 			children = (
+				09BC593380ED83F3A9F65EDA /* AppDatabase.swift */,
 				7481B716993B8BC1B5A41DAF /* Assets.xcassets */,
 				9BFC324A68802CD2690088F1 /* Capsy.entitlements */,
-				AB01CD23EF4501234567890B /* AppDatabase.swift */,
 				2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */,
 				590F36413CD36F1E58BBD2AC /* Game.swift */,
 				11FEE345FE8EED6E25029898 /* Health.swift */,
@@ -262,9 +262,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F09AA0D0BE06AB98DE9D6B30 /* AppDatabase.swift in Sources */,
 				9A927518B0BBE18E3EB4CB61 /* BucketView.swift in Sources */,
 				23DBA51290061DD85682860B /* CapsyApp.swift in Sources */,
-				AB01CD23EF4501234567890A /* AppDatabase.swift in Sources */,
 				0DF384379324F19EC96AA26B /* CapsySceneView.swift in Sources */,
 				696442308AE1B6937EBB3C12 /* Game.swift in Sources */,
 				7548B37F65F9A8CA3AFB4064 /* HabitsView.swift in Sources */,

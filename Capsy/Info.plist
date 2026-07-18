@@ -22,6 +22,10 @@
 	<string>1</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Capsy reads your HRV to gently reflect how your body feels.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Capsy logs your ritual as a mindful minute in Health.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>
