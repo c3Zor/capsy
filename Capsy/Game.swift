@@ -33,6 +33,7 @@ extension Notification.Name {
 // The public API is unchanged from the old UserDefaults version, so every call
 // site keeps compiling — only the storage moved into the real database.
 
+@MainActor
 enum Game {
     private static let defaults = UserDefaults.standard
 

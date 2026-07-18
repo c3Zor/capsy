@@ -32,14 +32,17 @@ jobs:
 
       - name: Build (iOS Simulator, be pasirašymo)
         run: |
-          xcodebuild build \
+          if ! xcodebuild build \
             -project Capsy.xcodeproj \
             -scheme Capsy \
             -destination "id=$UDID" \
             -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO \
-            | tail -60
-          exit ${PIPESTATUS[0]}
+            CODE_SIGNING_ALLOWED=NO > build.log 2>&1; then
+            echo "BUILD FAILED — klaidos:"
+            grep -E "error:" build.log | head -40
+            exit 65
+          fi
+          tail -5 build.log
 
       # Vizualinis self-check: pilna matrica — visi ekranai, abi temos,
       # skirtingi užpildymo lygiai. Nuotraukos komitinamos į /screenshots.
