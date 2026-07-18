@@ -30,7 +30,7 @@ struct HomeView: View {
                         // The hero comes first — always fully visible above the fold.
                         CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel, hat: hat)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 340)
+                            .frame(height: 300)
                         ProgressHUD()
                         DailyQuestCard()
                         vesselPicker
