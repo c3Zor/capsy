@@ -21,12 +21,14 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
+            VStack(spacing: 12) {
                 header
                 ProgressHUD()
                 DailyQuestCard()
+                // Capsy is the hero — he must never get squeezed by the HUD.
                 CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel, hat: hat)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(minHeight: 300)
                 vesselPicker
                 buttons
             }
@@ -108,7 +110,7 @@ struct HomeView: View {
                 .kerning(1.8)
                 .foregroundStyle(Color.sub)
             Text("\(Int(fraction * 100)) %")
-                .font(.mono(54, weight: .medium))
+                .font(.mono(42, weight: .medium))
                 .monospacedDigit()
                 .foregroundStyle(Color.ink)
                 .contentTransition(.numericText())
