@@ -28,6 +28,7 @@
 		C16C86CA62617DDDC353A2D3 /* ReleaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC6D268F051BCCE3EAC37B8 /* ReleaseView.swift */; };
 		C93BE65CD3506DA9B43CFC85 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB484B9BBA490FB4B19707F /* ShopView.swift */; };
 		CBC1ACBAFF7C0CD1B2AB36F3 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780F57845FE61F0121813E5B /* ProgressHUD.swift */; };
+		E8E45751C332620A85CF0DDA /* Health.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FEE345FE8EED6E25029898 /* Health.swift */; };
 		F187302A8245ADF2BA16372C /* SoundEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79586FC017231914147B713 /* SoundEngine.swift */; };
 		F55A348885597CCFD0BD400A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6EBA599560862EDCCEBEF58 /* Theme.swift */; };
 /* End PBXBuildFile section */
@@ -58,6 +59,7 @@
 
 /* Begin PBXFileReference section */
 		0495B8586EDA78FD727E3E2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		11FEE345FE8EED6E25029898 /* Health.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Health.swift; sourceTree = "<group>"; };
 		19472D60913D17D5DA1A27A6 /* Capsy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Capsy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		235D9B2B3090EA5F5804256D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsyApp.swift; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 				9BFC324A68802CD2690088F1 /* Capsy.entitlements */,
 				2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */,
 				590F36413CD36F1E58BBD2AC /* Game.swift */,
+				11FEE345FE8EED6E25029898 /* Health.swift */,
 				50D0CE33AF9D9E71644B0123 /* Info.plist */,
 				33815E66BB6BAD4DF7AB9603 /* Models.swift */,
 				F8FB5B29969F6A37D1403593 /* MotionManager.swift */,
@@ -261,6 +264,7 @@
 				0DF384379324F19EC96AA26B /* CapsySceneView.swift in Sources */,
 				696442308AE1B6937EBB3C12 /* Game.swift in Sources */,
 				7548B37F65F9A8CA3AFB4064 /* HabitsView.swift in Sources */,
+				E8E45751C332620A85CF0DDA /* Health.swift in Sources */,
 				A4532DB8A5D8FD94CB2EFFFE /* HomeView.swift in Sources */,
 				8A2E6AD8C3E624BC662CC471 /* JourneyView.swift in Sources */,
 				6507612F003BD881C21521DD /* MascotView.swift in Sources */,
