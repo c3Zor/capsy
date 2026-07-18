@@ -42,6 +42,7 @@ struct CapsyApp: App {
                 case "shop":    NavigationStack { ShopView() }
                 case "habits":  NavigationStack { HabitsView() }
                 case "journey": NavigationStack { JourneyView() }
+                case "paywall": PaywallView()
                 default:
                     if hasOnboarded {
                         HomeView()

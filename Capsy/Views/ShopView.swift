@@ -22,6 +22,7 @@ struct ShopView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
                 header
+                if !Plus.shared.isPlus { plusBanner }
                 section(title: "BODIES", items: bodyItems)
                 section(title: "HATS", items: hatItems)
             }
@@ -29,6 +30,41 @@ struct ShopView: View {
         }
         .background(Color.bg.ignoresSafeArea())
         .navigationTitle("Rewards")
+        .sheet(isPresented: $showPaywall) { PaywallView() }
+    }
+
+    @State private var showPaywall = false
+
+    /// The quiet upsell: one card, no countdowns, no pressure.
+    private var plusBanner: some View {
+        Button {
+            Haptics.tap()
+            showPaywall = true
+        } label: {
+            HStack(spacing: 14) {
+                RoundedRectangle(cornerRadius: 5)
+                    .fill(Color.acc)
+                    .frame(width: 18, height: 18)
+                    .rotationEffect(.degrees(45))
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("CAPSY PLUS")
+                        .font(.display(16))
+                        .foregroundStyle(Color.ink)
+                    Text("Everything unlocked · body insights · unlimited habits")
+                        .font(.mono(9.5, weight: .medium))
+                        .kerning(0.8)
+                        .foregroundStyle(Color.sub)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Color.acc)
+            }
+            .padding(16)
+            .background(Color.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.acc.opacity(0.4), lineWidth: 1.5))
+        }
     }
 
     // MARK: - Header
@@ -102,7 +138,8 @@ struct ShopView: View {
     // MARK: - State helpers
 
     private func isOwned(_ item: ShopItem) -> Bool {
-        item.alwaysOwned || Game.owns(item.id)
+        // Plus unlocks the whole cosmetic catalog instantly.
+        item.alwaysOwned || Game.owns(item.id) || Plus.shared.isPlus
     }
 
     private func isEquipped(_ item: ShopItem) -> Bool {

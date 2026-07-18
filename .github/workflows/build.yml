@@ -68,6 +68,7 @@ jobs:
           shot shop        --demo --screen shop
           shot habits      --demo --screen habits
           shot journey     --demo --screen journey
+          shot paywall     --demo --screen paywall
 
       - name: Commit generated project + screenshots
         if: github.event_name == 'push'

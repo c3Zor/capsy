@@ -40,6 +40,7 @@ struct HabitsView: View {
     @Query(sort: \Habit.createdAt) private var habits: [Habit]
 
     @State private var showAdd = false
+    @State private var showPaywall = false
 
     var body: some View {
         List {
@@ -74,12 +75,18 @@ struct HabitsView: View {
         .toolbar {
             Button {
                 Haptics.tap()
-                showAdd = true
+                // Free tier holds four habits; Plus removes the cap.
+                if habits.count >= 4 && !Plus.shared.isPlus {
+                    showPaywall = true
+                } else {
+                    showAdd = true
+                }
             } label: {
                 Image(systemName: "plus.circle.fill")
                     .foregroundStyle(Color.acc)
             }
         }
+        .sheet(isPresented: $showPaywall) { PaywallView() }
         .sheet(isPresented: $showAdd) {
             AddHabitSheet { name, symbol in
                 context.insert(Habit(name: name, symbol: symbol))
