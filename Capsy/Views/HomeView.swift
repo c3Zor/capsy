@@ -35,6 +35,7 @@ struct HomeView: View {
                         DailyQuestCard()
                         vesselPicker
                     }
+                    .padding(.bottom, 12) // last row clears the pinned buttons
                 }
                 buttons
                     .padding(.top, 10)

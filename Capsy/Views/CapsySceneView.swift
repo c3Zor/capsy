@@ -33,6 +33,9 @@ struct CapsySceneView: UIViewRepresentable {
         view.delegate = context.coordinator
         view.isPlaying = true
         view.preferredFramesPerSecond = 60
+        // The scene never needs touches — without this it swallows drag
+        // gestures and the surrounding ScrollView cannot scroll.
+        view.isUserInteractionEnabled = false
         return view
     }
 
