@@ -31,7 +31,7 @@ struct HomeView: View {
                         DailyQuestCard()
                         CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel, hat: hat)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 330)
+                            .frame(height: 360)
                         vesselPicker
                     }
                 }

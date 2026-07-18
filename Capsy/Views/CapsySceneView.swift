@@ -132,10 +132,10 @@ final class CapsyScene {
 
     private func buildCamera() {
         let camera = SCNCamera()
-        camera.fieldOfView = 30
+        camera.fieldOfView = 38 // vertical — wide enough that the vessel never crops
         cameraNode.camera = camera
         // Slightly above the rim so the liquid's voxel surface is visible.
-        cameraNode.position = SCNVector3(0, 2.1, 5.2)
+        cameraNode.position = SCNVector3(0, 2.1, 5.6)
         let target = SCNNode()
         target.position = SCNVector3(0, 0.72, 0)
         scene.rootNode.addChildNode(target)
