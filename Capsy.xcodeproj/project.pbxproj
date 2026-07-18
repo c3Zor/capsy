@@ -16,6 +16,8 @@
 		4C2C4A127E8F0C1F2394FC8E /* CapsyWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E695890FEC783450590CF462 /* CapsyWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6507612F003BD881C21521DD /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97FE304F8AB70078253B829 /* MascotView.swift */; };
 		667FBD725FA7D38D5112E71C /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456A898061B474575E38C9F8 /* SharedState.swift */; };
+		696442308AE1B6937EBB3C12 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590F36413CD36F1E58BBD2AC /* Game.swift */; };
+		7548B37F65F9A8CA3AFB4064 /* HabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D477B173821A5D9DA735866 /* HabitsView.swift */; };
 		8A2E6AD8C3E624BC662CC471 /* JourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E920843F3FA5F7811A976B /* JourneyView.swift */; };
 		9A927518B0BBE18E3EB4CB61 /* BucketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9B379F927D1A782A511911 /* BucketView.swift */; };
 		9D29A1A7EEEFCB8D94BD2B3A /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FB5B29969F6A37D1403593 /* MotionManager.swift */; };
@@ -24,6 +26,8 @@
 		B532EF4C777ECD120BAD5A57 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33815E66BB6BAD4DF7AB9603 /* Models.swift */; };
 		BC6BF04A0031665BD6716A21 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235D9B2B3090EA5F5804256D /* OnboardingView.swift */; };
 		C16C86CA62617DDDC353A2D3 /* ReleaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC6D268F051BCCE3EAC37B8 /* ReleaseView.swift */; };
+		C93BE65CD3506DA9B43CFC85 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB484B9BBA490FB4B19707F /* ShopView.swift */; };
+		CBC1ACBAFF7C0CD1B2AB36F3 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780F57845FE61F0121813E5B /* ProgressHUD.swift */; };
 		F187302A8245ADF2BA16372C /* SoundEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79586FC017231914147B713 /* SoundEngine.swift */; };
 		F55A348885597CCFD0BD400A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6EBA599560862EDCCEBEF58 /* Theme.swift */; };
 /* End PBXBuildFile section */
@@ -62,9 +66,13 @@
 		456A898061B474575E38C9F8 /* SharedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedState.swift; sourceTree = "<group>"; };
 		4BC6D268F051BCCE3EAC37B8 /* ReleaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseView.swift; sourceTree = "<group>"; };
 		50D0CE33AF9D9E71644B0123 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		590F36413CD36F1E58BBD2AC /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		5B9B379F927D1A782A511911 /* BucketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BucketView.swift; sourceTree = "<group>"; };
+		5D477B173821A5D9DA735866 /* HabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsView.swift; sourceTree = "<group>"; };
 		6A6DA167556655E6BE7D8FA0 /* CapsyWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsyWidget.swift; sourceTree = "<group>"; };
+		6CB484B9BBA490FB4B19707F /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
 		7481B716993B8BC1B5A41DAF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		780F57845FE61F0121813E5B /* ProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHUD.swift; sourceTree = "<group>"; };
 		9AD8C65D0E015C1E51936D9C /* CapsySceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsySceneView.swift; sourceTree = "<group>"; };
 		9BFC324A68802CD2690088F1 /* Capsy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Capsy.entitlements; sourceTree = "<group>"; };
 		9E0749C55E0A11EC064459BB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -85,6 +93,7 @@
 				7481B716993B8BC1B5A41DAF /* Assets.xcassets */,
 				9BFC324A68802CD2690088F1 /* Capsy.entitlements */,
 				2E5C77E99FC8FABDF6C2C0F7 /* CapsyApp.swift */,
+				590F36413CD36F1E58BBD2AC /* Game.swift */,
 				50D0CE33AF9D9E71644B0123 /* Info.plist */,
 				33815E66BB6BAD4DF7AB9603 /* Models.swift */,
 				F8FB5B29969F6A37D1403593 /* MotionManager.swift */,
@@ -138,12 +147,15 @@
 			children = (
 				5B9B379F927D1A782A511911 /* BucketView.swift */,
 				9AD8C65D0E015C1E51936D9C /* CapsySceneView.swift */,
+				5D477B173821A5D9DA735866 /* HabitsView.swift */,
 				9E0749C55E0A11EC064459BB /* HomeView.swift */,
 				A5E920843F3FA5F7811A976B /* JourneyView.swift */,
 				B97FE304F8AB70078253B829 /* MascotView.swift */,
 				235D9B2B3090EA5F5804256D /* OnboardingView.swift */,
+				780F57845FE61F0121813E5B /* ProgressHUD.swift */,
 				4BC6D268F051BCCE3EAC37B8 /* ReleaseView.swift */,
 				AC14AB5B93F748EA42152E96 /* ShareCardView.swift */,
+				6CB484B9BBA490FB4B19707F /* ShopView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -247,16 +259,20 @@
 				9A927518B0BBE18E3EB4CB61 /* BucketView.swift in Sources */,
 				23DBA51290061DD85682860B /* CapsyApp.swift in Sources */,
 				0DF384379324F19EC96AA26B /* CapsySceneView.swift in Sources */,
+				696442308AE1B6937EBB3C12 /* Game.swift in Sources */,
+				7548B37F65F9A8CA3AFB4064 /* HabitsView.swift in Sources */,
 				A4532DB8A5D8FD94CB2EFFFE /* HomeView.swift in Sources */,
 				8A2E6AD8C3E624BC662CC471 /* JourneyView.swift in Sources */,
 				6507612F003BD881C21521DD /* MascotView.swift in Sources */,
 				B532EF4C777ECD120BAD5A57 /* Models.swift in Sources */,
 				9D29A1A7EEEFCB8D94BD2B3A /* MotionManager.swift in Sources */,
 				BC6BF04A0031665BD6716A21 /* OnboardingView.swift in Sources */,
+				CBC1ACBAFF7C0CD1B2AB36F3 /* ProgressHUD.swift in Sources */,
 				C16C86CA62617DDDC353A2D3 /* ReleaseView.swift in Sources */,
 				1E656557FA3A777404277EC5 /* Reminders.swift in Sources */,
 				0ACC405AC9CF350E5106A4A0 /* ShareCardView.swift in Sources */,
 				667FBD725FA7D38D5112E71C /* SharedState.swift in Sources */,
+				C93BE65CD3506DA9B43CFC85 /* ShopView.swift in Sources */,
 				F187302A8245ADF2BA16372C /* SoundEngine.swift in Sources */,
 				F55A348885597CCFD0BD400A /* Theme.swift in Sources */,
 			);
