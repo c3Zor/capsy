@@ -90,18 +90,62 @@ struct PaywallView: View {
         }
     }
 
+    /// StoreKit configs only inject via an Xcode scheme, so the CI
+    /// screenshot runner never gets real products — demo mode shows
+    /// representative cards instead. Never used in a real session.
+    private var isDemo: Bool {
+        ProcessInfo.processInfo.arguments.contains("--demo")
+    }
+
     private var priceCards: some View {
         VStack(spacing: 10) {
             if plus.products.isEmpty {
-                Text(plus.isLoading ? "LOADING PRICES…" : "STORE UNAVAILABLE. TRY AGAIN LATER.")
-                    .font(.mono(11, weight: .medium))
-                    .kerning(1.4)
-                    .foregroundStyle(Color.sub)
-                    .padding(.vertical, 24)
+                if isDemo {
+                    mockCard(name: "MONTHLY", price: "$2.99", badge: nil, id: Plus.monthlyID)
+                    mockCard(name: "YEARLY", price: "$19.99", badge: "BEST VALUE", id: Plus.yearlyID)
+                    mockCard(name: "LIFETIME", price: "$49.99", badge: "PAY ONCE", id: Plus.lifetimeID)
+                } else {
+                    Text(plus.isLoading ? "LOADING PRICES…" : "STORE UNAVAILABLE. TRY AGAIN LATER.")
+                        .font(.mono(11, weight: .medium))
+                        .kerning(1.4)
+                        .foregroundStyle(Color.sub)
+                        .padding(.vertical, 24)
+                }
             }
             ForEach(plus.products, id: \.id) { product in
                 priceCard(product)
             }
+        }
+    }
+
+    private func mockCard(name: String, price: String, badge: String?, id: String) -> some View {
+        let isSelected = selectedID == id
+        return Button {
+            Haptics.tap()
+            withAnimation(.earth) { selectedID = id }
+        } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(name)
+                        .font(.display(16))
+                        .foregroundStyle(Color.ink)
+                    if let badge {
+                        Text(badge)
+                            .font(.mono(9, weight: .semibold))
+                            .kerning(1.2)
+                            .foregroundStyle(Color.acc)
+                    }
+                }
+                Spacer()
+                Text(price)
+                    .font(.mono(17, weight: .medium))
+                    .foregroundStyle(Color.ink)
+            }
+            .padding(16)
+            .background(Color.white.opacity(isSelected ? 0.09 : 0.03),
+                        in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16)
+                .stroke(isSelected ? Color.acc : Color.ink.opacity(0.12), lineWidth: 1.5))
         }
     }
 
@@ -166,7 +210,8 @@ struct PaywallView: View {
                     .background(Color.acc, in: Capsule())
                     .foregroundStyle(Color.bg)
             }
-            .disabled(busy || plus.products.isEmpty)
+            .disabled(busy || (plus.products.isEmpty && !isDemo))
+            .opacity(busy || (plus.products.isEmpty && !isDemo) ? 0.55 : 1)
 
             Button {
                 Task { await plus.restore() }
