@@ -27,11 +27,12 @@ struct HomeView: View {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 12) {
                         header
-                        ProgressHUD()
-                        DailyQuestCard()
+                        // The hero comes first — always fully visible above the fold.
                         CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel, hat: hat)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 360)
+                            .frame(height: 340)
+                        ProgressHUD()
+                        DailyQuestCard()
                         vesselPicker
                     }
                 }
