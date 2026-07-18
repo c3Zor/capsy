@@ -21,16 +21,22 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 12) {
-                header
-                ProgressHUD()
-                DailyQuestCard()
-                // Capsy is the hero — he must never get squeezed by the HUD.
-                CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel, hat: hat)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .frame(minHeight: 300)
-                vesselPicker
+            VStack(spacing: 0) {
+                // Everything above the action buttons scrolls if it must;
+                // Capsy keeps a fixed, generous stage and is never squeezed.
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 12) {
+                        header
+                        ProgressHUD()
+                        DailyQuestCard()
+                        CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel, hat: hat)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 330)
+                        vesselPicker
+                    }
+                }
                 buttons
+                    .padding(.top, 10)
             }
             .padding(24)
             .background(Color.bg.ignoresSafeArea())
@@ -110,7 +116,7 @@ struct HomeView: View {
                 .kerning(1.8)
                 .foregroundStyle(Color.sub)
             Text("\(Int(fraction * 100)) %")
-                .font(.mono(42, weight: .medium))
+                .font(.mono(38, weight: .medium))
                 .monospacedDigit()
                 .foregroundStyle(Color.ink)
                 .contentTransition(.numericText())
