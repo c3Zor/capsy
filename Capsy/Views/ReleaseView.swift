@@ -181,6 +181,7 @@ struct ReleaseView: View {
         for drop in pending { drop.released = true }
         context.insert(ReleaseSession(cycles: totalCycles, drainedUnits: lastDrained))
         try? context.save()
+        Game.earn(gold: 20, xp: 25) // the ritual is the biggest earner
         Bucket.syncWidget(fraction: 0)
         Haptics.success()
         SoundEngine.chime() // Tibeto dubens tonas su ilgu gesimu

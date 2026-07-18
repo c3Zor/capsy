@@ -21,6 +21,8 @@ struct CapsySceneView: UIViewRepresentable {
     /// Ritual phase: 0 idle · 1 inhale (O mouth, eyes closed) · 2 exhale
     /// (relaxed smile, voxel steam evaporates upward).
     var breathPhase: Int = 0
+    /// Equipped hat reward id ("", "hat.leaf", "hat.beanie", "hat.crown").
+    var hat: String = ""
 
     func makeUIView(context: Context) -> SCNView {
         let view = SCNView()
@@ -40,6 +42,7 @@ struct CapsySceneView: UIViewRepresentable {
         capsy.set(style: style)
         capsy.set(mood: mood ?? MascotMood.forFraction(fraction))
         capsy.set(breathPhase: breathPhase)
+        capsy.set(hat: hat)
         if dropSignal != context.coordinator.lastDropSignal {
             context.coordinator.lastDropSignal = dropSignal
             capsy.dropPebble()
@@ -90,6 +93,8 @@ final class CapsyScene {
     private var nextBlink: TimeInterval = 2.5
     private var breathPhase = 0
     private var lastVapor: TimeInterval = 0
+    private var hatId = ""
+    private let hatNode = SCNNode()
 
     private let liquidMaterial = SCNMaterial()
 
@@ -215,13 +220,30 @@ final class CapsyScene {
             [[0.001, 0.0], [0.46, 0.02], [0.72, 0.40], [0.75, 0.70], [0.62, 1.05], [0.35, 1.42], [0.15, 1.72], [0.05, 1.92]]
                 .map { SIMD2($0[0], $0[1]) }
         case .taure:
-            [[0.001, 0.0], [0.50, 0.0], [0.54, 0.04], [0.67, 1.50], [0.71, 1.56]]
+            // A real goblet: foot, slim stem, then the bowl.
+            [[0.001, 0.0], [0.40, 0.0], [0.42, 0.04], [0.12, 0.10], [0.06, 0.16],
+             [0.06, 0.50], [0.18, 0.62], [0.44, 0.74], [0.56, 0.98], [0.59, 1.26], [0.57, 1.52]]
                 .map { SIMD2($0[0], $0[1]) }
         }
     }
 
     private func maxLiquidHeight(for style: VesselStyle) -> Float {
-        style == .eliksyras ? 1.35 : 1.38
+        switch style {
+        case .kibiras: 1.38
+        case .eliksyras: 1.35
+        case .taure: 1.42
+        }
+    }
+
+    /// Where the liquid starts: the goblet's bowl begins above the stem.
+    private func liquidFloor(for style: VesselStyle) -> Float {
+        style == .taure ? 0.68 : 0.02
+    }
+
+    /// Liquid surface height for a given fill, in profile coordinates.
+    private func surfaceHeight(_ fill: Double, style: VesselStyle) -> Float {
+        let floor = liquidFloor(for: style)
+        return floor + Float(fill) * (maxLiquidHeight(for: style) - floor)
     }
 
     /// High enough that the face stays dry at everyday levels — it only
@@ -230,7 +252,7 @@ final class CapsyScene {
         switch style {
         case .kibiras:  SCNVector3(0, 1.10, 0.80)
         case .eliksyras: SCNVector3(0, 0.88, 0.70)
-        case .taure:    SCNVector3(0, 1.06, 0.68)
+        case .taure:    SCNVector3(0, 1.08, 0.60)
         }
     }
 
@@ -307,26 +329,32 @@ final class CapsyScene {
         rimNode.position = SCNVector3(0, top.y, 0)
         if rimNode.parent == nil { bodyRoot.addChildNode(rimNode) }
 
+        // Re-seat the hat on the new body shape.
+        let currentHat = hatId
+        hatId = "~"
+        set(hat: currentHat)
+
         builtLayers = -1 // force liquid rebuild
     }
 
     /// The liquid is a stack of little clay cubes — the voxel soul of the
     /// design book, in real 3D. The top layer bobs so the water never freezes.
     private func rebuildLiquid() {
-        builtLayers = Int(Float(fill) * maxLiquidHeight(for: style) / cubeSize)
+        let floor = liquidFloor(for: style)
+        let surfaceY = surfaceHeight(fill, style: style)
+        builtLayers = Int((surfaceY - floor) / cubeSize)
         liquidRoot.childNodes.forEach { $0.removeFromParentNode() }
         topCubes.removeAll()
         guard fill > 0.02 else { return }
 
         let body = profile(for: style)
-        let surfaceY = Float(fill) * maxLiquidHeight(for: style)
         let box = SCNBox(width: CGFloat(cubeSize) * 0.94,
                          height: CGFloat(cubeSize) * 0.94,
                          length: CGFloat(cubeSize) * 0.94,
                          chamferRadius: CGFloat(cubeSize) * 0.16)
         box.materials = [liquidMaterial]
 
-        var y = cubeSize / 2
+        var y = floor + cubeSize / 2
         while y < surfaceY {
             let isTopLayer = y + cubeSize >= surfaceY
             let r = radius(atHeight: y, of: body) * 0.82
@@ -350,8 +378,9 @@ final class CapsyScene {
         }
 
         // Slosh around the middle of the liquid mass.
-        liquidPivot.position = SCNVector3(0, surfaceY * 0.5, 0)
-        liquidRoot.position = SCNVector3(0, -surfaceY * 0.5, 0)
+        let mid = (floor + surfaceY) * 0.5
+        liquidPivot.position = SCNVector3(0, mid, 0)
+        liquidRoot.position = SCNVector3(0, -mid, 0)
     }
 
     // MARK: Mood & face
@@ -431,6 +460,77 @@ final class CapsyScene {
         return shape
     }
 
+    // MARK: Hats (bought in the Rewards shop, worn with pride)
+
+    func set(hat newHat: String) {
+        guard newHat != hatId else { return }
+        hatId = newHat
+        hatNode.childNodes.forEach { $0.removeFromParentNode() }
+        if hatNode.parent == nil { bodyRoot.addChildNode(hatNode) }
+
+        let top = profile(for: style).last ?? SIMD2(0.7, 1.6)
+        hatNode.position = SCNVector3(0.12, top.y + 0.02, 0)
+        hatNode.eulerAngles.z = -0.12 // worn at a jaunty little angle
+
+        func material(_ color: UIColor) -> SCNMaterial {
+            let m = SCNMaterial()
+            m.lightingModel = .physicallyBased
+            m.diffuse.contents = color
+            m.roughness.contents = 0.7
+            return m
+        }
+
+        switch hatId {
+        case "hat.leaf":
+            // A single soft-green voxel leaf.
+            let leaf = SCNBox(width: 0.3, height: 0.05, length: 0.18, chamferRadius: 0.02)
+            leaf.materials = [material(UIColor(red: 0.55, green: 0.66, blue: 0.42, alpha: 1))]
+            let stem = SCNBox(width: 0.05, height: 0.1, length: 0.05, chamferRadius: 0.01)
+            stem.materials = leaf.materials
+            let leafNode = SCNNode(geometry: leaf)
+            leafNode.position = SCNVector3(0.06, 0.09, 0)
+            leafNode.eulerAngles.z = 0.35
+            let stemNode = SCNNode(geometry: stem)
+            hatNode.addChildNode(stemNode)
+            hatNode.addChildNode(leafNode)
+        case "hat.beanie":
+            // A cozy coral beanie with a little pom.
+            let dome = SCNCylinder(radius: 0.30, height: 0.18)
+            dome.materials = [material(UIColor(red: 0.77, green: 0.45, blue: 0.31, alpha: 1))]
+            let brim = SCNCylinder(radius: 0.32, height: 0.06)
+            brim.materials = [material(UIColor(red: 0.60, green: 0.34, blue: 0.23, alpha: 1))]
+            let pom = SCNSphere(radius: 0.07)
+            pom.materials = [material(UIColor(red: 0.93, green: 0.89, blue: 0.84, alpha: 1))]
+            let domeNode = SCNNode(geometry: dome)
+            domeNode.position = SCNVector3(0, 0.11, 0)
+            let brimNode = SCNNode(geometry: brim)
+            brimNode.position = SCNVector3(0, 0.03, 0)
+            let pomNode = SCNNode(geometry: pom)
+            pomNode.position = SCNVector3(0, 0.24, 0)
+            hatNode.addChildNode(brimNode)
+            hatNode.addChildNode(domeNode)
+            hatNode.addChildNode(pomNode)
+        case "hat.crown":
+            // A tiny golden voxel crown.
+            let gold = material(UIColor(red: 0.85, green: 0.68, blue: 0.35, alpha: 1))
+            let band = SCNCylinder(radius: 0.22, height: 0.09)
+            band.materials = [gold]
+            let bandNode = SCNNode(geometry: band)
+            bandNode.position = SCNVector3(0, 0.05, 0)
+            hatNode.addChildNode(bandNode)
+            for i in 0..<4 {
+                let spike = SCNBox(width: 0.07, height: 0.1, length: 0.07, chamferRadius: 0.01)
+                spike.materials = [gold]
+                let a = Double(i) * .pi / 2
+                let spikeNode = SCNNode(geometry: spike)
+                spikeNode.position = SCNVector3(Float(cos(a)) * 0.18, 0.13, Float(sin(a)) * 0.18)
+                hatNode.addChildNode(spikeNode)
+            }
+        default:
+            break // no hat — a free head is also a look
+        }
+    }
+
     private func blink() {
         let close = SCNAction.scaleY(to: 0.12, duration: 0.07)
         let open = SCNAction.scaleY(to: mood == .sunkus ? 0.72 : 1.0, duration: 0.09)
@@ -450,7 +550,7 @@ final class CapsyScene {
         pebble.position = SCNVector3(x, 2.7, 0)
         bodyRoot.addChildNode(pebble)
 
-        let surfaceY = Float(max(fill, 0.05)) * maxLiquidHeight(for: style)
+        let surfaceY = surfaceHeight(max(fill, 0.05), style: style)
         let fall = SCNAction.move(to: SCNVector3(x, surfaceY, 0), duration: 0.34)
         fall.timingMode = .easeIn
         let sink = SCNAction.move(by: SCNVector3(0, -0.15, 0), duration: 0.12)
@@ -472,7 +572,7 @@ final class CapsyScene {
         // Liquid level eases toward its target. Cubes are rebuilt only when
         // a whole layer changes — rebuilding every frame caused visible jank.
         fill += (targetFill - fill) * min(1, dt * 3.0)
-        let targetLayers = Int(Float(fill) * maxLiquidHeight(for: style) / cubeSize)
+        let targetLayers = Int((surfaceHeight(fill, style: style) - liquidFloor(for: style)) / cubeSize)
         if targetLayers != builtLayers { rebuildLiquid() }
 
         // Damped-spring slosh: the surface chases the device tilt with inertia.
@@ -544,7 +644,7 @@ final class CapsyScene {
         box.materials = [steam]
 
         let node = SCNNode(geometry: box)
-        let surfaceY = Float(fill) * maxLiquidHeight(for: style)
+        let surfaceY = surfaceHeight(fill, style: style)
         let r = radius(atHeight: surfaceY, of: profile(for: style)) * 0.55
         node.position = SCNVector3(Float.random(in: -r...r),
                                    surfaceY + 0.06,

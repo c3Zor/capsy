@@ -13,6 +13,7 @@ struct HomeView: View {
     @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
     @AppStorage("soundOn") private var soundOn = true
     @AppStorage("themeMode") private var themeMode = "auto"
+    @AppStorage("hat") private var hat = ""
 
     private var vessel: VesselStyle { VesselStyle(rawValue: vesselRaw) ?? .kibiras }
     private var fraction: Double { Bucket.fraction(of: drops) }
@@ -20,9 +21,11 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
+            VStack(spacing: 16) {
                 header
-                CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel)
+                ProgressHUD()
+                DailyQuestCard()
+                CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel, hat: hat)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 vesselPicker
                 buttons
@@ -42,6 +45,18 @@ struct HomeView: View {
                     soundOn.toggle()
                 } label: {
                     Image(systemName: soundOn ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                        .foregroundStyle(Color.sub)
+                }
+                NavigationLink {
+                    HabitsView()
+                } label: {
+                    Image(systemName: "checkmark.seal.fill")
+                        .foregroundStyle(Color.sub)
+                }
+                NavigationLink {
+                    ShopView()
+                } label: {
+                    Image(systemName: "bag.fill")
                         .foregroundStyle(Color.sub)
                 }
                 NavigationLink {
@@ -65,6 +80,7 @@ struct HomeView: View {
                 for intensity in [1, 2, 3] { context.insert(StressDrop(intensity: intensity, note: "")) }
                 try? context.save()
             }
+            Game.seedHabitsIfNeeded(context)
             absorbQuickDrops()
             Bucket.syncWidget(fraction: Bucket.fraction(of: drops))
         }

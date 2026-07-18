@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capsy — stress is liquid. Let it go.</title>
+<meta name="description" content="Capsy turns your stress into a little voxel creature you care for. Log drops, breathe them out, grow a garden of stillness. iOS.">
+<style>
+  :root{
+    --bg:#EDE4D6; --surface:#F4EDE2; --ink:#2B2620; --muted:#8A7E6E;
+    --acc:#E8865C; --acc-deep:#C4633C; --border:rgba(43,38,32,.12);
+    --shadow:0 18px 0 -6px rgba(43,38,32,.14);
+  }
+  html.night{
+    --bg:#191511; --surface:#211B15; --ink:#EDE4D6; --muted:#9C8F7D;
+    --acc:#F0A06E; --acc-deep:#C97A4E; --border:rgba(237,228,214,.12);
+    --shadow:0 18px 0 -6px rgba(0,0,0,.4);
+  }
+  @media (prefers-color-scheme: dark){
+    html:not(.day){
+      --bg:#191511; --surface:#211B15; --ink:#EDE4D6; --muted:#9C8F7D;
+      --acc:#F0A06E; --acc-deep:#C97A4E; --border:rgba(237,228,214,.12);
+      --shadow:0 18px 0 -6px rgba(0,0,0,.4);
+    }
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.6; overflow-x:hidden;
+    transition:background .8s ease,color .8s ease;
+  }
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:12px;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--muted)}
+  .display{font-weight:900; font-stretch:condensed; text-transform:uppercase;
+    line-height:.92; letter-spacing:.01em}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px}
+  section{padding:112px 0; position:relative}
+
+  /* ── nav ── */
+  nav{position:fixed; top:0; left:0; right:0; z-index:50; padding:16px 0;
+    transition:background .3s ease, box-shadow .3s ease}
+  nav.scrolled{background:var(--surface); box-shadow:0 1px 0 var(--border)}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between}
+  .logo{display:flex; align-items:center; gap:10px; font-weight:900;
+    font-stretch:condensed; font-size:20px; text-transform:uppercase; text-decoration:none; color:var(--ink)}
+  .logo .cube{width:16px;height:16px;background:var(--acc);border-radius:4px;
+    transform:rotate(45deg)}
+  .navlinks{display:flex; gap:26px; align-items:center}
+  .navlinks a{color:var(--muted); text-decoration:none; font-size:14.5px}
+  .navlinks a:hover{color:var(--ink)}
+  #themeBtn{width:38px;height:38px;border-radius:999px;border:1.5px solid var(--border);
+    background:transparent;color:var(--ink);cursor:pointer;font-size:15px}
+
+  /* ── buttons ── */
+  .btn{display:inline-block; padding:16px 30px; border-radius:999px; font-weight:800;
+    font-stretch:condensed; text-transform:uppercase; letter-spacing:.03em;
+    text-decoration:none; font-size:16px; transition:transform .15s ease; cursor:pointer; border:none}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(0) scale(.98)}
+  .btn-acc{background:var(--acc); color:var(--bg)}
+  .btn-ghost{border:1.5px solid var(--muted); color:var(--ink); background:transparent}
+
+  /* ── hero ── */
+  .hero{min-height:100vh; display:flex; align-items:center; padding-top:120px}
+  .hero .wrap{display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:center}
+  .hero h1{font-size:clamp(48px,8.5vw,96px)}
+  .hero h1 em{font-style:normal; color:var(--acc)}
+  .hero p.lead{font-size:19px; color:var(--muted); margin:26px 0 34px; max-width:34em}
+  .hero .cta{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+  .hero .soon{font-size:12.5px; color:var(--muted); margin-top:14px}
+
+  .phone{position:relative; margin:0 auto; width:min(320px,80vw);
+    animation:breathe 5s ease-in-out infinite}
+  .phone img{width:100%; display:block; border-radius:36px; border:6px solid var(--ink);
+    box-shadow:var(--shadow)}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+
+  /* ── voxel steam (signature) ── */
+  .vox{position:absolute; width:22px; height:22px; transform-style:preserve-3d;
+    animation:rise linear infinite; opacity:0; pointer-events:none}
+  .vox i{position:absolute; width:22px; height:22px; background:var(--acc)}
+  .vox i:nth-child(1){transform:rotateY(0deg) translateZ(11px)}
+  .vox i:nth-child(2){transform:rotateY(90deg) translateZ(11px); filter:brightness(.85)}
+  .vox i:nth-child(3){transform:rotateX(90deg) translateZ(11px); filter:brightness(1.15)}
+  @keyframes rise{
+    0%{opacity:0; transform:translateY(0) rotateX(-20deg) rotateY(15deg)}
+    12%{opacity:.85}
+    100%{opacity:0; transform:translateY(-46vh) rotateX(30deg) rotateY(190deg) scale(.3)}
+  }
+
+  /* ── haiku strip ── */
+  .haiku{border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    padding:22px 0; background:var(--surface)}
+  .haiku .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+
+  /* ── sections ── */
+  h2.display{font-size:clamp(34px,5vw,56px); margin-bottom:14px}
+  .sub{color:var(--muted); font-size:18px; max-width:38em; margin-bottom:56px}
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:20px;
+    padding:28px; box-shadow:var(--shadow); transition:transform .25s ease}
+  .card:hover{transform:translateY(-4px)}
+  .card .ic{width:46px;height:46px;border-radius:12px;background:var(--acc);
+    display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;
+    color:var(--bg)}
+  .card h3{font-weight:800; font-stretch:condensed; text-transform:uppercase;
+    font-size:19px; margin-bottom:8px}
+  .card p{color:var(--muted); font-size:15.5px}
+
+  /* ── how ── */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; counter-reset:step}
+  .step{position:relative; padding:32px 28px; border-radius:20px; background:var(--surface);
+    border:1px solid var(--border); box-shadow:var(--shadow)}
+  .step::before{counter-increment:step; content:"0" counter(step);
+    font-family:ui-monospace,monospace; font-size:13px; letter-spacing:.2em; color:var(--acc)}
+  .step h3{font-weight:800;font-stretch:condensed;text-transform:uppercase;font-size:20px;margin:10px 0 8px}
+  .step p{color:var(--muted); font-size:15.5px}
+
+  /* ── game ── */
+  .game{background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border)}
+  .game .wrap{display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center}
+  .stat{display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--border)}
+  .stat:last-child{border-bottom:none}
+  .stat .cube{width:14px;height:14px;border-radius:3px;background:var(--acc);flex:none;
+    transform:rotate(45deg)}
+  .stat b{font-stretch:condensed; text-transform:uppercase}
+  .stat span{color:var(--muted); font-size:15px}
+
+  /* ── cta ── */
+  .ctaFinal{text-align:center}
+  .ctaFinal h2{font-size:clamp(40px,7vw,84px)}
+  .ctaFinal p{color:var(--muted); margin:20px auto 36px; max-width:32em}
+
+  footer{padding:44px 0; border-top:1px solid var(--border)}
+  footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+
+  @media (max-width:880px){
+    .hero .wrap,.game .wrap{grid-template-columns:1fr}
+    .grid,.steps{grid-template-columns:1fr}
+    .hero{padding-top:130px; min-height:auto; padding-bottom:60px}
+    .navlinks a:not(#themeBtn){display:none}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .vox,.phone{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap">
+    <a class="logo" href="#"><span class="cube"></span>Capsy</a>
+    <div class="navlinks">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#game">The game</a>
+      <button id="themeBtn" aria-label="Toggle day/night">☾</button>
+      <a class="btn btn-acc" style="padding:11px 22px;font-size:14px" href="#get">Get Capsy</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="voxfield">
+  <div class="wrap">
+    <div>
+      <div class="mono">A quiet companion · iOS</div>
+      <h1 class="display" style="margin-top:14px">Stress is<br>liquid. <em>Let&nbsp;it&nbsp;go.</em></h1>
+      <p class="lead">It gathers drop by drop. Capsy turns it into a little voxel creature you
+        care for — log what weighs on you, watch it slosh, then breathe it out and watch it
+        evaporate, cube by cube.</p>
+      <div class="cta">
+        <a class="btn btn-acc" href="#get">Get Capsy</a>
+        <a class="btn btn-ghost" href="#how">See it breathe</a>
+      </div>
+      <div class="soon">App Store — coming soon. Built native: SwiftUI · SceneKit · zero trackers.</div>
+    </div>
+    <div class="phone"><img src="https://raw.githubusercontent.com/c3Zor/capsy/claude/zen-fermat-744egm/screenshots/home.png" alt="Capsy app — a voxel creature vessel half-filled with coral cubes of stress"></div>
+  </div>
+</header>
+
+<div class="haiku">
+  <div class="wrap">
+    <span class="mono">CALM.</span>
+    <span class="mono">A LITTLE IS GATHERING.</span>
+    <span class="mono">FILLING UP…</span>
+    <span class="mono">FULL. TIME TO POUR.</span>
+    <span class="mono">THE WAVE HAS PASSED.</span>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <div class="mono">What it does</div>
+    <h2 class="display">A creature, not a chart.</h2>
+    <p class="sub">Wellness apps show you graphs. Capsy shows you a small someone who visibly
+      carries what you carry — and visibly lets it go when you do.</p>
+    <div class="grid">
+      <div class="card"><div class="ic">◻</div><h3>A living voxel body</h3>
+        <p>Real 3D. Your stress is clay-coral cubes inside a transparent little creature. Tilt the
+        phone — it sloshes with real inertia. It breathes. It blinks. It worries when you do.</p></div>
+      <div class="card"><div class="ic">＋</div><h3>One-tap drops</h3>
+        <p>Something hit you? One tap — a drop falls in with a plop. Straight from the Home Screen
+        widget or StandBy, without even opening the app.</p></div>
+      <div class="card"><div class="ic">〰</div><h3>The Release ritual</h3>
+        <p>Guided breathing, led by Capsy's own body. On every exhale the liquid drains and rises
+        as voxel steam. A Tibetan bowl tone. A candle-dim ending. No confetti — a wave.</p></div>
+      <div class="card"><div class="ic">☘</div><h3>Calm habits</h3>
+        <p>Walks, tea, stretching, calling a friend — build your own list of things that actually
+        help, and earn gold every time you choose one.</p></div>
+      <div class="card"><div class="ic">▲</div><h3>Rewards worth wanting</h3>
+        <p>Spend gold on new bodies — a potion flask, a goblet — and tiny hats for your Capsy.
+        Progression like Habitica, calm like a Sunday morning.</p></div>
+      <div class="card"><div class="ic">◍</div><h3>A garden of stillness</h3>
+        <p>Every completed ritual grows a stone in your quiet garden. Every third one is secretly
+        voxel — no announcement, just for those who notice.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how" style="padding-top:0">
+  <div class="wrap">
+    <div class="mono">How it works</div>
+    <h2 class="display">Drop. Fill. Release.</h2>
+    <p class="sub">Three moves, thirty seconds a day. The point isn't tracking your stress —
+      it's noticing it, and letting it go on purpose.</p>
+    <div class="steps">
+      <div class="step"><h3>Drop</h3><p>Log the moment something lands on you — light, medium or
+        heavy. A voxel pebble falls into your creature with a satisfying plop.</p></div>
+      <div class="step"><h3>Fill</h3><p>Capsy fills up through the day. You see it on your Lock
+        Screen. His face tells you how it's going before you've even thought about it.</p></div>
+      <div class="step"><h3>Release</h3><p>Four breaths, led by him. In through the nose, out
+        through the mouth — and the stress literally evaporates, cube by cube.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="game" id="game">
+  <div class="wrap">
+    <div>
+      <div class="mono">The game layer</div>
+      <h2 class="display">Gentle RPG,<br>zero guilt.</h2>
+      <p class="sub" style="margin-bottom:28px">Habitica taught the world that games change habits.
+        Capsy keeps the progression and drops the punishment — nothing dies, nothing shames you,
+        a missed day is just a quieter garden.</p>
+      <div>
+        <div class="stat"><span class="cube"></span><div><b>XP &amp; levels</b><br><span>Rituals and calm habits level you up — Curious Drop to Living Silence.</span></div></div>
+        <div class="stat"><span class="cube"></span><div><b>Gold &amp; rewards</b><br><span>Earn gold, unlock bodies and tiny hats. Cosmetic only. Always.</span></div></div>
+        <div class="stat"><span class="cube"></span><div><b>Daily quest</b><br><span>One breathing ritual a day opens the chest. That's the whole quest.</span></div></div>
+        <div class="stat"><span class="cube"></span><div><b>The garden</b><br><span>Your long-term record isn't a streak number — it's a place.</span></div></div>
+      </div>
+    </div>
+    <div class="phone" style="animation-delay:2.5s"><img src="https://raw.githubusercontent.com/c3Zor/capsy/claude/zen-fermat-744egm/screenshots/home.png" alt="Capsy home screen"></div>
+  </div>
+</section>
+
+<section class="ctaFinal" id="get">
+  <div class="wrap">
+    <div class="mono">Coming to the App Store</div>
+    <h2 class="display" style="margin-top:12px">Pour it out.</h2>
+    <p>Capsy is in final polish. Leave your email and be first in line when the vessel opens.</p>
+    <a class="btn btn-acc" href="mailto:hello@capsy.app?subject=Waitlist">Join the waitlist</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">CAPSY — GYVA TYLA · MMXXVI</span>
+    <span class="mono">MADE WITH ONE BREATH AT A TIME</span>
+  </div>
+</footer>
+
+<script>
+  // nav shadow on scroll
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 12), {passive:true});
+
+  // day/night toggle (matches the app: auto by system, manual override)
+  const btn = document.getElementById('themeBtn');
+  btn.addEventListener('click', () => {
+    const h = document.documentElement;
+    const nightNow = h.classList.contains('night') ||
+      (!h.classList.contains('day') && matchMedia('(prefers-color-scheme: dark)').matches);
+    h.classList.toggle('night', !nightNow);
+    h.classList.toggle('day', nightNow);
+    btn.textContent = nightNow ? '☾' : '☀';
+  });
+
+  // voxel steam: cubes rise through the hero and dissolve, like the ritual
+  const field = document.getElementById('voxfield');
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (let i = 0; i < 14; i++) {
+      const v = document.createElement('div');
+      v.className = 'vox';
+      v.innerHTML = '<i></i><i></i><i></i>';
+      v.style.left = (4 + Math.random() * 92) + '%';
+      v.style.bottom = (Math.random() * 30) + '%';
+      v.style.animationDuration = (7 + Math.random() * 9) + 's';
+      v.style.animationDelay = (Math.random() * 10) + 's';
+      const s = .5 + Math.random() * .9;
+      v.style.transform = 'scale(' + s + ')';
+      field.appendChild(v);
+    }
+  }
+</script>
+</body>
+</html>

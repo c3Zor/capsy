@@ -26,6 +26,6 @@ struct CapsyApp: App {
             // Diena/naktis pagal paros laiką (21–7 — naktis) arba rankinį pasirinkimą.
             .preferredColorScheme(DayNight.isNight(themeMode) ? .dark : .light)
         }
-        .modelContainer(for: [StressDrop.self, ReleaseSession.self])
+        .modelContainer(for: [StressDrop.self, ReleaseSession.self, Habit.self])
     }
 }
