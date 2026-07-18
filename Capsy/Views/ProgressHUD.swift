@@ -4,15 +4,16 @@ import SwiftData
 // MARK: - ProgressHUD
 //
 // One-line gamification strip for the home screen: level, XP capsule, gold.
-// Reads @AppStorage directly so it live-updates the instant Game.earn(...)
-// touches UserDefaults, no matter where the call came from.
+// Reads the GameState row via @Query so it live-updates the instant
+// Game.earn(...) mutates the database, no matter where the call came from.
 
 struct ProgressHUD: View {
-    @AppStorage("xp") private var xp: Int = 0
-    @AppStorage("gold") private var gold: Int = 0
+    @Query private var states: [GameState]
 
-    private var level: Int { Game.level }
-    private var progress: Double { min(1, max(0, Game.levelProgress)) }
+    private var gold: Int { states.first?.gold ?? 0 }
+    private var xp: Int { states.first?.xp ?? 0 }
+    private var level: Int { xp / 100 + 1 }
+    private var progress: Double { min(1, max(0, Double(xp % 100) / 100)) }
 
     var body: some View {
         HStack(spacing: 12) {

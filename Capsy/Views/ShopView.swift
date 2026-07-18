@@ -1,12 +1,15 @@
 import SwiftUI
+import SwiftData
 
 /// REWARDS — spend gold earned from habits and rituals on new vessel bodies
 /// and hats. Calm and premium: no wheel spins, no confetti, just clear
 /// affordances (owned / equipped / affordable / too expensive).
 struct ShopView: View {
-    // Mirrors Game.gold — AppStorage observes the same UserDefaults key,
-    // so the header refreshes automatically whenever Game.earn/spend/buy runs.
-    @AppStorage("gold") private var gold = 0
+    // Mirrors Game.gold — @Query reads the same GameState row the economy
+    // writes to, so the header refreshes automatically whenever
+    // Game.earn/spend/buy runs.
+    @Query private var states: [GameState]
+    private var gold: Int { states.first?.gold ?? 0 }
     @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
     @AppStorage("hat") private var hatRaw = ""
 
@@ -267,4 +270,5 @@ private struct CoinGlyph: View {
     NavigationStack {
         ShopView()
     }
+    .modelContainer(AppDatabase.container)
 }

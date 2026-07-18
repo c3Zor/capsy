@@ -10,6 +10,7 @@ struct HomeView: View {
     @State private var showAdd = false
     @State private var showRelease = false
     @State private var dropSignal = 0
+    @State private var bodySignal: String?
     @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
     @AppStorage("soundOn") private var soundOn = true
     @AppStorage("themeMode") private var themeMode = "auto"
@@ -85,12 +86,11 @@ struct HomeView: View {
             ReleaseView()
         }
         .onAppear {
-            // CI screenshot mode: seed a half-full vessel so the shot is honest.
-            if ProcessInfo.processInfo.arguments.contains("--demo"), drops.isEmpty {
-                for intensity in [1, 2, 3] { context.insert(StressDrop(intensity: intensity, note: "")) }
-                try? context.save()
-            }
+            Game.bootstrap()
             Game.seedHabitsIfNeeded(context)
+            Health.fetchLatestHRV { hrv in
+                bodySignal = Health.bodySignalLine(hrvMs: hrv)
+            }
             absorbQuickDrops()
             Bucket.syncWidget(fraction: Bucket.fraction(of: drops))
         }
@@ -117,6 +117,13 @@ struct HomeView: View {
                 .font(.mono(11.5, weight: .medium))
                 .kerning(1.8)
                 .foregroundStyle(Color.sub)
+            // Apple Health HRV → a quiet word about how the body is doing.
+            if let bodySignal {
+                Text(bodySignal)
+                    .font(.mono(10, weight: .regular))
+                    .kerning(1.4)
+                    .foregroundStyle(Color.sub.opacity(0.75))
+            }
             Text("\(Int(fraction * 100)) %")
                 .font(.mono(38, weight: .medium))
                 .monospacedDigit()

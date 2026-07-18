@@ -7,25 +7,50 @@ struct CapsyApp: App {
     @AppStorage("themeMode") private var themeMode = "auto"
 
     init() {
-        // CI screenshot mode: skip onboarding, force day theme.
-        if ProcessInfo.processInfo.arguments.contains("--demo") {
+        // CI screenshot mode: skip onboarding, pick theme, seed the vessel.
+        let args = ProcessInfo.processInfo.arguments
+        if args.contains("--demo") {
             UserDefaults.standard.set(true, forKey: "hasOnboarded")
-            UserDefaults.standard.set("day", forKey: "themeMode")
+            UserDefaults.standard.set(args.contains("--night") ? "night" : "day",
+                                      forKey: "themeMode")
+            let context = AppDatabase.container.mainContext
+            let existing = (try? context.fetch(FetchDescriptor<StressDrop>())) ?? []
+            if existing.isEmpty {
+                // --fill-full seeds to capacity; plain --demo seeds ~50 %.
+                let intensities = args.contains("--fill-full") ? [3, 3, 3, 3] : [1, 2, 3]
+                for i in intensities { context.insert(StressDrop(intensity: i, note: "")) }
+                try? context.save()
+            }
         }
+    }
+
+    /// CI screenshot mode: "--screen shop|habits|journey|ritual" shows that
+    /// screen as root so the matrix can photograph every part of the app.
+    private var demoScreen: String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "--screen"), i + 1 < args.count else { return nil }
+        return args[i + 1]
     }
 
     var body: some Scene {
         WindowGroup {
             Group {
-                if hasOnboarded {
-                    HomeView()
-                } else {
-                    OnboardingView()
+                switch demoScreen {
+                case "ritual":  ReleaseView()
+                case "shop":    NavigationStack { ShopView() }
+                case "habits":  NavigationStack { HabitsView() }
+                case "journey": NavigationStack { JourneyView() }
+                default:
+                    if hasOnboarded {
+                        HomeView()
+                    } else {
+                        OnboardingView()
+                    }
                 }
             }
             // Diena/naktis pagal paros laiką (21–7 — naktis) arba rankinį pasirinkimą.
             .preferredColorScheme(DayNight.isNight(themeMode) ? .dark : .light)
         }
-        .modelContainer(for: [StressDrop.self, ReleaseSession.self, Habit.self])
+        .modelContainer(AppDatabase.container)
     }
 }

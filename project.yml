@@ -25,10 +25,13 @@ targets:
       properties:
         com.apple.security.application-groups:
           - group.com.capsy.shared
+        com.apple.developer.healthkit: true
     info:
       path: Capsy/Info.plist
       properties:
         CFBundleDisplayName: Capsy
+        NSHealthShareUsageDescription: "Capsy reads your HRV to gently reflect how your body feels."
+        NSHealthUpdateUsageDescription: "Capsy logs your ritual as a mindful minute in Health."
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait

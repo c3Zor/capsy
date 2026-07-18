@@ -22,6 +22,7 @@ struct ReleaseView: View {
     @State private var fraction = 0.0
     @State private var cycle = 0
     @State private var lastDrained = 0
+    @State private var ritualStart = Date.now
     @State private var showRipples = false
     @State private var candleDim = false
     @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
@@ -145,6 +146,7 @@ struct ReleaseView: View {
     // MARK: - Ritual flow
 
     private func run() async {
+        ritualStart = .now
         let startFraction = Bucket.fraction(of: pending)
         fraction = startFraction
 
@@ -182,6 +184,7 @@ struct ReleaseView: View {
         context.insert(ReleaseSession(cycles: totalCycles, drainedUnits: lastDrained))
         try? context.save()
         Game.earn(gold: 20, xp: 25) // the ritual is the biggest earner
+        Health.logMindfulSession(start: ritualStart, end: .now)
         Bucket.syncWidget(fraction: 0)
         Haptics.success()
         SoundEngine.chime() // Tibeto dubens tonas su ilgu gesimu
