@@ -32,6 +32,9 @@ struct HomeView: View {
                     CapsySceneView(fraction: fraction, dropSignal: dropSignal, style: vessel, hat: hat)
                         .frame(maxWidth: .infinity)
                         .frame(height: 300)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Capsy, your stress vessel")
+                        .accessibilityValue("\(Int(fraction * 100)) percent full")
                     ProgressHUD()
                     DailyQuestCard()
                     vesselPicker
@@ -56,6 +59,9 @@ struct HomeView: View {
                     Image(systemName: DayNight.isNight(themeMode) ? "sun.max" : "moon")
                         .foregroundStyle(Color.ink.opacity(0.75))
                 }
+                .accessibilityLabel("Theme")
+                .accessibilityValue(DayNight.isNight(themeMode) ? "Night mode" : "Day mode")
+                .accessibilityHint("Double tap to switch")
                 Button {
                     Haptics.tap()
                     soundOn.toggle()
@@ -63,24 +69,33 @@ struct HomeView: View {
                     Image(systemName: soundOn ? "speaker.wave.2.fill" : "speaker.slash.fill")
                         .foregroundStyle(Color.ink.opacity(0.75))
                 }
+                .accessibilityLabel("Sound")
+                .accessibilityValue(soundOn ? "On" : "Off")
+                .accessibilityHint("Double tap to toggle")
                 NavigationLink {
                     HabitsView()
                 } label: {
                     Image(systemName: "checkmark.seal.fill")
                         .foregroundStyle(Color.ink.opacity(0.75))
                 }
+                .accessibilityLabel("Calm Habits")
+                .accessibilityHint("Opens your habit list")
                 NavigationLink {
                     ShopView()
                 } label: {
                     Image(systemName: "bag.fill")
                         .foregroundStyle(Color.ink.opacity(0.75))
                 }
+                .accessibilityLabel("Rewards")
+                .accessibilityHint("Opens the shop to spend gold")
                 NavigationLink {
                     JourneyView()
                 } label: {
                     Image(systemName: "chart.bar.fill")
                         .foregroundStyle(Color.ink.opacity(0.75))
                 }
+                .accessibilityLabel("Path of Stillness")
+                .accessibilityHint("Opens your journey and history")
             }
         }
         .tint(.acc)
@@ -98,6 +113,7 @@ struct HomeView: View {
             }
             absorbQuickDrops()
             Bucket.syncWidget(fraction: Bucket.fraction(of: drops))
+            Reminders.refreshAll()
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { absorbQuickDrops() }
@@ -137,6 +153,20 @@ struct HomeView: View {
                 .animation(.earth, value: level)
         }
         .padding(.top, 8)
+        // Mono digits are tight against the % sign at fixed sizes; let Dynamic
+        // Type scale them, just not past the point the layout starts clipping.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(headerAccessibilityLabel)
+    }
+
+    /// State line, optional body signal and fill percentage read as one
+    /// swipe stop instead of three separate ones.
+    private var headerAccessibilityLabel: String {
+        var parts = [Bucket.stateLine(for: fraction)]
+        if let bodySignal { parts.append(bodySignal) }
+        parts.append("\(Int(fraction * 100)) percent full")
+        return parts.joined(separator: ". ")
     }
 
     /// Choose your vessel: bucket, potion flask or glass. Saved automatically.
@@ -155,8 +185,12 @@ struct HomeView: View {
                         .background(isOn ? Color.acc : Color.white.opacity(0.05), in: Circle())
                 }
                 .accessibilityLabel(style.title)
+                .accessibilityHint("Double tap to switch vessel")
+                .accessibilityAddTraits(isOn ? [.isSelected] : [])
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Vessel picker")
     }
 
     private var buttons: some View {
@@ -172,6 +206,8 @@ struct HomeView: View {
                     .background(Color.acc, in: Capsule())
                     .foregroundStyle(Color.bg)
             }
+            .accessibilityLabel("Drop")
+            .accessibilityHint("Log a stressful moment into your vessel")
 
             if level > 0 {
                 Button {
@@ -185,10 +221,15 @@ struct HomeView: View {
                         .background(Capsule().stroke(Color.ink.opacity(0.45), lineWidth: 1.5))
                         .foregroundStyle(Color.ink)
                 }
+                .accessibilityLabel("Release")
+                .accessibilityHint("Start a breathing ritual to empty your vessel")
                 .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
         }
         .animation(.spring(duration: 0.5), value: level > 0)
+        // Compressed display font in a fixed-padding capsule; cap the top of
+        // the Dynamic Type range so the label never clips inside it.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
     }
 
     private func addDrop(_ intensity: Intensity, note: String) {
@@ -243,6 +284,9 @@ struct AddDropSheet: View {
             Spacer()
         }
         .padding(24)
+        // Fixed-height sheet with compressed display type; cap the top of
+        // the Dynamic Type range instead of letting content overflow it.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .presentationDetents([.height(340)])
         .presentationBackground(Color.bg)
     }
@@ -259,6 +303,7 @@ struct AddDropSheet: View {
                     .font(.system(size: 18 + CGFloat(intensity.rawValue) * 7))
                     .foregroundStyle(isOn ? Color.acc : Color.sub)
                     .frame(height: 46)
+                    .accessibilityHidden(true)
                 Text(intensity.title)
                     .font(.subheadline.weight(isOn ? .semibold : .regular))
                     .foregroundStyle(isOn ? Color.ink : Color.sub)
@@ -270,5 +315,7 @@ struct AddDropSheet: View {
             .overlay(RoundedRectangle(cornerRadius: 16)
                 .stroke(isOn ? Color.acc.opacity(0.6) : .clear, lineWidth: 1))
         }
+        .accessibilityLabel(intensity.title)
+        .accessibilityAddTraits(isOn ? [.isSelected] : [])
     }
 }

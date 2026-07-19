@@ -16,6 +16,8 @@ targets:
     platform: iOS
     scheme:
       storeKitConfiguration: Capsy.storekit
+      testTargets:
+        - CapsyTests
     sources:
       - Capsy
       - Shared
@@ -62,3 +64,11 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.capsy.app.widget
+
+  CapsyTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - CapsyTests
+    dependencies:
+      - target: Capsy

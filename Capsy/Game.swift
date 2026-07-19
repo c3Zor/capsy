@@ -13,10 +13,27 @@ final class GameState {
     var xp: Int
     var owned: [String]
 
-    init(gold: Int = 0, xp: Int = 0, owned: [String] = []) {
+    // Gentle streak (added after the initial schema — every new property
+    // carries an inline default so SwiftData lightweight-migrates existing
+    // rows without a custom migration plan).
+    var lastRitualDay: String = ""
+    var streakCount: Int = 0
+    var streakFreezes: Int = 1
+
+    init(
+        gold: Int = 0,
+        xp: Int = 0,
+        owned: [String] = [],
+        lastRitualDay: String = "",
+        streakCount: Int = 0,
+        streakFreezes: Int = 1
+    ) {
         self.gold = gold
         self.xp = xp
         self.owned = owned
+        self.lastRitualDay = lastRitualDay
+        self.streakCount = streakCount
+        self.streakFreezes = streakFreezes
     }
 }
 
@@ -120,6 +137,78 @@ enum Game {
         persist()
         return true
     }
+
+    // MARK: - Chest reward
+
+    /// A variable-reward gold chest: mostly small, occasionally a windfall.
+    /// Weighted 50% → 10g, 35% → 20g, 15% → 40g.
+    static func chestReward() -> Int {
+        switch Int.random(in: 0..<100) {
+        case 0..<50: return 10
+        case 50..<85: return 20
+        default: return 40
+        }
+    }
+
+    // MARK: - Gentle streak
+
+    /// "yyyy-MM-dd" in the current calendar/timezone — the day key the streak is keyed on.
+    private static func dayKey(_ date: Date = .now) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = .current
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter.string(from: date)
+    }
+
+    /// Whole calendar days between two "yyyy-MM-dd" day keys, or nil if either fails to parse.
+    private static func daysBetween(_ earlier: String, _ later: String) -> Int? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = .current
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        guard let a = formatter.date(from: earlier), let b = formatter.date(from: later) else { return nil }
+        let calendar = Calendar.current
+        return calendar.dateComponents([.day], from: calendar.startOfDay(for: a), to: calendar.startOfDay(for: b)).day
+    }
+
+    /// Every 7th consecutive streak day banks a freeze, capped at 2 in reserve.
+    private static func grantFreezeIfMilestone(_ row: GameState) {
+        guard row.streakCount > 0, row.streakCount % 7 == 0 else { return }
+        row.streakFreezes = min(2, row.streakFreezes + 1)
+    }
+
+    /// Registers today's ritual toward the gentle streak. Calm by design:
+    /// - same day again → no-op (already counted)
+    /// - the very next calendar day → streak +1
+    /// - exactly one missed day, with a freeze in reserve → freeze is spent, streak is kept as-is
+    /// - anything else (gap, or a missed day with no freeze) → streak resets to 1
+    static func registerRitualDay() {
+        let row = state
+        let today = dayKey()
+        guard row.lastRitualDay != today else { return }
+
+        if row.lastRitualDay.isEmpty {
+            row.streakCount = 1
+        } else if let gap = daysBetween(row.lastRitualDay, today) {
+            if gap == 1 {
+                row.streakCount += 1
+                grantFreezeIfMilestone(row)
+            } else if gap == 2, row.streakFreezes > 0 {
+                row.streakFreezes -= 1
+            } else {
+                row.streakCount = 1
+            }
+        } else {
+            row.streakCount = 1
+        }
+
+        row.lastRitualDay = today
+        persist()
+    }
+
+    static var streak: Int { state.streakCount }
+    static var streakFreezes: Int { state.streakFreezes }
 }
 
 // MARK: - Reward catalog (shop items)

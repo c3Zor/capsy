@@ -46,6 +46,7 @@ struct ShopView: View {
                     .fill(Color.acc)
                     .frame(width: 18, height: 18)
                     .rotationEffect(.degrees(45))
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 3) {
                     Text("CAPSY PLUS")
                         .font(.display(16))
@@ -59,12 +60,16 @@ struct ShopView: View {
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(Color.acc)
+                    .accessibilityHidden(true)
             }
             .padding(16)
             .background(Color.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 16))
             .overlay(RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.acc.opacity(0.4), lineWidth: 1.5))
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Capsy Plus. Everything unlocked, body insights, unlimited habits")
+        .accessibilityHint("Opens the Plus paywall")
     }
 
     // MARK: - Header
@@ -77,6 +82,7 @@ struct ShopView: View {
                 .foregroundStyle(Color.sub)
             HStack(spacing: 10) {
                 CoinGlyph(size: 22)
+                    .accessibilityHidden(true)
                 Text("\(gold) g")
                     .font(.mono(40, weight: .medium))
                     .monospacedDigit()
@@ -86,6 +92,11 @@ struct ShopView: View {
             }
         }
         .padding(.top, 4)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Your gold, \(gold)")
+        // Mono digits sit against a fixed-size coin glyph; cap the top of
+        // the Dynamic Type range so the row keeps its layout.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
     }
 
     // MARK: - Sections
@@ -208,6 +219,7 @@ private struct RewardCard: View {
                     .foregroundStyle(iconColor)
                     .frame(width: 56, height: 56)
                     .background(iconBackground, in: Circle())
+                    .accessibilityHidden(true)
 
                 if isEquipped {
                     Image(systemName: "checkmark.circle.fill")
@@ -215,6 +227,7 @@ private struct RewardCard: View {
                         .foregroundStyle(Color.acc)
                         .background(Color.bg, in: Circle())
                         .offset(x: 4, y: -4)
+                        .accessibilityHidden(true)
                 }
             }
 
@@ -233,6 +246,29 @@ private struct RewardCard: View {
             .stroke(isEquipped ? Color.acc.opacity(0.6) : .clear, lineWidth: 1.5))
         .opacity(isOwned || canAfford ? 1 : 0.72)
         .scaleEffect(isPulsing ? 1.06 : 1.0)
+        // One VoiceOver stop per card — name, price/state and, when the
+        // card contains a WEAR/BUY button, its action still fires from here.
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(item.name)
+        .accessibilityValue(stateAccessibilityValue)
+        .accessibilityHint(stateAccessibilityHint)
+        // Mono price/state labels sit in a fixed-height footer; cap the top
+        // of the Dynamic Type range instead of letting them overflow it.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+    }
+
+    private var stateAccessibilityValue: String {
+        if isEquipped { return "Equipped" }
+        if isOwned { return "Owned" }
+        if canAfford { return "\(item.price) gold" }
+        return "\(item.price) gold, need \(missing) more"
+    }
+
+    private var stateAccessibilityHint: String {
+        if isEquipped { return "" }
+        if isOwned { return "Double tap to wear" }
+        if canAfford { return "Double tap to buy" }
+        return "Not enough gold yet"
     }
 
     @ViewBuilder
@@ -257,6 +293,7 @@ private struct RewardCard: View {
                 HStack(spacing: 4) {
                     Text("BUY")
                     CoinGlyph(size: 9)
+                        .accessibilityHidden(true)
                     Text("\(item.price)")
                         .monospacedDigit()
                 }

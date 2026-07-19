@@ -31,6 +31,22 @@ enum HabitSymbol {
         "drop.fill", "leaf.fill", "moon.stars.fill", "cup.and.saucer.fill",
         "figure.walk", "book.fill", "sun.max.fill", "heart.fill",
     ]
+
+    /// Spoken name for a symbol choice, for VoiceOver — the SF Symbol name
+    /// alone ("drop point fill") reads poorly.
+    static func title(for symbol: String) -> String {
+        switch symbol {
+        case "drop.fill": "Drop"
+        case "leaf.fill": "Leaf"
+        case "moon.stars.fill": "Moon"
+        case "cup.and.saucer.fill": "Cup"
+        case "figure.walk": "Walk"
+        case "book.fill": "Book"
+        case "sun.max.fill": "Sun"
+        case "heart.fill": "Heart"
+        default: "Symbol"
+        }
+    }
 }
 
 /// "Calm Habits" — small, positive taps that quietly earn gold and xp.
@@ -85,6 +101,8 @@ struct HabitsView: View {
                 Image(systemName: "plus.circle.fill")
                     .foregroundStyle(Color.acc)
             }
+            .accessibilityLabel("Plant a habit")
+            .accessibilityHint("Adds a new calm habit")
         }
         .sheet(isPresented: $showPaywall) { PaywallView() }
         .sheet(isPresented: $showAdd) {
@@ -113,6 +131,7 @@ struct HabitsView: View {
             Image(systemName: "leaf")
                 .font(.system(size: 28))
                 .foregroundStyle(Color.sub.opacity(0.6))
+                .accessibilityHidden(true)
             Text("NO HABITS YET. PLANT ONE.")
                 .font(.mono(11, weight: .regular))
                 .kerning(1.5)
@@ -150,6 +169,7 @@ private struct HabitRow: View {
                 .foregroundStyle(Color.bg)
                 .frame(width: 40, height: 40)
                 .background(Color.acc, in: Circle())
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(habit.name)
@@ -186,6 +206,15 @@ private struct HabitRow: View {
         .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 16))
         .scaleEffect(bump ? 1.04 : 1)
         .animation(.earth, value: bump)
+        // One VoiceOver stop per row; the "+" button's tap still fires
+        // from the combined element.
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Log \(habit.name), adds five gold")
+        .accessibilityValue("Completed \(habit.timesDone) times")
+        .accessibilityHint("Also adds ten experience")
+        // Mono count sits next to a fixed 34pt circular button; cap the top
+        // of the Dynamic Type range so the row keeps its layout.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
     }
 
     private func tap() {
@@ -252,6 +281,9 @@ private struct AddHabitSheet: View {
             Spacer()
         }
         .padding(24)
+        // Fixed-height sheet with a compressed display title; cap the top
+        // of the Dynamic Type range instead of letting content overflow it.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .presentationDetents([.height(420)])
         .presentationBackground(Color.bg)
     }
@@ -269,5 +301,7 @@ private struct AddHabitSheet: View {
                 .background(isOn ? Color.acc : Color.white.opacity(0.05), in: Circle())
                 .overlay(Circle().stroke(isOn ? Color.acc.opacity(0.6) : .clear, lineWidth: 1))
         }
+        .accessibilityLabel(HabitSymbol.title(for: candidate))
+        .accessibilityAddTraits(isOn ? [.isSelected] : [])
     }
 }

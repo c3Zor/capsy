@@ -12,6 +12,7 @@ struct ProgressHUD: View {
 
     private var gold: Int { states.first?.gold ?? 0 }
     private var xp: Int { states.first?.xp ?? 0 }
+    private var streak: Int { states.first?.streakCount ?? 0 }
     private var level: Int { xp / 100 + 1 }
     private var progress: Double { min(1, max(0, Double(xp % 100) / 100)) }
 
@@ -33,6 +34,16 @@ struct ProgressHUD: View {
             .frame(maxWidth: .infinity)
             .frame(height: 6)
             .animation(.earth, value: progress)
+
+            HStack(spacing: 4) {
+                Image(systemName: "flame.fill")
+                    .font(.system(size: 11))
+                Text("\(streak)")
+                    .font(.mono(12, weight: .medium))
+                    .monospacedDigit()
+            }
+            .foregroundStyle(streak == 0 ? Color.sub.opacity(0.4) : Color.acc)
+            .fixedSize()
 
             HStack(spacing: 5) {
                 // Tiny voxel coin — a single blocky pixel, gyva-tyla style.
@@ -60,15 +71,17 @@ struct ProgressHUD: View {
 
 // MARK: - DailyQuestCard
 //
-// One quiet daily quest: finish a breathing ritual today, claim 20 gold.
-// State machine: no ritual yet → pending · ritual done, unclaimed → claim
-// button · claimed → a single quiet line. Date-key logic is self-contained
+// One quiet daily quest: finish a breathing ritual today, open a chest for a
+// variable gold reward (Game.chestReward()). State machine: no ritual yet →
+// pending · ritual done, unclaimed → claim button · claimed → a single quiet
+// line, briefly naming the amount just won. Date-key logic is self-contained
 // so no other file needs to know its UserDefaults key shape.
 
 struct DailyQuestCard: View {
     @Query private var sessions: [ReleaseSession]
 
     @State private var claimed = false
+    @State private var wonAmount: Int?
 
     private var todayCount: Int {
         let calendar = Calendar.current
@@ -111,7 +124,7 @@ struct DailyQuestCard: View {
                     .font(.mono(10, weight: .medium))
                     .kerning(1.6)
                     .foregroundStyle(Color.sub)
-                Text("One breathing ritual. Reward: 20 g")
+                Text("One breathing ritual. Reward: a chest")
                     .font(.subheadline)
                     .foregroundStyle(Color.ink)
                     .lineLimit(1)
@@ -133,11 +146,20 @@ struct DailyQuestCard: View {
             Spacer(minLength: 0)
             Button {
                 Haptics.success()
-                Game.earn(gold: 20, xp: 0)
+                let reward = Game.chestReward()
+                Game.earn(gold: reward, xp: 0)
                 UserDefaults.standard.set(true, forKey: todayKey)
-                withAnimation(.earth) { claimed = true }
+                withAnimation(.earth) {
+                    wonAmount = reward
+                    claimed = true
+                }
+                // The won amount is a transient flourish — it fades back to
+                // the calm, permanent line after a moment.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.4) {
+                    withAnimation(.earth) { wonAmount = nil }
+                }
             } label: {
-                Text("CLAIM 20 g")
+                Text("OPEN CHEST")
                     .font(.display(14))
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
@@ -153,10 +175,18 @@ struct DailyQuestCard: View {
                 .font(.system(size: 16))
                 .foregroundStyle(Color.sub)
                 .frame(width: 30)
-            Text("QUEST DONE. THE GARDEN GREW.")
-                .font(.mono(11, weight: .regular))
-                .kerning(1.2)
-                .foregroundStyle(Color.sub)
+            Group {
+                if let wonAmount {
+                    Text("CHEST OPENED. +\(wonAmount) g")
+                        .foregroundStyle(Color.acc)
+                } else {
+                    Text("QUEST DONE. THE GARDEN GREW.")
+                        .foregroundStyle(Color.sub)
+                }
+            }
+            .font(.mono(11, weight: .regular))
+            .kerning(1.2)
+            .transition(.opacity)
             Spacer(minLength: 0)
         }
     }

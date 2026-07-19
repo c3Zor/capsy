@@ -29,6 +29,9 @@ struct JourneyView: View {
                 .font(.mono(20, weight: .medium))
                 .kerning(2)
                 .foregroundStyle(Color.ink)
+                // Fixed-width tabular digits; cap the top of the Dynamic
+                // Type range so the counter doesn't overflow its row.
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
 
             if sessions.isEmpty {
                 Text("THE FIRST STONE AWAITS.")
@@ -39,6 +42,8 @@ struct JourneyView: View {
                 GardenView(count: sessions.count)
                     .frame(maxWidth: .infinity)
                     .frame(height: 130)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Garden with \(sessions.count) stones")
             }
 
             ForEach(Journey.milestones) { milestone in
@@ -50,6 +55,7 @@ struct JourneyView: View {
                         .frame(width: 40, height: 40)
                         .background(reached ? Color.acc : Color.white.opacity(0.05),
                                     in: Circle())
+                        .accessibilityHidden(true)
                     Text(milestone.title)
                         .foregroundStyle(reached ? Color.ink : Color.sub)
                     Spacer()
@@ -57,6 +63,14 @@ struct JourneyView: View {
                         .font(.mono(13, weight: .medium))
                         .foregroundStyle(Color.sub)
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(milestone.title)
+                .accessibilityValue(reached
+                    ? "Reached"
+                    : "\(min(sessions.count, milestone.releases)) of \(milestone.releases)")
+                // Mono progress fraction sits in a fixed row; cap the top of
+                // the Dynamic Type range so it doesn't wrap onto the icon.
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             }
         }
     }
@@ -116,6 +130,14 @@ struct JourneyView: View {
         }
     }
 
+    /// One spoken summary of the whole bar chart, day by day, for VoiceOver
+    /// users who can't read the bars visually.
+    private var weekAccessibilitySummary: String {
+        let weekday = Date.FormatStyle().weekday(.wide)
+        let days = week.map { "\($0.day.formatted(weekday)) \($0.units)" }
+        return "This week's load. " + days.joined(separator: ", ")
+    }
+
     private var chartSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("The Week")
@@ -141,6 +163,8 @@ struct JourneyView: View {
                 }
             }
             .frame(height: 160)
+            .accessibilityLabel("Weekly stress load chart")
+            .accessibilityValue(weekAccessibilitySummary)
         }
     }
 
@@ -162,6 +186,7 @@ struct JourneyView: View {
                     Circle()
                         .fill(Color.acc.opacity(0.3 + Double(drop.intensity) * 0.23))
                         .frame(width: 10, height: 10)
+                        .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(drop.note.isEmpty
                              ? (Intensity(rawValue: drop.intensity)?.title ?? "Drop")
@@ -177,9 +202,17 @@ struct JourneyView: View {
                         Image(systemName: "wind")
                             .font(.caption)
                             .foregroundStyle(Color.sub.opacity(0.6))
+                            .accessibilityHidden(true)
                     }
                 }
                 .padding(.vertical, 2)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(drop.note.isEmpty
+                    ? (Intensity(rawValue: drop.intensity)?.title ?? "Drop")
+                    : drop.note)
+                .accessibilityValue(drop.released
+                    ? "\(drop.date.formatted(.relative(presentation: .named))), released"
+                    : drop.date.formatted(.relative(presentation: .named)))
             }
         }
     }

@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// First-run welcome flow: what Capsy is, how to look, how it works.
-/// Three swipeable pages. Sets `hasOnboarded` when the user taps "Begin".
+/// First-run welcome flow: what Capsy is, how to look, a soft Plus intro,
+/// how it works. Four swipeable pages. Sets `hasOnboarded` on "Begin".
 struct OnboardingView: View {
     @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
     @AppStorage("hasOnboarded") private var hasOnboarded = false
@@ -14,7 +14,8 @@ struct OnboardingView: View {
                 TabView(selection: $page) {
                     ConceptPage().tag(0)
                     VesselChoicePage(vesselRaw: $vesselRaw).tag(1)
-                    ReadyPage(hasOnboarded: $hasOnboarded).tag(2)
+                    PlusIntroPage(page: $page).tag(2)
+                    ReadyPage(hasOnboarded: $hasOnboarded).tag(3)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 pageDots
@@ -25,7 +26,7 @@ struct OnboardingView: View {
 
     private var pageDots: some View {
         HStack(spacing: 8) {
-            ForEach(0..<3, id: \.self) { i in
+            ForEach(0..<4, id: \.self) { i in
                 Capsule()
                     .fill(i == page ? Color.acc : Color.sub.opacity(0.4))
                     .frame(width: i == page ? 22 : 8, height: 8)
@@ -171,7 +172,83 @@ private struct VesselChoicePage: View {
     }
 }
 
-// MARK: - Page 3: Ready
+// MARK: - Page 3: Plus intro
+
+/// Soft, skippable glimpse of Capsy Plus. No pressure — just a door left open.
+private struct PlusIntroPage: View {
+    @Binding var page: Int
+    @State private var showPaywall = false
+
+    var body: some View {
+        VStack(spacing: 28) {
+            Spacer()
+            Image(systemName: "sparkles")
+                .font(.system(size: 40, weight: .medium))
+                .foregroundStyle(Color.acc)
+                .frame(width: 84, height: 84)
+                .background(Color.white.opacity(0.05), in: Circle())
+            VStack(spacing: 10) {
+                Text("CAPSY PLUS")
+                    .font(.display(32))
+                    .foregroundStyle(Color.ink)
+                Text("A little more room, if you'd like it.")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.sub)
+                    .multilineTextAlignment(.center)
+            }
+            VStack(spacing: 14) {
+                benefitRow(symbol: "paintpalette.fill", text: "All cosmetics, unlocked")
+                benefitRow(symbol: "heart.fill", text: "Deeper Health insights")
+                benefitRow(symbol: "infinity", text: "Unlimited habits")
+            }
+            .padding(.horizontal, 32)
+            Spacer()
+            Spacer()
+            VStack(spacing: 14) {
+                Button {
+                    Haptics.tap()
+                    showPaywall = true
+                } label: {
+                    Text("TRY FREE FOR 7 DAYS")
+                        .font(.display(20))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 18)
+                        .background(Color.acc, in: Capsule())
+                        .foregroundStyle(Color.bg)
+                }
+                Button {
+                    Haptics.tap()
+                    withAnimation(.earth) { page = 3 }
+                } label: {
+                    Text("MAYBE LATER")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.sub)
+                }
+            }
+            .padding(.horizontal, 28)
+            .padding(.bottom, 12)
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView()
+        }
+    }
+
+    private func benefitRow(symbol: String, text: String) -> some View {
+        HStack(spacing: 14) {
+            Image(systemName: symbol)
+                .font(.system(size: 20, weight: .medium))
+                .foregroundStyle(Color.acc)
+                .frame(width: 40, height: 40)
+                .background(Color.white.opacity(0.05), in: Circle())
+            Text(text)
+                .font(.body)
+                .foregroundStyle(Color.ink)
+            Spacer()
+        }
+    }
+}
+
+// MARK: - Page 4: Ready
 
 private struct ReadyPage: View {
     @Binding var hasOnboarded: Bool

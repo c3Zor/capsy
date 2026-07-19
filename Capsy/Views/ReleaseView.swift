@@ -184,6 +184,7 @@ struct ReleaseView: View {
         context.insert(ReleaseSession(cycles: totalCycles, drainedUnits: lastDrained))
         try? context.save()
         Game.earn(gold: 20, xp: 25) // the ritual is the biggest earner
+        Game.registerRitualDay()
         Health.logMindfulSession(start: ritualStart, end: .now)
         Bucket.syncWidget(fraction: 0)
         Haptics.success()

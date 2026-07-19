@@ -39,6 +39,8 @@ struct PaywallView: View {
                     .padding(10)
                     .background(Color.white.opacity(0.06), in: Circle())
             }
+            .accessibilityLabel("Close")
+            .accessibilityHint("Dismisses without purchasing")
             Spacer()
         }
         .padding(.horizontal, 24)
@@ -57,6 +59,7 @@ struct PaywallView: View {
                 }
             }
             .padding(.top, 8)
+            .accessibilityHidden(true)
             Text("CAPSY PLUS")
                 .font(.display(38))
                 .foregroundStyle(Color.ink)
@@ -65,6 +68,9 @@ struct PaywallView: View {
                 .kerning(1.6)
                 .foregroundStyle(Color.sub)
         }
+        // Compressed display title over a fixed-width column; cap the top
+        // of the Dynamic Type range so it keeps wrapping the same way.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
     }
 
     private var benefits: some View {
@@ -84,10 +90,12 @@ struct PaywallView: View {
                 .foregroundStyle(Color.acc)
                 .frame(width: 34, height: 34)
                 .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
+                .accessibilityHidden(true)
             Text(text)
                 .font(.body)
                 .foregroundStyle(Color.ink)
         }
+        .accessibilityElement(children: .combine)
     }
 
     /// StoreKit configs only inject via an Xcode scheme, so the CI
@@ -116,6 +124,9 @@ struct PaywallView: View {
                 priceCard(product)
             }
         }
+        // Mono prices sit against fixed-padding capsule cards; cap the top
+        // of the Dynamic Type range so badges never wrap over the price.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
     }
 
     private func mockCard(name: String, price: String, badge: String?, id: String) -> some View {
@@ -147,6 +158,10 @@ struct PaywallView: View {
             .overlay(RoundedRectangle(cornerRadius: 16)
                 .stroke(isSelected ? Color.acc : Color.ink.opacity(0.12), lineWidth: 1.5))
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel([name, badge].compactMap { $0 }.joined(separator: ", "))
+        .accessibilityValue(price)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
     private func priceCard(_ product: Product) -> some View {
@@ -183,6 +198,10 @@ struct PaywallView: View {
             .overlay(RoundedRectangle(cornerRadius: 16)
                 .stroke(isSelected ? Color.acc : Color.ink.opacity(0.12), lineWidth: 1.5))
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel([product.displayName, badge].compactMap { $0 }.joined(separator: ", "))
+        .accessibilityValue(product.displayPrice)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
     private var legal: some View {
@@ -212,6 +231,11 @@ struct PaywallView: View {
             }
             .disabled(busy || (plus.products.isEmpty && !isDemo))
             .opacity(busy || (plus.products.isEmpty && !isDemo) ? 0.55 : 1)
+            .accessibilityLabel("Unlock Plus")
+            .accessibilityHint(busy ? "Purchase in progress" : "Buys the selected plan")
+            // Compressed display label in a fixed-padding capsule; cap the
+            // top of the Dynamic Type range so it never clips inside it.
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
 
             Button {
                 Task { await plus.restore() }
@@ -221,6 +245,8 @@ struct PaywallView: View {
                     .kerning(1.4)
                     .foregroundStyle(Color.sub)
             }
+            .accessibilityLabel("Restore purchases")
+            .accessibilityHint("Restores a previous Plus purchase")
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 12)

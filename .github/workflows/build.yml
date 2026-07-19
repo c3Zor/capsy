@@ -44,6 +44,20 @@ jobs:
           fi
           tail -5 build.log
 
+      - name: Unit tests
+        run: |
+          if ! xcodebuild test \
+            -project Capsy.xcodeproj \
+            -scheme Capsy \
+            -destination "id=$UDID" \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO > test.log 2>&1; then
+            echo "TESTS FAILED — klaidos:"
+            grep -E "error:|failed" test.log | head -40
+            exit 65
+          fi
+          tail -5 test.log
+
       # Vizualinis self-check: pilna matrica — visi ekranai, abi temos,
       # skirtingi užpildymo lygiai. Nuotraukos komitinamos į /screenshots.
       - name: Screenshot self-check
