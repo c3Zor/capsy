@@ -33,6 +33,7 @@
 		F09AA0D0BE06AB98DE9D6B30 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09BC593380ED83F3A9F65EDA /* AppDatabase.swift */; };
 		F187302A8245ADF2BA16372C /* SoundEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79586FC017231914147B713 /* SoundEngine.swift */; };
 		F55A348885597CCFD0BD400A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6EBA599560862EDCCEBEF58 /* Theme.swift */; };
+		F5AC3F688C84100F986DA279 /* CapsyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F65FBF5349524BA598BCEB /* CapsyTests.swift */; };
 		F7DB1564665D8374FE9DEA0C /* Plus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B61444062F9E70DFC5FD434 /* Plus.swift */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +44,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8A7934F93281296DC9A2DB93;
 			remoteInfo = CapsyWidget;
+		};
+		C67CD4C412D73E37E65D1897 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 77B16E0299682DC07B73BF57 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 62EF7F1D5570351F4F310A83;
+			remoteInfo = Capsy;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -80,6 +88,8 @@
 		6CB484B9BBA490FB4B19707F /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
 		7481B716993B8BC1B5A41DAF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		780F57845FE61F0121813E5B /* ProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHUD.swift; sourceTree = "<group>"; };
+		7FAF0D7D91BB2D716174DFBE /* CapsyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CapsyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		86F65FBF5349524BA598BCEB /* CapsyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsyTests.swift; sourceTree = "<group>"; };
 		9AD8C65D0E015C1E51936D9C /* CapsySceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsySceneView.swift; sourceTree = "<group>"; };
 		9BFC324A68802CD2690088F1 /* Capsy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Capsy.entitlements; sourceTree = "<group>"; };
 		9E0749C55E0A11EC064459BB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -134,10 +144,19 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		D1C37878C95ADF3C6C99173E /* CapsyTests */ = {
+			isa = PBXGroup;
+			children = (
+				86F65FBF5349524BA598BCEB /* CapsyTests.swift */,
+			);
+			path = CapsyTests;
+			sourceTree = "<group>";
+		};
 		DA3F6945320B10A1ABF50A33 = {
 			isa = PBXGroup;
 			children = (
 				9BE63BB2F87065BB164EAB61 /* Capsy */,
+				D1C37878C95ADF3C6C99173E /* CapsyTests */,
 				A43FB9DC891992D498F7E5E1 /* CapsyWidget */,
 				B97DE6E3E867F1F37F38F412 /* Shared */,
 				F38FC128E02DFDB18EF38CD1 /* Products */,
@@ -148,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				19472D60913D17D5DA1A27A6 /* Capsy.app */,
+				7FAF0D7D91BB2D716174DFBE /* CapsyTests.xctest */,
 				E695890FEC783450590CF462 /* CapsyWidget.appex */,
 			);
 			name = Products;
@@ -175,6 +195,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		47C4A70ABB1EA949F0CFAC92 /* CapsyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1153E315066C4B5170C446F5 /* Build configuration list for PBXNativeTarget "CapsyTests" */;
+			buildPhases = (
+				0908E0E6E9AC597957E4ADF6 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				55EE149F6FC032BE8997045E /* PBXTargetDependency */,
+			);
+			name = CapsyTests;
+			packageProductDependencies = (
+			);
+			productName = CapsyTests;
+			productReference = 7FAF0D7D91BB2D716174DFBE /* CapsyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		62EF7F1D5570351F4F310A83 /* Capsy */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E0F61C153A52E54F385D8653 /* Build configuration list for PBXNativeTarget "Capsy" */;
@@ -238,6 +276,7 @@
 			projectRoot = "";
 			targets = (
 				62EF7F1D5570351F4F310A83 /* Capsy */,
+				47C4A70ABB1EA949F0CFAC92 /* CapsyTests */,
 				8A7934F93281296DC9A2DB93 /* CapsyWidget */,
 			);
 		};
@@ -255,6 +294,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0908E0E6E9AC597957E4ADF6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5AC3F688C84100F986DA279 /* CapsyTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		230566DFF912BF7D8891306F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -301,6 +348,11 @@
 			isa = PBXTargetDependency;
 			target = 8A7934F93281296DC9A2DB93 /* CapsyWidget */;
 			targetProxy = 711EBB04BADEF264E86AA422 /* PBXContainerItemProxy */;
+		};
+		55EE149F6FC032BE8997045E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 62EF7F1D5570351F4F310A83 /* Capsy */;
+			targetProxy = C67CD4C412D73E37E65D1897 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -370,6 +422,22 @@
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
+		};
+		2C54AA5B9734546FC08D5B36 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.capsy.CapsyTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Capsy.app/Capsy";
+			};
+			name = Release;
 		};
 		492A879E5D95C3E5D8164648 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -496,9 +564,34 @@
 			};
 			name = Debug;
 		};
+		DDD679B419BB29390F41BFE4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.capsy.CapsyTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Capsy.app/Capsy";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1153E315066C4B5170C446F5 /* Build configuration list for PBXNativeTarget "CapsyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DDD679B419BB29390F41BFE4 /* Debug */,
+				2C54AA5B9734546FC08D5B36 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		301DD5C48BE94499A6363FE7 /* Build configuration list for PBXNativeTarget "CapsyWidget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
