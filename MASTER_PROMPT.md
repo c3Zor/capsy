@@ -1,4 +1,6 @@
-# Capsy — The Stress Bucket · Master Build Prompt (Voxel Art / Gyva Tyla)
+# Capsy: Stress Relief Pet · Master Build Prompt (Voxel Art / Gyva Tyla)
+
+> Store name: **Capsy: Stress Relief Pet** · bundle `com.getcapsy.app` · full ASO in `ASO.md`
 
 You are building **Capsy**, a premium, native iOS wellness game that turns invisible stress into a visible, physical thing — liquid in a transparent vessel that lives on your phone and your Lock Screen — rendered in a calm **voxel art** style guided by the **gyva tyla** ("living silence") design book. Your output must be a **complete, production-quality, App Store–ready app that compiles and runs on the first try** — no stubs, no TODOs, no placeholder logic, no "left as an exercise." Every feature described below must actually function. Treat this as a flagship app someone would pay to download. **This is a home run on the first run or it is nothing.**
 

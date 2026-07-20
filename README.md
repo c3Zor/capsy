@@ -1,4 +1,6 @@
-# Capsy — the stress bucket 🪣
+# Capsy: Stress Relief Pet 🪣
+
+> App Store metadata lives in [`ASO.md`](ASO.md) · distribution runbook in [`TESTFLIGHT.md`](TESTFLIGHT.md)
 
 Stress is a liquid. It accumulates drop by drop, sloshes when you tilt the
 phone, and never disappears on its own — you have to consciously pour it out

@@ -205,10 +205,22 @@ struct PaywallView: View {
     }
 
     private var legal: some View {
-        Text("Subscriptions renew until cancelled in Settings. Lifetime is a one-time purchase. Your data never leaves your device either way.")
-            .font(.caption2)
+        VStack(spacing: 8) {
+            Text("Subscriptions renew until cancelled in Settings. Lifetime is a one-time purchase. Your data never leaves your device either way.")
+                .font(.caption2)
+                .foregroundStyle(Color.sub)
+                .multilineTextAlignment(.center)
+            // App Store guideline 3.1.2: subscription offers must link to
+            // the privacy policy and terms of use.
+            HStack(spacing: 16) {
+                Link("Privacy Policy",
+                     destination: URL(string: "https://capsy-landing.vercel.app/privacy.html")!)
+                Link("Terms of Use",
+                     destination: URL(string: "https://capsy-landing.vercel.app/terms.html")!)
+            }
+            .font(.caption2.weight(.medium))
             .foregroundStyle(Color.sub)
-            .multilineTextAlignment(.center)
+        }
     }
 
     private var footer: some View {
