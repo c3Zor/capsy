@@ -8,6 +8,12 @@ on:
 permissions:
   contents: write
 
+# One run per branch: a new push cancels the older run, so two runs never
+# race to commit screenshots on top of each other.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: macos-15
@@ -95,5 +101,7 @@ jobs:
             screenshots/
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "CI: generated project + screenshots [skip ci]"
-          git pull --rebase origin "$GITHUB_REF_NAME" || true
+          # -X theirs: if another run pushed artifacts meanwhile, our freshly
+          # generated binaries win the rebase instead of conflicting.
+          git pull --rebase -X theirs origin "$GITHUB_REF_NAME" || git rebase --abort || true
           git push
