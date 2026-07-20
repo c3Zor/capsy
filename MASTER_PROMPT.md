@@ -4,7 +4,7 @@ You are building **Capsy**, a premium, native iOS wellness game that turns invis
 
 ## The concept
 
-Your mind is a vessel. Stress is liquid. It accumulates drop by drop, it *sloshes* like real water when you tilt the phone, and it never disappears by itself — you must consciously pour it out. Capsy's loop: feel stress → log a drop (3-second interaction) → watch the vessel physically react → when heavy, run the **Release ritual** (guided breathing where the liquid visibly drains as you exhale) → advance the calm **journey of stillness** (Ramybės kelias) → glance at the Lock Screen widget to stay aware. **Design principle: reward release, not accumulation.** No guilt, no streak-shaming — the app is a quiet companion, not a coach. Target audience: adults **29–55** — every visual must read calm and premium, never childish. UI language: **Lithuanian** (short, warm microcopy).
+Your mind is a vessel. Stress is liquid. It accumulates drop by drop, it *sloshes* like real water when you tilt the phone, and it never disappears by itself — you must consciously pour it out. Capsy's loop: feel stress → log a drop (3-second interaction) → watch the vessel physically react → when heavy, run the **Release ritual** (guided breathing where the liquid visibly drains as you exhale) → advance the calm **Path of Stillness** → glance at the Lock Screen widget to stay aware. **Design principle: reward release, not accumulation.** No guilt, no streak-shaming — the app is a quiet companion, not a coach. Target audience: adults **29–55** — every visual must read calm and premium, never childish. UI language: **English** (short, warm microcopy).
 
 ## Tech stack & hard constraints
 
@@ -24,10 +24,10 @@ Reference: the **gyva tyla V4.5** design book (in repo as the source of truth) �
 - **Palette (night):** same earth, dimmed — bg `#191511`, ink `#EDE4D6`, sub `#9C8F7D`, accent `#F0A06E`. **Auto day/night by hour (night 21:00–7:00) + a manual ☾/☀ toggle.** All colors are dynamic tokens.
 - **Material:** matte clay + one **single hard cartoon shadow** under the vessel — the only playful graphic detail in the material world.
 - **Voxel language:** the liquid is a field of small rounded cubes under a live wave surface; the classic bucket is a blocky silhouette; the mascot is built of matte coral clay cubes.
-- **Typography:** compressed poster ALL CAPS display for headings (`.fontWidth(.compressed)`, weight black); **mono tabular numerals** for every number; microcopy in haiku rhythm, minimal to the point of mysticism ("RAMU.", "KAUPIASI…", "BANGA NUĖJO.").
+- **Typography:** compressed poster ALL CAPS display for headings (`.fontWidth(.compressed)`, weight black); **mono tabular numerals** for every number; microcopy in haiku rhythm, minimal to the point of mysticism ("CALM.", "FILLING UP…", "THE WAVE HAS PASSED.").
 - **Motion:** spring 90/16 (response ≈ 0.66, damping ≈ 0.84) — soft earthy gravity, deliberately slow, no excess movement.
 - **Reward is a wave, not an explosion:** ripples travel across the floor, a Tibetan bowl tone, a new stone appears in the garden. No confetti, no "RARE". After the wave the screen **dims like a candle** (~1.9 s) and relights.
-- **Language:** "tu", warmly. An error says "Ne dabar." and quietly returns.
+- **Language:** informal "you", warmly. An error says "Not now." and quietly returns.
 
 ## Motion & interactivity bar (this is weighted heavily)
 
@@ -54,14 +54,14 @@ You have full creative and technical autonomy. Improve any decision where you se
 ## Feature spec — build ALL of it (this is the floor)
 
 1. **Onboarding** — warm 3-page first run: the concept in one sentence, vessel choice, how the loop works. Sets `hasOnboarded`; never shown again.
-2. **Vessel home screen** — live liquid, fill %, contextual state line ("Ramu." → "Kaupiasi…" → "Laikas išpilti."), the mascot reacting to the level, `+ Lašas`, and `Išleisti` appearing when not empty.
+2. **Vessel home screen** — live liquid, fill %, contextual state line ("CALM." → "FILLING UP…" → "FULL. TIME TO POUR."), the mascot reacting to the level, `+ DROP`, and `RELEASE` appearing when not empty.
 3. **Vessel choice** — three transparent glass vessels: voxel bucket, round "mana potion" flask (drops fall through its narrow neck), simple tumbler. Persisted; used everywhere the liquid appears.
-4. **Log a drop** — 3 intensities (Lengvas/Vidutinis/Sunkus → 2/4/6 units, capacity 24) + optional one-line note. One sheet, two taps total.
+4. **Log a drop** — 3 intensities (Light/Medium/Heavy → 2/4/6 units, capacity 24) + optional one-line note. One sheet, two taps total.
 5. **Release ritual** — full-screen guided breathing; drains only on exhale; cancelling keeps every drop; completion marks drops released, records a ReleaseSession, celebrates quietly.
-6. **Journey (Ramybės kelias)** — milestones at 1/3/7/15/30 releases with names and voxel medals; shows the next goal.
+6. **Journey (Path of Stillness)** — milestones at 1/3/7/15/30 releases with names and voxel medals; shows the next goal.
 7. **History & insight** — last-7-days bar chart of logged units + recent drops with notes.
 8. **Widgets** — Lock Screen circular gauge + rectangular (fill % + state line), Home Screen mini vessel; refreshed via WidgetCenter on every mutation.
-9. **Share card** — a gorgeous post-ritual card (vessel, "Paleista.", stats, journey milestone) rendered with ImageRenderer, shared via the system share sheet. This is marketing — make it beautiful.
+9. **Share card** — a gorgeous post-ritual card (vessel, "Released.", stats, journey milestone) rendered with ImageRenderer, shared via the system share sheet. This is marketing — make it beautiful.
 10. **Synthesized sound** — plop on drop impact, breath tones during the ritual, completion chime; a mute toggle; `.ambient` so it never interrupts the user's audio.
 11. **Overflow state** — at 100 % the vessel trembles and the app gently insists on a release.
 
@@ -89,6 +89,6 @@ Derived, never stored: current level = Σ units of unreleased drops capped at 24
 - [ ] Haptics + synthesized sound on drop impact, breathing transitions, and completion.
 - [ ] Widgets show the live fill level after every mutation.
 - [ ] Mascot poses are real Higgsfield art (vector fallback only on generation failure), logged in ASSETS.md.
-- [ ] UI reads like a whisper: minimal Lithuanian microcopy, calm motion, one accent color, premium for a 29–55 audience.
+- [ ] UI reads like a whisper: minimal English microcopy, calm motion, one accent color, premium for a 29–55 audience.
 
 Build the entire thing now. Do not ask clarifying questions — use your full creative and technical judgment, make excellent opinionated choices, and ship the best complete app you're capable of.

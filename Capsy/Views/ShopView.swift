@@ -10,7 +10,7 @@ struct ShopView: View {
     // Game.earn/spend/buy runs.
     @Query private var states: [GameState]
     private var gold: Int { states.first?.gold ?? 0 }
-    @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
+    @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.bucket.rawValue
     @AppStorage("hat") private var hatRaw = ""
 
     /// Item id currently mid-pulse after a fresh purchase.
@@ -127,7 +127,7 @@ struct ShopView: View {
     // MARK: - Item lists
 
     private var bodyItems: [ShopItem] {
-        var items = [ShopItem(id: "vessel.kibiras", name: "Bucket", symbol: "cube",
+        var items = [ShopItem(id: "vessel.bucket", name: "Bucket", symbol: "cube",
                                price: 0, kind: .vessel, alwaysOwned: true)]
         items += Reward.catalog
             .filter { $0.kind == .vessel }

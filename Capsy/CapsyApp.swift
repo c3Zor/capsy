@@ -51,7 +51,7 @@ struct CapsyApp: App {
                     }
                 }
             }
-            // Diena/naktis pagal paros laiką (21–7 — naktis) arba rankinį pasirinkimą.
+            // Day/night by time of day (21:00–7:00 is night) or manual override.
             .preferredColorScheme(DayNight.isNight(themeMode) ? .dark : .light)
         }
         .modelContainer(AppDatabase.container)

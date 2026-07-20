@@ -11,12 +11,12 @@ struct HomeView: View {
     @State private var showRelease = false
     @State private var dropSignal = 0
     @State private var bodySignal: String?
-    @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
+    @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.bucket.rawValue
     @AppStorage("soundOn") private var soundOn = true
     @AppStorage("themeMode") private var themeMode = "auto"
     @AppStorage("hat") private var hat = ""
 
-    private var vessel: VesselStyle { VesselStyle(rawValue: vesselRaw) ?? .kibiras }
+    private var vessel: VesselStyle { VesselStyle(rawValue: vesselRaw) ?? .bucket }
     private var fraction: Double { Bucket.fraction(of: drops) }
     private var level: Int { Bucket.level(of: drops) }
 
@@ -247,7 +247,7 @@ struct AddDropSheet: View {
     @Environment(\.dismiss) private var dismiss
     var onSave: (Intensity, String) -> Void
 
-    @State private var selected: Intensity = .vidutinis
+    @State private var selected: Intensity = .medium
     @State private var note = ""
 
     var body: some View {

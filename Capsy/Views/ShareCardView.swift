@@ -147,9 +147,9 @@ struct ShareCardView: View {
 
     private var statsRow: some View {
         HStack(spacing: 0) {
-            stat(value: "\(drainedUnits)", label: "išleista vnt.")
+            stat(value: "\(drainedUnits)", label: "units released")
             divider
-            stat(value: "\(totalReleases)", label: "išleidimų iš viso")
+            stat(value: "\(totalReleases)", label: "releases total")
             divider
             stat(value: milestoneTitle ?? "–", label: "kelio etapas", isName: true)
         }

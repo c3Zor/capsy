@@ -6,16 +6,16 @@ import UIKit
 /// Capsy's mood mirrors how full the bucket is. Raw values are the asset
 /// names for the generated voxel art (see Assets.xcassets).
 enum MascotMood: String {
-    case ramus       = "MascotCalm"
-    case susimastes  = "MascotBusy"
-    case sunkus      = "MascotHeavy"
-    case palengvejas = "MascotRelief"
+    case calm       = "MascotCalm"
+    case busy  = "MascotBusy"
+    case heavy      = "MascotHeavy"
+    case relieved = "MascotRelief"
 
     static func forFraction(_ f: Double) -> MascotMood {
         switch f {
-        case ..<0.4: .ramus
-        case ..<0.8: .susimastes
-        default:     .sunkus
+        case ..<0.4: .calm
+        case ..<0.8: .busy
+        default:     .heavy
         }
     }
 }
@@ -98,23 +98,23 @@ private struct DropletFace: View {
     private var eye: some View {
         Capsule()
             .fill(Color.bg)
-            .frame(width: 5, height: mood == .palengvejas || blink ? 1.5 : 7)
+            .frame(width: 5, height: mood == .relieved || blink ? 1.5 : 7)
     }
 
     @ViewBuilder
     private var mouth: some View {
         switch mood {
-        case .ramus:
+        case .calm:
             SmileArc(curveUp: true)
                 .stroke(Color.bg, style: StrokeStyle(lineWidth: 2, lineCap: .round))
                 .frame(width: 16, height: 6)
-        case .susimastes:
+        case .busy:
             Capsule().fill(Color.bg).frame(width: 13, height: 2)
-        case .sunkus:
+        case .heavy:
             SmileArc(curveUp: false)
                 .stroke(Color.bg, style: StrokeStyle(lineWidth: 2, lineCap: .round))
                 .frame(width: 16, height: 6)
-        case .palengvejas:
+        case .relieved:
             SmileArc(curveUp: true)
                 .stroke(Color.bg, style: StrokeStyle(lineWidth: 2.4, lineCap: .round))
                 .frame(width: 19, height: 8)

@@ -104,15 +104,15 @@ final class CapsyTests: XCTestCase {
     // MARK: - Intensity.units mapping (via StressDrop.units = intensity * 2)
 
     func testIntensityUnitsMapping() {
-        XCTAssertEqual(StressDrop(intensity: Intensity.lengvas.rawValue).units, 2)
-        XCTAssertEqual(StressDrop(intensity: Intensity.vidutinis.rawValue).units, 4)
-        XCTAssertEqual(StressDrop(intensity: Intensity.sunkus.rawValue).units, 6)
+        XCTAssertEqual(StressDrop(intensity: Intensity.light.rawValue).units, 2)
+        XCTAssertEqual(StressDrop(intensity: Intensity.medium.rawValue).units, 4)
+        XCTAssertEqual(StressDrop(intensity: Intensity.heavy.rawValue).units, 6)
     }
 
     func testIntensityTitles() {
-        XCTAssertEqual(Intensity.lengvas.title, "Light")
-        XCTAssertEqual(Intensity.vidutinis.title, "Medium")
-        XCTAssertEqual(Intensity.sunkus.title, "Heavy")
+        XCTAssertEqual(Intensity.light.title, "Light")
+        XCTAssertEqual(Intensity.medium.title, "Medium")
+        XCTAssertEqual(Intensity.heavy.title, "Heavy")
     }
 
     // MARK: - SharedState.line(for:) thresholds

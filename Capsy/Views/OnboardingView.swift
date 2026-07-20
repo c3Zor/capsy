@@ -3,7 +3,7 @@ import SwiftUI
 /// First-run welcome flow: what Capsy is, how to look, a soft Plus intro,
 /// how it works. Four swipeable pages. Sets `hasOnboarded` on "Begin".
 struct OnboardingView: View {
-    @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
+    @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.bucket.rawValue
     @AppStorage("hasOnboarded") private var hasOnboarded = false
     @State private var page = 0
 
@@ -118,7 +118,7 @@ private struct DropletShape: Shape {
 
 private struct VesselChoicePage: View {
     @Binding var vesselRaw: String
-    private var selected: VesselStyle { VesselStyle(rawValue: vesselRaw) ?? .kibiras }
+    private var selected: VesselStyle { VesselStyle(rawValue: vesselRaw) ?? .bucket }
 
     var body: some View {
         VStack(spacing: 24) {

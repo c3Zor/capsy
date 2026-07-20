@@ -6,31 +6,31 @@ import UIKit
 /// The user picks how their stress vessel looks. Every style is transparent
 /// glass — the amount of liquid is always visible through it.
 enum VesselStyle: String, CaseIterable, Identifiable {
-    case kibiras    // blocky voxel bucket
-    case eliksyras  // round "mana potion" flask
-    case taure      // simple glass tumbler
+    case bucket    // blocky voxel bucket
+    case potion  // round "mana potion" flask
+    case glass      // simple glass tumbler
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .kibiras: "Bucket"
-        case .eliksyras: "Potion"
-        case .taure: "Glass"
+        case .bucket: "Bucket"
+        case .potion: "Potion"
+        case .glass: "Glass"
         }
     }
 
     var symbol: String {
         switch self {
-        case .kibiras: "cube"
-        case .eliksyras: "flask"
-        case .taure: "wineglass"
+        case .bucket: "cube"
+        case .potion: "flask"
+        case .glass: "wineglass"
         }
     }
 
     /// Where droplets may fall in — the flask has a narrow neck.
     var dropXRange: ClosedRange<Double> {
-        self == .eliksyras ? 0.44...0.56 : 0.3...0.7
+        self == .potion ? 0.44...0.56 : 0.3...0.7
     }
 
     /// Interior shape of the vessel, used to clip the liquid and to draw
@@ -41,10 +41,10 @@ enum VesselStyle: String, CaseIterable, Identifiable {
         }
         var p = Path()
         switch self {
-        case .kibiras:
+        case .bucket:
             p.addRoundedRect(in: rect, cornerSize: CGSize(width: rect.width * 0.04,
                                                           height: rect.width * 0.04))
-        case .eliksyras:
+        case .potion:
             // Narrow neck flowing into a round body (ellipse traced by points).
             let cx = 0.5, cy = 0.64, rx = 0.38, ry = 0.30
             p.move(to: pt(0.41, 0.05))
@@ -55,7 +55,7 @@ enum VesselStyle: String, CaseIterable, Identifiable {
             }
             p.addLine(to: pt(0.59, 0.05))
             p.closeSubpath()
-        case .taure:
+        case .glass:
             // Gently tapered tumbler with a soft bottom.
             p.move(to: pt(0.24, 0.03))
             p.addLine(to: pt(0.76, 0.03))
@@ -80,7 +80,7 @@ struct BucketView: View {
     /// Increment this to make a droplet fall into the vessel.
     var dropSignal: Int = 0
     /// The chosen vessel look.
-    var style: VesselStyle = .kibiras
+    var style: VesselStyle = .bucket
 
     @State private var sim = LiquidSim()
 
@@ -113,14 +113,14 @@ struct BucketView: View {
                             height: size.height - cell * 2.4)
         let interior = style.interiorPath(in: vessel)
 
-        // Vienas kietas cartoon šešėlis po indu — vienintelė žaisminga
-        // grafinė detalė medžiagų pasaulyje (design book #014).
+        // One hard cartoon shadow under the vessel — the single playful
+        // graphic detail in a world of materials (design book #014).
         let shadow = CGRect(x: vessel.minX + vessel.width * 0.06,
                             y: vessel.maxY + cell * 0.62,
                             width: vessel.width * 0.88, height: cell * 0.5)
         ctx.fill(Path(ellipseIn: shadow), with: .color(.ink.opacity(0.16)))
 
-        if style == .kibiras {
+        if style == .bucket {
             drawVoxelWalls(ctx, bucket: vessel, cell: cell)
         } else {
             ctx.stroke(interior, with: .color(.ink.opacity(0.35)),

@@ -51,7 +51,7 @@ struct BucketProvider: TimelineProvider {
 
 // MARK: - Views
 
-// Gyva tyla V4.5 paletė (diena/naktis — seka sistemos šviesumą).
+// Gyva tyla V4.5 palette (day/night — follows the system appearance).
 private func dyn(_ day: UInt32, _ night: UInt32) -> Color {
     func ui(_ hex: UInt32) -> UIColor {
         UIColor(red: CGFloat((hex >> 16) & 0xFF) / 255,

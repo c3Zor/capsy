@@ -8,7 +8,7 @@ import WidgetKit
 @Model
 final class StressDrop {
     var date: Date
-    var intensity: Int      // 1 lengvas · 2 vidutinis · 3 sunkus
+    var intensity: Int      // 1 light · 2 medium · 3 heavy
     var note: String
     var released: Bool
 
@@ -69,19 +69,19 @@ enum Bucket {
 // MARK: - Intensity presentation
 
 enum Intensity: Int, CaseIterable, Identifiable {
-    case lengvas = 1, vidutinis = 2, sunkus = 3
+    case light = 1, medium = 2, heavy = 3
     var id: Int { rawValue }
 
     var title: String {
         switch self {
-        case .lengvas: "Light"
-        case .vidutinis: "Medium"
-        case .sunkus: "Heavy"
+        case .light: "Light"
+        case .medium: "Medium"
+        case .heavy: "Heavy"
         }
     }
 }
 
-// MARK: - Journey (Ramybės kelias)
+// MARK: - Journey (Path of Stillness)
 
 struct Milestone: Identifiable {
     let releases: Int

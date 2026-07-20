@@ -1,42 +1,57 @@
-# Capsy — streso kibirėlis 🪣
+# Capsy — the stress bucket 🪣
 
-Stresas — tai skystis. Jis kaupiasi lašas po lašo, teliuskuoja pakreipus telefoną
-ir niekur nedingsta pats — jį reikia sąmoningai išpilti kvėpavimo ritualu.
-Permatomas voxel indas su gyvu vandeniu, **gyva tyla V4.5** stiliumi: molis ir
-koralas `#E8865C` ant kreminio smėlio `#EDE4D6`, diena/naktis (auto 21–7 val. +
-☾/☀ mygtukas), suspausta plakatinė tipografija, mono skaičiai, spring 90/16,
-„banga, ne sprogimas“, Tibeto dubens tonas ir ramybės sodas.
+Stress is a liquid. It accumulates drop by drop, sloshes when you tilt the
+phone, and never disappears on its own — you have to consciously pour it out
+with a breathing ritual. A transparent voxel vessel with living water, in the
+**gyva tyla V4.5** ("living silence") style: clay and coral `#E8865C` on cream
+sand `#EDE4D6`, day/night (auto 21:00–7:00 + a ☾/☀ toggle), compressed poster
+typography, mono digits, spring 90/16, "a wave, not an explosion", a Tibetan
+bowl tone and a garden of stillness.
 
-## Paleidimas (2 komandos)
+## Run it (2 commands)
 
 ```bash
-brew install xcodegen        # jei dar neturi
+brew install xcodegen        # if you don't have it yet
 xcodegen generate && open Capsy.xcodeproj
 ```
 
-Xcode: pasirink savo *Signing Team* abiem target'ams (Capsy ir CapsyWidget) — ir Run.
-Veikia ir simuliatoriuje (be tilt'o vanduo tiesiog ramiai banguoja).
+Xcode: pick your *Signing Team* for both targets (Capsy and CapsyWidget) — and Run.
+Works in the Simulator too (without tilt the water just waves calmly).
 
-## Kas viduje
+## What's inside
 
-| Funkcija | Kur |
+| Feature | Where |
 |---|---|
-| Gyvas teliuskuojantis skystis (CoreMotion tilt + slopinama spyruoklė, lašai, purslai, burbulai) | `Capsy/Views/BucketView.swift` |
-| 3 permatomi indai pasirinkimui: kibirėlis / eliksyro kolba / taurė (išsisaugo) | `Capsy/Views/BucketView.swift` |
-| Pagrindinis ekranas: lygis %, `+ Lašas`, `Išleisti` | `Capsy/Views/HomeView.swift` |
-| Išleidimo ritualas — kvėpavimas 4 s įkvėpk / 6 s iškvėpk × 4, indas tuštėja iškvepiant | `Capsy/Views/ReleaseView.swift` |
-| Ramybės kelias (etapai), savaitės grafikas, lašų istorija | `Capsy/Views/JourneyView.swift` |
-| Lock Screen + Home Screen widget'ai (užpildymo lygis) | `CapsyWidget/CapsyWidget.swift` |
-| SwiftData modeliai + kibirėlio logika | `Capsy/Models.swift` |
-| Bendra būsena su widget'u (App Group) | `Shared/SharedState.swift` |
+| Live 3D character-vessel (SceneKit voxel liquid, damped-spring slosh, breathing, vapor) | `Capsy/Views/CapsySceneView.swift` |
+| 3 transparent vessels to choose from: bucket / potion flask / glass (persisted) | `Capsy/Views/BucketView.swift` (styles), `CapsySceneView.swift` (3D) |
+| Home screen: fill %, `DROP`, `RELEASE`, gamification HUD, daily quest | `Capsy/Views/HomeView.swift`, `ProgressHUD.swift` |
+| Release ritual — breathing 4 s in / 6 s out × 4, the vessel drains on exhale | `Capsy/Views/ReleaseView.swift` |
+| Economy: gold, XP, levels, gentle streak with freezes, chest rewards | `Capsy/Game.swift` |
+| Calm habits (Habitica-style taps that earn gold) | `Capsy/Views/HabitsView.swift` |
+| Rewards shop: vessel bodies and hats | `Capsy/Views/ShopView.swift` |
+| Capsy Plus paywall (StoreKit 2: monthly / yearly / lifetime, 7-day trial) | `Capsy/Plus.swift`, `Views/PaywallView.swift` |
+| Path of Stillness (milestones), weekly chart, drop history | `Capsy/Views/JourneyView.swift` |
+| Apple Health: mindful minutes written, HRV read as a quiet body signal | `Capsy/Health.swift` |
+| Morning/evening notifications in Capsy's voice | `Capsy/Reminders.swift` |
+| Lock Screen + Home Screen widgets with a 1-tap quick drop | `CapsyWidget/CapsyWidget.swift` |
+| SwiftData models + bucket logic | `Capsy/Models.swift` |
+| State shared with the widget (App Group) | `Shared/SharedState.swift` |
+| Pure-logic unit tests (run in CI) | `CapsyTests/CapsyTests.swift` |
 
-Talpa: 24 vnt. Lašas: lengvas 2 / vidutinis 4 / sunkus 6 vnt.
-Widget'ai atsinaujina po kiekvieno pakeitimo (`WidgetCenter.reloadAllTimelines`).
+Capacity: 24 units. A drop: light 2 / medium 4 / heavy 6 units.
+Widgets refresh after every mutation (`WidgetCenter.reloadAllTimelines`).
 
-Pilnas produkto aprašymas — [`MASTER_PROMPT.md`](MASTER_PROMPT.md).
+Full product description — [`MASTER_PROMPT.md`](MASTER_PROMPT.md).
+TestFlight distribution guide — [`TESTFLIGHT.md`](TESTFLIGHT.md).
 
-## Technologijos
+## CI
 
-Swift 5.9 · SwiftUI · SwiftData · WidgetKit · CoreMotion · Swift Charts ·
-Canvas + TimelineView (procedūrinė voxel animacija, jokių priklausomybių) ·
-XcodeGen. Minimalus iOS: 17.0.
+Every push builds the app on a macOS runner, runs the unit tests, boots a
+simulator, captures an 8-screenshot gallery (`/screenshots`) and commits the
+generated project + screenshots back to the branch.
+
+## Tech
+
+Swift 5.9 · SwiftUI · SwiftData · SceneKit · WidgetKit + AppIntents ·
+StoreKit 2 · HealthKit · Swift Charts · AVAudioEngine (all sound synthesized
+in code) · XcodeGen. Zero third-party dependencies. Minimum iOS: 17.0.

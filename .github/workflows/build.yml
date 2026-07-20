@@ -30,7 +30,7 @@ jobs:
           print(devices[-1]['udid'])")
           echo "UDID=$UDID" >> "$GITHUB_ENV"
 
-      - name: Build (iOS Simulator, be pasirašymo)
+      - name: Build (iOS Simulator, unsigned)
         run: |
           if ! xcodebuild build \
             -project Capsy.xcodeproj \
@@ -38,7 +38,7 @@ jobs:
             -destination "id=$UDID" \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO > build.log 2>&1; then
-            echo "BUILD FAILED — klaidos:"
+            echo "BUILD FAILED — errors:"
             grep -E "error:" build.log | head -40
             exit 65
           fi
@@ -52,14 +52,14 @@ jobs:
             -destination "id=$UDID" \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO > test.log 2>&1; then
-            echo "TESTS FAILED — klaidos:"
+            echo "TESTS FAILED — errors:"
             grep -E "error:|failed" test.log | head -40
             exit 65
           fi
           tail -5 test.log
 
-      # Vizualinis self-check: pilna matrica — visi ekranai, abi temos,
-      # skirtingi užpildymo lygiai. Nuotraukos komitinamos į /screenshots.
+      # Visual self-check: the full matrix — every screen, both themes,
+      # different fill levels. Screenshots are committed to /screenshots.
       - name: Screenshot self-check
         if: github.event_name == 'push'
         run: |
@@ -94,6 +94,6 @@ jobs:
             CapsyWidget/Info.plist CapsyWidget/CapsyWidget.entitlements \
             screenshots/
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "CI: projektas + ekrano nuotrauka [skip ci]"
+          git commit -m "CI: generated project + screenshots [skip ci]"
           git pull --rebase origin "$GITHUB_REF_NAME" || true
           git push

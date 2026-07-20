@@ -77,8 +77,8 @@ struct JourneyView: View {
 
     // MARK: - 7 day chart
 
-    /// Ramybės sodas: kiekvienas išleidimas — akmenukas aukso kampo spiralėje.
-    /// Kas trečias tyliai išauga voxel formos — be pranešimų, tik pastebėjusiems.
+    /// The stillness garden: every release is a pebble on a golden-angle spiral.
+    /// Every third one quietly grows a voxel form — no announcements, only for the observant.
     private struct GardenView: View {
         let count: Int
 

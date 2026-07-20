@@ -25,7 +25,7 @@ struct ReleaseView: View {
     @State private var ritualStart = Date.now
     @State private var showRipples = false
     @State private var candleDim = false
-    @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.kibiras.rawValue
+    @AppStorage("vesselStyle") private var vesselRaw = VesselStyle.bucket.rawValue
 
     var body: some View {
         VStack(spacing: 16) {
@@ -54,8 +54,8 @@ struct ReleaseView: View {
             // Capsy breathes with you: the whole 3D character expands on the
             // inhale, settles on the exhale, and the liquid drains inside it.
             CapsySceneView(fraction: fraction,
-                           style: VesselStyle(rawValue: vesselRaw) ?? .kibiras,
-                           mood: phase == .done ? .palengvejas : nil,
+                           style: VesselStyle(rawValue: vesselRaw) ?? .bucket,
+                           mood: phase == .done ? .relieved : nil,
                            breathPhase: phase == .inhale ? 1 : (phase == .exhale ? 2 : 0))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .overlay(alignment: .bottom) {
@@ -75,14 +75,14 @@ struct ReleaseView: View {
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.bg.ignoresSafeArea())
-        .overlay { // pabaiga: ekranas trumpam pritemsta kaip žvakė — ir vėl įsižiebia
+        .overlay { // finale: the screen dims briefly like a candle — then glows back
             Color.black.opacity(candleDim ? 0.55 : 0)
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
                 .animation(.easeInOut(duration: 1.4), value: candleDim)
         }
         .task { await run() }
-        .onAppear { SoundEngine.droneOn() }   // erdvė tyliai „skamba"
+        .onAppear { SoundEngine.droneOn() }   // the room quietly "hums"
         .onDisappear { SoundEngine.droneOff() }
     }
 
@@ -188,16 +188,16 @@ struct ReleaseView: View {
         Health.logMindfulSession(start: ritualStart, end: .now)
         Bucket.syncWidget(fraction: 0)
         Haptics.success()
-        SoundEngine.chime() // Tibeto dubens tonas su ilgu gesimu
+        SoundEngine.chime() // Tibetan bowl tone with a long decay
         withAnimation(.earth) { phase = .done }
         showRipples = true
-        // Žvakė (#080): pritemsta ir vėl įsižiebia.
+        // The candle (#080): dims, then glows back.
         candleDim = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.9) { candleDim = false }
     }
 }
 
-/// Užbaigus kvėpavimą per grindis nueina ratilai — atlygis yra banga,
+/// When the breathing ends, ripples travel across the floor — the reward is a wave,
 /// ne konfeti sprogimas.
 struct RippleView: View {
     @State private var expand = false

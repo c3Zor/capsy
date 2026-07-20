@@ -55,13 +55,13 @@ final class SoundEngine {
         })
     }
 
-    /// Tibeto dubens tonas (C4·G4·C5) su ilgu uodegos gesimu ir natūralia
-    /// variacija — ritualas užbaigtas. „Banga, ne sprogimas."
+    /// Tibetan bowl tone (C4·G4·C5) with a long tail decay and natural
+    /// variation — the ritual is complete. "A wave, not an explosion."
     static func chime() {
         shared.play(shared.bowlBuffer())
     }
 
-    /// Erdvė tyliai „skamba" — labai tylus 55 Hz drone ritualo metu.
+    /// The room quietly "hums" — a very quiet 55 Hz drone during the ritual.
     static func droneOn() {
         guard isOn else { return }
         shared.startDrone()
@@ -111,7 +111,7 @@ final class SoundEngine {
     }
 
     /// Trys deriniai (C4·G4·C5), kiekvienas su vos praskleista pora (f ir f·1.003),
-    /// lėtas attack ir ~4.5 s eksponentinis gesimas. Kaskart ±0.5 % variacija.
+    /// slow attack and ~4.5 s exponential decay. A ±0.5 % variation every time.
     private func bowlBuffer() -> AVAudioPCMBuffer? {
         let duration = 4.5
         let variation = 1 + Double.random(in: -0.005...0.005)
@@ -140,7 +140,7 @@ final class SoundEngine {
     private let dronePlayer = AVAudioPlayerNode()
     private var droneConfigured = false
 
-    /// Besiūlis 2 s ciklas: 55 Hz + 82.5 Hz (sveiki ciklų skaičiai — jokio trūkčiojimo).
+    /// Seamless 2 s loop: 55 Hz + 82.5 Hz (whole cycle counts — no clicking).
     private func startDrone() {
         startIfNeeded()
         guard isReady else { return }
@@ -166,7 +166,7 @@ final class SoundEngine {
 
     private func stopDrone() {
         guard droneConfigured, dronePlayer.isPlaying else { return }
-        dronePlayer.stop() // garsas ir taip vos girdimas — staigus stop nepastebimas
+        dronePlayer.stop() // the drone is barely audible anyway — an abrupt stop goes unnoticed
     }
 
     // MARK: - Playback

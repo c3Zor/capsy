@@ -15,7 +15,7 @@ struct CapsySceneView: UIViewRepresentable {
     /// Increment to drop a pebble of stress into the vessel.
     var dropSignal: Int = 0
     /// Body shape, shared with the rest of the app.
-    var style: VesselStyle = .kibiras
+    var style: VesselStyle = .bucket
     /// Force a mood (e.g. relief at ritual end); nil = derived from fraction.
     var mood: MascotMood? = nil
     /// Ritual phase: 0 idle · 1 inhale (O mouth, eyes closed) · 2 exhale
@@ -86,8 +86,8 @@ final class CapsyScene {
     private let mouthNode = SCNNode()
     private let shadowNode = SCNNode()
 
-    private var style: VesselStyle = .kibiras
-    private var mood: MascotMood = .ramus
+    private var style: VesselStyle = .bucket
+    private var mood: MascotMood = .calm
 
     private var fill = 0.0                // eased fill
     private var builtLayers = -1          // cube layers the liquid was built with
@@ -205,7 +205,7 @@ final class CapsyScene {
         leftEye.position = SCNVector3(-0.17, 0.10, 0)
         rightEye.position = SCNVector3(0.17, 0.10, 0)
 
-        mouthNode.geometry = mouthGeometry(for: .ramus)
+        mouthNode.geometry = mouthGeometry(for: .calm)
         mouthNode.position = SCNVector3(0, -0.10, 0)
         faceNode.addChildNode(mouthNode)
 
@@ -216,13 +216,13 @@ final class CapsyScene {
 
     private func profile(for style: VesselStyle) -> [SIMD2<Float>] {
         switch style {
-        case .kibiras:
+        case .bucket:
             [[0.001, 0.0], [0.60, 0.0], [0.65, 0.05], [0.78, 1.44], [0.83, 1.48], [0.83, 1.58], [0.79, 1.60]]
                 .map { SIMD2($0[0], $0[1]) }
-        case .eliksyras:
+        case .potion:
             [[0.001, 0.0], [0.46, 0.02], [0.72, 0.40], [0.75, 0.70], [0.62, 1.05], [0.35, 1.42], [0.15, 1.72], [0.05, 1.92]]
                 .map { SIMD2($0[0], $0[1]) }
-        case .taure:
+        case .glass:
             // A real goblet: foot, slim stem, then the bowl.
             [[0.001, 0.0], [0.40, 0.0], [0.42, 0.04], [0.12, 0.10], [0.06, 0.16],
              [0.06, 0.50], [0.18, 0.62], [0.44, 0.74], [0.56, 0.98], [0.59, 1.26], [0.57, 1.52]]
@@ -233,15 +233,15 @@ final class CapsyScene {
     private func maxLiquidHeight(for style: VesselStyle) -> Float {
         // Close to the rim, so "50 %" visibly means half a vessel.
         switch style {
-        case .kibiras: 1.50
-        case .eliksyras: 1.42
-        case .taure: 1.44
+        case .bucket: 1.50
+        case .potion: 1.42
+        case .glass: 1.44
         }
     }
 
     /// Where the liquid starts: the goblet's bowl begins above the stem.
     private func liquidFloor(for style: VesselStyle) -> Float {
-        style == .taure ? 0.68 : 0.02
+        style == .glass ? 0.68 : 0.02
     }
 
     /// Liquid surface height for a given fill, in profile coordinates.
@@ -254,9 +254,9 @@ final class CapsyScene {
     /// goes under when the vessel is nearly full, which is the point.
     private func faceAnchor(for style: VesselStyle) -> SCNVector3 {
         switch style {
-        case .kibiras:  SCNVector3(0, 1.10, 0.80)
-        case .eliksyras: SCNVector3(0, 0.88, 0.70)
-        case .taure:    SCNVector3(0, 1.08, 0.60)
+        case .bucket:  SCNVector3(0, 1.10, 0.80)
+        case .potion: SCNVector3(0, 0.88, 0.70)
+        case .glass:    SCNVector3(0, 1.08, 0.60)
         }
     }
 
@@ -412,11 +412,11 @@ final class CapsyScene {
             mouthNode.geometry = mouthOGeometry()
             setEyes(scaleY: 0.22)
         case 2:
-            mouthNode.geometry = mouthGeometry(for: .palengvejas)
+            mouthNode.geometry = mouthGeometry(for: .relieved)
             setEyes(scaleY: 0.22)
         default:
             mouthNode.geometry = mouthGeometry(for: mood)
-            setEyes(scaleY: mood == .sunkus ? 0.72 : (mood == .palengvejas ? 0.32 : 1.0))
+            setEyes(scaleY: mood == .heavy ? 0.72 : (mood == .relieved ? 0.32 : 1.0))
         }
     }
 
@@ -442,10 +442,10 @@ final class CapsyScene {
         let width: CGFloat = 0.20
         let thickness: CGFloat = 0.030
         let curve: CGFloat = switch mood {
-        case .ramus: -0.055        // small smile (down in path space = up on screen? no — SceneKit y up, negative control = smile)
-        case .susimastes: 0.0      // flat
-        case .sunkus: 0.055        // frown
-        case .palengvejas: -0.085  // big relieved smile
+        case .calm: -0.055        // small smile (down in path space = up on screen? no — SceneKit y up, negative control = smile)
+        case .busy: 0.0      // flat
+        case .heavy: 0.055        // frown
+        case .relieved: -0.085  // big relieved smile
         }
         let path = UIBezierPath()
         path.move(to: CGPoint(x: -width / 2, y: 0))
@@ -537,7 +537,7 @@ final class CapsyScene {
 
     private func blink() {
         let close = SCNAction.scaleY(to: 0.12, duration: 0.07)
-        let open = SCNAction.scaleY(to: mood == .sunkus ? 0.72 : 1.0, duration: 0.09)
+        let open = SCNAction.scaleY(to: mood == .heavy ? 0.72 : 1.0, duration: 0.09)
         let blinkAction = SCNAction.sequence([close, open])
         leftEye.runAction(blinkAction)
         rightEye.runAction(blinkAction)
@@ -622,7 +622,7 @@ final class CapsyScene {
         }
 
         // Occasional blink (not while eyes are closed for the ritual).
-        if time > nextBlink, mood != .palengvejas, breathPhase == 0 {
+        if time > nextBlink, mood != .relieved, breathPhase == 0 {
             nextBlink = time + Double.random(in: 2.4...5.0)
             blink()
         }

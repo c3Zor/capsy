@@ -223,8 +223,8 @@ struct Reward: Identifiable {
     let kind: Kind
 
     static let catalog: [Reward] = [
-        Reward(id: "vessel.eliksyras", name: "Potion Body", price: 60, symbol: "flask", kind: .vessel),
-        Reward(id: "vessel.taure", name: "Glass Body", price: 90, symbol: "wineglass", kind: .vessel),
+        Reward(id: "vessel.potion", name: "Potion Body", price: 60, symbol: "flask", kind: .vessel),
+        Reward(id: "vessel.glass", name: "Glass Body", price: 90, symbol: "wineglass", kind: .vessel),
         Reward(id: "hat.leaf", name: "Leaf Hat", price: 40, symbol: "leaf.fill", kind: .hat),
         Reward(id: "hat.beanie", name: "Cozy Beanie", price: 70, symbol: "graduationcap.fill", kind: .hat),
         Reward(id: "hat.crown", name: "Tiny Crown", price: 150, symbol: "crown.fill", kind: .hat),
