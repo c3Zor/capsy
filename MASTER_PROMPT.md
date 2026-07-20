@@ -10,7 +10,7 @@ Your mind is a vessel. Stress is liquid. It accumulates drop by drop, it *sloshe
 
 - **Swift 5.9 + SwiftUI + SwiftData only. Zero third-party dependencies.** No CocoaPods, no SPM packages.
 - Only Apple system frameworks: SwiftUI, SwiftData, **WidgetKit** (Lock Screen accessoryCircular/accessoryRectangular + Home Screen systemSmall), **CoreMotion** (real device-tilt liquid physics), **Swift Charts**, AVFoundation, Foundation.
-- **App Group** (`group.com.capsy.shared`) shares vessel state with the widget; fall back to standard UserDefaults when the group is unavailable so an unsigned build never crashes.
+- **App Group** (`group.com.getcapsy.shared`) shares vessel state with the widget; fall back to standard UserDefaults when the group is unavailable so an unsigned build never crashes.
 - Target **iOS 17+**, iPhone-first. Project defined with **XcodeGen (`project.yml`)**: `xcodegen generate && open Capsy.xcodeproj`, pick a signing team, **Cmd+R** — nothing else. Works in the Simulator (no accelerometer → liquid gracefully degrades to ambient waves).
 - **All sound is synthesized in code** (AVAudioEngine sine tones with soft envelopes; `.ambient` session) — zero audio asset files. Haptics via UIFeedbackGenerator on every meaningful event.
 - All liquid motion is **procedural** (SwiftUI Canvas + TimelineView) — it must react to live sensor data at up to 120 fps, which pre-rendered assets cannot do.

@@ -4,7 +4,7 @@ import Foundation
 /// Falls back to standard UserDefaults if the group is unavailable (e.g. unsigned build),
 /// so the app never crashes — the widget simply shows its own last-known state.
 enum SharedState {
-    static let appGroup = "group.com.capsy.shared"
+    static let appGroup = "group.com.getcapsy.shared"
 
     private static var defaults: UserDefaults {
         UserDefaults(suiteName: appGroup) ?? .standard

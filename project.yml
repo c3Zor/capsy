@@ -27,7 +27,7 @@ targets:
       path: Capsy/Capsy.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.capsy.shared
+          - group.com.getcapsy.shared
         com.apple.developer.healthkit: true
     info:
       path: Capsy/Info.plist
@@ -41,7 +41,7 @@ targets:
         ITSAppUsesNonExemptEncryption: false
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.capsy.app
+        PRODUCT_BUNDLE_IDENTIFIER: com.getcapsy.app
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
   CapsyWidget:
@@ -54,7 +54,7 @@ targets:
       path: CapsyWidget/CapsyWidget.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.capsy.shared
+          - group.com.getcapsy.shared
     info:
       path: CapsyWidget/Info.plist
       properties:
@@ -63,7 +63,7 @@ targets:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.capsy.app.widget
+        PRODUCT_BUNDLE_IDENTIFIER: com.getcapsy.app.widget
 
   CapsyTests:
     type: bundle.unit-test

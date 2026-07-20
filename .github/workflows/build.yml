@@ -70,8 +70,8 @@ jobs:
           mkdir -p screenshots
           shot () { # name, args...
             local name="$1"; shift
-            xcrun simctl terminate "$UDID" com.capsy.app 2>/dev/null || true
-            xcrun simctl launch "$UDID" com.capsy.app "$@"
+            xcrun simctl terminate "$UDID" com.getcapsy.app 2>/dev/null || true
+            xcrun simctl launch "$UDID" com.getcapsy.app "$@"
             sleep 9
             xcrun simctl io "$UDID" screenshot "screenshots/$name.png"
           }

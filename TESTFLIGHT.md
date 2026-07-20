@@ -6,10 +6,10 @@ Change two lines in `project.yml` and re-run the generator:
 
 ```yaml
 # targets.Capsy.settings.base:
-PRODUCT_BUNDLE_IDENTIFIER: com.YOURDOMAIN.capsy         # pick your own
+PRODUCT_BUNDLE_IDENTIFIER: com.getcapsy.app              # already set — just add the team
 DEVELOPMENT_TEAM: XXXXXXXXXX                             # Team ID from developer.apple.com/account
 # targets.CapsyWidget.settings.base:
-PRODUCT_BUNDLE_IDENTIFIER: com.YOURDOMAIN.capsy.widget
+PRODUCT_BUNDLE_IDENTIFIER: com.getcapsy.app.widget
 DEVELOPMENT_TEAM: XXXXXXXXXX
 ```
 
@@ -18,13 +18,13 @@ xcodegen generate && open Capsy.xcodeproj
 ```
 
 Xcode → for both targets, Signing & Capabilities → "Automatically manage signing" ✓.
-(Rename the App Group `group.com.capsy.shared` to `group.com.YOURDOMAIN.capsy`
-in `project.yml` AND in the `Shared/SharedState.swift` constant — they must match.)
+(The App Group is `group.com.getcapsy.shared` — already consistent in
+`project.yml` and `Shared/SharedState.swift`. Register it as-is in the portal.)
 
 ## 2. App Store Connect record (once)
 
 1. appstoreconnect.apple.com → My Apps → "+" → New App
-   - Platform iOS · Name **Capsy** · Bundle ID (the same one) · SKU `capsy-001`
+   - Platform iOS · Name: **Capsy Wellness: Stress Relief** ("Capsy" alone is taken) · Bundle ID `com.getcapsy.app` · SKU `capsy-001`
 2. In-App Purchases → create 3 products with EXACTLY these IDs:
    - `com.capsy.plus.monthly` — Auto-Renewable, group "Capsy Plus", €2.99, 7-day free trial
    - `com.capsy.plus.yearly` — Auto-Renewable, same group, €19.99, 7-day trial
