@@ -6,7 +6,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.capsy.shared</string>
+		<string>group.com.getcapsy.shared</string>
 	</array>
 </dict>
 </plist>
