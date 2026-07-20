@@ -24,7 +24,8 @@ Xcode → for both targets, Signing & Capabilities → "Automatically manage sig
 ## 2. App Store Connect record (once)
 
 1. appstoreconnect.apple.com → My Apps → "+" → New App
-   - Platform iOS · Name: **Capsy Wellness: Stress Relief** ("Capsy" alone is taken) · Bundle ID `com.getcapsy.app` · SKU `capsy-001`
+   - Platform iOS · Name: **Capsy: Stress Relief Pet** ("Capsy" alone is taken; full metadata + fallbacks in `ASO.md`) · Bundle ID `com.getcapsy.app` · SKU `capsy-001`
+   - Subtitle: **Breathe, Calm Anxiety & Habits** · Keyword field: see `ASO.md` (copy-paste ready)
 2. In-App Purchases → create 3 products with EXACTLY these IDs:
    - `com.capsy.plus.monthly` — Auto-Renewable, group "Capsy Plus", €2.99, 7-day free trial
    - `com.capsy.plus.yearly` — Auto-Renewable, same group, €19.99, 7-day trial
