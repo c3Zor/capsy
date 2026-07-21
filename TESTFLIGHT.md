@@ -29,7 +29,7 @@ Xcode → for both targets, Signing & Capabilities → "Automatically manage sig
 2. In-App Purchases → create 3 products with EXACTLY these IDs:
    - `com.capsy.plus.monthly` — Auto-Renewable, group "Capsy Plus", €2.99, 7-day free trial
    - `com.capsy.plus.yearly` — Auto-Renewable, same group, €19.99, 7-day trial
-   - `com.capsy.plus.lifetime` — Non-Consumable, €49.99
+   - `com.getcapsy.plus.lifetime` — Non-Consumable, €49.99 (NOTE: the old `com.capsy.plus.lifetime` ID was burned in ASC — Apple never frees deleted IAP IDs; this new one is what the code expects)
    (Note: even if you change the bundle ID prefix, the product IDs can stay
    as-is — they are independent of the bundle.)
 3. Agreements → sign the Paid Applications agreement (if not signed yet).

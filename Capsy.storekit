@@ -15,7 +15,7 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.capsy.plus.lifetime",
+      "productID" : "com.getcapsy.plus.lifetime",
       "referenceName" : "Plus Lifetime",
       "type" : "NonConsumable"
     }

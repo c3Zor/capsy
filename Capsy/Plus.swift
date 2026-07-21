@@ -11,7 +11,7 @@ final class Plus {
 
     static let monthlyID = "com.capsy.plus.monthly"
     static let yearlyID = "com.capsy.plus.yearly"
-    static let lifetimeID = "com.capsy.plus.lifetime"
+    static let lifetimeID = "com.getcapsy.plus.lifetime"
     static let allIDs = [monthlyID, yearlyID, lifetimeID]
 
     private(set) var products: [Product] = []
