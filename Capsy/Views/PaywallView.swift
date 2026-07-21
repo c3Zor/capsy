@@ -107,21 +107,24 @@ struct PaywallView: View {
 
     private var priceCards: some View {
         VStack(spacing: 10) {
-            if plus.products.isEmpty {
-                if isDemo {
-                    mockCard(name: "MONTHLY", price: "$2.99", badge: nil, id: Plus.monthlyID)
-                    mockCard(name: "YEARLY", price: "$19.99", badge: "BEST VALUE", id: Plus.yearlyID)
-                    mockCard(name: "LIFETIME", price: "$49.99", badge: "PAY ONCE", id: Plus.lifetimeID)
-                } else {
-                    Text(plus.isLoading ? "LOADING PRICES…" : "STORE UNAVAILABLE. TRY AGAIN LATER.")
-                        .font(.mono(11, weight: .medium))
-                        .kerning(1.4)
-                        .foregroundStyle(Color.sub)
-                        .padding(.vertical, 24)
+            // Demo mode always renders the three representative cards — the CI
+            // simulator's StoreKit test daemon serves products inconsistently
+            // (synthesized names, missing non-consumables), and screenshots
+            // must be deterministic. Real sessions never pass --demo.
+            if isDemo {
+                mockCard(name: "MONTHLY", price: "$2.99", badge: nil, id: Plus.monthlyID)
+                mockCard(name: "YEARLY", price: "$19.99", badge: "BEST VALUE", id: Plus.yearlyID)
+                mockCard(name: "LIFETIME", price: "$49.99", badge: "PAY ONCE", id: Plus.lifetimeID)
+            } else if plus.products.isEmpty {
+                Text(plus.isLoading ? "LOADING PRICES…" : "STORE UNAVAILABLE. TRY AGAIN LATER.")
+                    .font(.mono(11, weight: .medium))
+                    .kerning(1.4)
+                    .foregroundStyle(Color.sub)
+                    .padding(.vertical, 24)
+            } else {
+                ForEach(plus.products, id: \.id) { product in
+                    priceCard(product)
                 }
-            }
-            ForEach(plus.products, id: \.id) { product in
-                priceCard(product)
             }
         }
         // Mono prices sit against fixed-padding capsule cards; cap the top
